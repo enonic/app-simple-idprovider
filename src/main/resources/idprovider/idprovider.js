@@ -36,7 +36,7 @@ exports.logout = function (req) {
     }
 };
 
-function generateLoginPage(redirectUrl) {
+function generateLoginPage(redirectionUrl) {
     var userStoreKey = authLib.getUserStore().key;
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
@@ -53,7 +53,7 @@ function generateLoginPage(redirectUrl) {
     var loginConfig = mustacheLib.render(loginConfigView, {
         userStoreKey: userStoreKey,
         loginServiceUrl: loginServiceUrl,
-        redirectUrl: redirectUrl
+        redirectionUrl: redirectionUrl
     });
 
     var themeView = resolve(theme + '-theme.html');
@@ -71,7 +71,7 @@ function generateLoginPage(redirectUrl) {
     });
 }
 
-function generateLogoutPage(user, redirectUrl) {
+function generateLogoutPage(user, redirectionUrl) {
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
     var theme = idProviderConfig.theme || "blue";
@@ -80,7 +80,7 @@ function generateLogoutPage(user, redirectUrl) {
     var loginScriptUrl = portalLib.assetUrl({path: "js/login.js"});
     var loginStyleUrl = portalLib.assetUrl({path: "css/login.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-    var logoutUrl = portalLib.logoutUrl({redirect: redirectUrl});
+    var logoutUrl = portalLib.logoutUrl({});
 
     var themeView = resolve(theme + '-theme.html');
     var theme = mustacheLib.render(themeView, {});
@@ -91,6 +91,7 @@ function generateLogoutPage(user, redirectUrl) {
         theme: theme,
         userName: user.displayName,
         logoutUrl: logoutUrl,
+        redirectionUrl: redirectionUrl,
         jQueryUrl: jQueryUrl,
         loginScriptUrl: loginScriptUrl,
         loginStyleUrl: loginStyleUrl,

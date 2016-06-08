@@ -1,7 +1,7 @@
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
-        if (CONFIG.redirectUrl) {
-            location.href = CONFIG.redirectUrl;
+        if (CONFIG.redirectionUrl) {
+            location.href = CONFIG.redirectionUrl;
         } else {
             location.reload();
         }

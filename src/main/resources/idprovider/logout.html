@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{title}}</title>
+
+    <link href="{{loginStyleUrl}}" rel="stylesheet">
+    <script src="{{jQueryUrl}}"></script>
+
+    {{{theme}}}
+</head>
+
+<body>
+<div class="container">
+    <div class="form-user-image">
+        <img class="form-user-image-svg" src="{{userImgUrl}}">
+    </div>
+
+    <form class="form-login" action="{{logoutUrl}}">
+        <h2 class="form-login-heading">{{userName}}</h2>
+        <button type="submit" class="form-button">LOGOUT</button>
+        <input type="hidden" name="redirect" value="{{redirectionUrl}}">
+    </form>
+</div>
+
+<script src="{{loginScriptUrl}}"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 <script>
     var CONFIG = {
-        {{#redirectUrl}}redirectUrl: "{{.}}",{{/redirectUrl}}
+        {{#redirectionUrl}}redirectionUrl: "{{.}}",{{/redirectionUrl}}
         userStoreKey: "{{userStoreKey}}",
         loginServiceUrl: "{{loginServiceUrl}}"
     };
