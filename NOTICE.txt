@@ -1,0 +1,5 @@
+Licenses used by Simple Auth App
+
+    JQuery
+    MIT License
+    https://jquery.org/license/

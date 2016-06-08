@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<id-provider xmlns="urn:enonic:xp:model:1.0">
+  <mode>LOCAL</mode>
+  <config>
+    <input name="title" type="TextLine">
+      <label>Title</label>
+      <occurrences minimum="0" maximum="1"/>
+      <default>User Login</default>
+    </input>
+    <input name="theme" type="ComboBox">
+      <label>Theme</label>
+      <occurrences minimum="0" maximum="1"/>
+      <config>
+        <option value="blue">Blue</option>
+      </config>
+      <default>blue</default>
+    </input>
+  </config>
+</id-provider>
