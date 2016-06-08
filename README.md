@@ -1,4 +1,4 @@
-# Simple Auth App for Enonic XP
+# Simple ID Provider App for Enonic XP
 
 This app contains an ID Provider displaying a simple login page on 401/403 errors.
 The ID Provider uses basic access authentication to log the user.
@@ -8,7 +8,7 @@ The ID Provider uses basic access authentication to log the user.
 
 | App version | Required XP version | Download |
 | ----------- | ------------------- | -------- |
-| 1.0.0_SNAPSHOT | 6.6.0 | Not available |
+| 1.0.0-SNAPSHOT | 6.6.0 | Not available |
 
 
 ## Building and deploying
