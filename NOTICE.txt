@@ -1,4 +1,4 @@
-Licenses used by Simple Auth App
+Licenses used by Simple ID Provider App
 
     JQuery
     MIT License
