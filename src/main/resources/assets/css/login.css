@@ -10,12 +10,16 @@ html, body, .container {
     height: 100%
 }
 
+input {
+    box-sizing: border-box;
+}
+
 /***************************************************
 ** Font & color settings
 ****************************************************/
 
 body, input, button {
-    font-family: 'Open Sans', arial, sans-serif;
+    font-family: arial, sans-serif;
 }
 
 .form-login-heading {
