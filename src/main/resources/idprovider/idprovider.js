@@ -57,10 +57,8 @@ function generateLoginPage(redirectionUrl) {
         redirectionUrl: redirectionUrl
     });
 
-    var themeView = resolve('themes/' + theme + '-theme.html');
-    var themeStyle = mustacheLib.render(themeView, {});
-    var colorView = resolve('themes/' + color + '-theme.html');
-    var colorStyle = mustacheLib.render(colorView, {});
+    var themeStyle = generateThemeStyle(theme);
+    var colorStyle = generateColorStyle(color);
 
     var view = resolve("login.html");
     return mustacheLib.render(view, {
@@ -87,10 +85,8 @@ function generateLogoutPage(user, redirectionUrl) {
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
     var logoutUrl = portalLib.logoutUrl({});
 
-    var themeView = resolve('themes/' + theme + '-theme.html');
-    var themeStyle = mustacheLib.render(themeView, {});
-    var colorView = resolve('themes/' + color + '-theme.html');
-    var colorStyle = mustacheLib.render(colorView, {});
+    var themeStyle = generateThemeStyle(theme);
+    var colorStyle = generateColorStyle(color);
 
     var view = resolve("logout.html");
     return mustacheLib.render(view, {
@@ -105,4 +101,62 @@ function generateLogoutPage(user, redirectionUrl) {
         loginStyleUrl: loginStyleUrl,
         userImgUrl: userImgUrl
     });
+}
+
+function generateThemeStyle(theme) {
+    var themeView = resolve(theme + '-theme.html');
+    return mustacheLib.render(themeView, {});
+}
+
+function generateColorStyle(color) {
+    var view = resolve('color-style.txt');
+    return mustacheLib.render(view, generateColorValues(color));
+}
+
+function generateColorValues(color) {
+
+    switch (color) {
+    case "amber":
+        return {color500: "#FFC107", color700: "#FFA000"};
+    case "blue-grey":
+        return {color500: "#607D8B", color700: "#455A64"};
+    case "brown":
+        return {color500: "#795548", color700: "#5D4037"};
+    case "cyan":
+        return {color500: "#00BCD4", color700: "#0097A7"};
+    case "blue-grey":
+        return {color500: "#607D8B", color700: "#455A64"};
+    case "deep-orange":
+        return {color500: "#FF5722", color700: "#E64A19"};
+    case "deep-purple":
+        return {color500: "#673AB7", color700: "#512DA8"};
+    case "green":
+        return {color500: "#4CAF50", color700: "#388E3C"};
+    case "grey":
+        return {color500: "#9E9E9E", color700: "#616161"};
+    case "indigo":
+        return {color500: "#3F51B5", color700: "#303F9F"};
+    case "light-blue":
+        return {color500: "#03A9F4", color700: "#0288D1"};
+    case "light-green":
+        return {color500: "#8BC34A", color700: "#689F38"};
+    case "lime":
+        return {color500: "#CDDC39", color700: "#AFB42B"};
+    case "orange":
+        return {color500: "#FF9800", color700: "#F57C00"};
+    case "pink":
+        return {color500: "#E91E63", color700: "#C2185B"};
+    case "purple":
+        return {color500: "#9C27B0", color700: "#7B1FA2"};
+    case "red":
+        return {color500: "#F44336", color700: "#D32F2F"};
+    case "teal":
+        return {color500: "#009688", color700: "#00796B"};
+    case "teal":
+        return {color500: "#FFEB3B", color700: "#FBC02D"};
+    case "blue":
+    default:
+        return {color500: "#2196F3", color700: "#1976D2"};
+
+    }
 }
