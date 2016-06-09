@@ -57,9 +57,9 @@ function generateLoginPage(redirectionUrl) {
         redirectionUrl: redirectionUrl
     });
 
-    var themeView = resolve(theme + '-theme.html');
+    var themeView = resolve('themes/' + theme + '-theme.html');
     var themeStyle = mustacheLib.render(themeView, {});
-    var colorView = resolve(color + '-theme.html');
+    var colorView = resolve('themes/' + color + '-theme.html');
     var colorStyle = mustacheLib.render(colorView, {});
 
     var view = resolve("login.html");
@@ -87,9 +87,9 @@ function generateLogoutPage(user, redirectionUrl) {
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
     var logoutUrl = portalLib.logoutUrl({});
 
-    var themeView = resolve(theme + '-theme.html');
+    var themeView = resolve('themes/' + theme + '-theme.html');
     var themeStyle = mustacheLib.render(themeView, {});
-    var colorView = resolve(color + '-theme.html');
+    var colorView = resolve('themes/' + color + '-theme.html');
     var colorStyle = mustacheLib.render(colorView, {});
 
     var view = resolve("logout.html");
