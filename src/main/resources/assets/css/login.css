@@ -39,10 +39,6 @@ body, input, button {
     box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.4);
 }
 
-.form-button:hover {
-    opacity: 0.75;
-}
-
 .form-message {
     color: #a94442;
 }
