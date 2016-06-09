@@ -11,6 +11,15 @@
       <label>Theme</label>
       <occurrences minimum="0" maximum="1"/>
       <config>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </config>
+      <default>light</default>
+    </input>
+    <input name="color" type="ComboBox">
+      <label>Color</label>
+      <occurrences minimum="0" maximum="1"/>
+      <config>
         <option value="blue">Blue</option>
       </config>
       <default>blue</default>

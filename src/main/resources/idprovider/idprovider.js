@@ -40,7 +40,8 @@ function generateLoginPage(redirectionUrl) {
     var userStoreKey = authLib.getUserStore().key;
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
-    var theme = idProviderConfig.theme || "blue";
+    var theme = idProviderConfig.theme || "light";
+    var color = idProviderConfig.color || "blue";
 
 
     var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
@@ -57,13 +58,16 @@ function generateLoginPage(redirectionUrl) {
     });
 
     var themeView = resolve(theme + '-theme.html');
-    var theme = mustacheLib.render(themeView, {});
+    var themeStyle = mustacheLib.render(themeView, {});
+    var colorView = resolve(color + '-theme.html');
+    var colorStyle = mustacheLib.render(colorView, {});
 
     var view = resolve("login.html");
     return mustacheLib.render(view, {
         title: title,
         loginConfig: loginConfig,
-        theme: theme,
+        themeStyle: themeStyle,
+        colorStyle: colorStyle,
         jQueryUrl: jQueryUrl,
         loginScriptUrl: loginScriptUrl,
         loginStyleUrl: loginStyleUrl,
@@ -74,7 +78,8 @@ function generateLoginPage(redirectionUrl) {
 function generateLogoutPage(user, redirectionUrl) {
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
-    var theme = idProviderConfig.theme || "blue";
+    var theme = idProviderConfig.theme || "light";
+    var color = idProviderConfig.color || "blue";
 
     var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
     var loginScriptUrl = portalLib.assetUrl({path: "js/login.js"});
@@ -83,12 +88,15 @@ function generateLogoutPage(user, redirectionUrl) {
     var logoutUrl = portalLib.logoutUrl({});
 
     var themeView = resolve(theme + '-theme.html');
-    var theme = mustacheLib.render(themeView, {});
+    var themeStyle = mustacheLib.render(themeView, {});
+    var colorView = resolve(color + '-theme.html');
+    var colorStyle = mustacheLib.render(colorView, {});
 
     var view = resolve("logout.html");
     return mustacheLib.render(view, {
         title: title,
-        theme: theme,
+        themeStyle: themeStyle,
+        colorStyle: colorStyle,
         userName: user.displayName,
         logoutUrl: logoutUrl,
         redirectionUrl: redirectionUrl,
