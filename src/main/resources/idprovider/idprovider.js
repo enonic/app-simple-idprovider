@@ -2,11 +2,11 @@ var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
 
-exports.handle403 = function (req) {
+exports.handle401 = function (req) {
     var body = generateLoginPage();
 
     return {
-        status: 403,
+        status: 401,
         contentType: 'text/html',
         body: body
     };
@@ -17,9 +17,9 @@ exports.get = function (req) {
 
     var user = authLib.getUser();
     if (user) {
-        body = generateLogoutPage(user, req.params.redirect);
+        body = generateLogoutPage(user);
     } else {
-        body = generateLoginPage(req.params.redirect);
+        body = generateLoginPage();
     }
 
     return {
@@ -31,12 +31,14 @@ exports.get = function (req) {
 exports.logout = function (req) {
     authLib.logout();
 
+    var redirectUrl = portalLib.idProviderUrl();
     return {
-        redirect: req.params.redirect
+        redirect: redirectUrl
     }
 };
 
-function generateLoginPage(redirectionUrl) {
+function generateLoginPage() {
+    log.info("test");
     var userStoreKey = authLib.getUserStore().key;
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
@@ -53,8 +55,7 @@ function generateLoginPage(redirectionUrl) {
     var loginConfigView = resolve('login-config.txt');
     var loginConfig = mustacheLib.render(loginConfigView, {
         userStoreKey: userStoreKey,
-        loginServiceUrl: loginServiceUrl,
-        redirectionUrl: redirectionUrl
+        loginServiceUrl: loginServiceUrl
     });
 
     var themeStyle = generateThemeStyle(theme);
@@ -73,7 +74,7 @@ function generateLoginPage(redirectionUrl) {
     });
 }
 
-function generateLogoutPage(user, redirectionUrl) {
+function generateLogoutPage(user) {
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
     var theme = idProviderConfig.theme || "light";
@@ -83,7 +84,7 @@ function generateLogoutPage(user, redirectionUrl) {
     var loginScriptUrl = portalLib.assetUrl({path: "js/login.js"});
     var loginStyleUrl = portalLib.assetUrl({path: "css/login.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-    var logoutUrl = portalLib.logoutUrl({});
+    var logoutUrl = portalLib.logoutUrl();
 
     var themeStyle = generateThemeStyle(theme);
     var colorStyle = generateColorStyle(color);
@@ -95,7 +96,6 @@ function generateLogoutPage(user, redirectionUrl) {
         colorStyle: colorStyle,
         userName: user.displayName,
         logoutUrl: logoutUrl,
-        redirectionUrl: redirectionUrl,
         jQueryUrl: jQueryUrl,
         loginScriptUrl: loginScriptUrl,
         loginStyleUrl: loginStyleUrl,
