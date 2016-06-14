@@ -57,8 +57,8 @@ function generateLoginPage() {
     var loginScriptUrl = portalLib.assetUrl({path: "js/login.js"});
     var loginStyleUrl = portalLib.assetUrl({path: "css/login.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-    var loginServiceUrl = portalLib.serviceUrl({service: "login"});
 
+    var loginServiceUrl = portalLib.serviceUrl({service: "login"});
     var loginConfigView = resolve('login-config.txt');
     var loginConfig = mustacheLib.render(loginConfigView, {
         userStoreKey: userStoreKey,
@@ -88,10 +88,15 @@ function generateLogoutPage(user) {
     var color = idProviderConfig.color || "blue";
 
     var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
-    var loginScriptUrl = portalLib.assetUrl({path: "js/login.js"});
+    var logoutScriptUrl = portalLib.assetUrl({path: "js/logout.js"});
     var loginStyleUrl = portalLib.assetUrl({path: "css/login.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-    var logoutUrl = portalLib.logoutUrl();
+
+    var logoutServiceUrl = portalLib.serviceUrl({service: "logout"});
+    var logoutConfigView = resolve('logout-config.txt');
+    var logoutConfig = mustacheLib.render(logoutConfigView, {
+        logoutServiceUrl: logoutServiceUrl
+    });
 
     var themeStyle = generateThemeStyle(theme);
     var colorStyle = generateColorStyle(color);
@@ -99,12 +104,12 @@ function generateLogoutPage(user) {
     var view = resolve("logout.html");
     return mustacheLib.render(view, {
         title: title,
+        logoutConfig: logoutConfig,
         themeStyle: themeStyle,
         colorStyle: colorStyle,
         userName: user.displayName,
-        logoutUrl: logoutUrl,
         jQueryUrl: jQueryUrl,
-        loginScriptUrl: loginScriptUrl,
+        logoutScriptUrl: logoutScriptUrl,
         loginStyleUrl: loginStyleUrl,
         userImgUrl: userImgUrl
     });

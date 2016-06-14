@@ -1,10 +1,6 @@
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
-        if (CONFIG.redirectionUrl) {
-            location.href = CONFIG.redirectionUrl;
-        } else {
-            location.reload();
-        }
+        location.reload();
     } else {
         $("#errorMessage").removeClass("hidden");
         $("#inputPassword").focus();

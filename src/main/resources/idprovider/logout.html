@@ -9,6 +9,7 @@
     <link href="{{loginStyleUrl}}" rel="stylesheet">
     <script src="{{jQueryUrl}}"></script>
 
+    {{{logoutConfig}}}
     {{{themeStyle}}}
     {{{colorStyle}}}
 </head>
@@ -19,12 +20,12 @@
         <img class="form-user-image-svg" src="{{userImgUrl}}">
     </div>
 
-    <form class="form-login" action="{{logoutUrl}}">
+    <form class="form-login">
         <h2 class="form-login-heading">{{userName}}</h2>
         <button type="submit" class="form-button">LOGOUT</button>
     </form>
 </div>
 
-<script src="{{loginScriptUrl}}"></script>
+<script src="{{logoutScriptUrl}}"></script>
 </body>
 </html>
