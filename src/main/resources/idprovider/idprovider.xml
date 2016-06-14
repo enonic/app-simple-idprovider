@@ -11,36 +11,14 @@
       <label>Theme</label>
       <occurrences minimum="0" maximum="1"/>
       <config>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
+        <option value="light-blue">Light Blue</option>
+        <option value="light-green">Light Green</option>
+        <option value="light-red">Light Red</option>
+        <option value="dark-blue">Dark Blue</option>
+        <option value="dark-green">Dark Green</option>
+        <option value="dark-red">Dark Red</option>
       </config>
-      <default>light</default>
-    </input>
-    <input name="color" type="ComboBox">
-      <label>Color</label>
-      <occurrences minimum="0" maximum="1"/>
-      <config>
-        <option value="amber">Amber</option>
-        <option value="blue">Blue</option>
-        <option value="blue-grey">Blue grey</option>
-        <option value="brown">Brown</option>
-        <option value="cyan">Cyan</option>
-        <option value="deep-orange">Deep orange</option>
-        <option value="deep-purple">Deep purple</option>
-        <option value="green">Green</option>
-        <option value="grey">Grey</option>
-        <option value="indigo">Indigo</option>
-        <option value="light-blue">Light blue</option>
-        <option value="light-green">Light green</option>
-        <option value="lime">Lime</option>
-        <option value="orange">Orange</option>
-        <option value="pink">Pink</option>
-        <option value="purple">Purple</option>
-        <option value="red">Red</option>
-        <option value="teal">Teal</option>
-        <option value="yellow">Yellow</option>
-      </config>
-      <default>blue</default>
+      <default>light-blue</default>
     </input>
   </config>
 </id-provider>
