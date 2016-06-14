@@ -31,14 +31,21 @@ exports.get = function (req) {
 exports.logout = function (req) {
     authLib.logout();
 
-    var redirectUrl = portalLib.idProviderUrl();
+    var redirectUrl = generateRedirectUrl();
     return {
         redirect: redirectUrl
     }
 };
 
+function generateRedirectUrl() {
+    var site = portalLib.getSite();
+    if (site) {
+        return portalLib.pageUrl({id: site._id});
+    }
+    return '/';
+}
+
 function generateLoginPage() {
-    log.info("test");
     var userStoreKey = authLib.getUserStore().key;
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
