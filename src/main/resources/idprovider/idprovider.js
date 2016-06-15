@@ -66,8 +66,6 @@ function generateLoginPage(loggedOut) {
     var backgroundStyleUrl = generateBackgroundStyleUrl(theme);
     var colorStyleUrl = generateColorStyleUrl(theme);
 
-    log.info("loggedOut" + loggedOut);
-
     var view = resolve("login.html");
     return mustacheLib.render(view, {
         title: title,
