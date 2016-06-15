@@ -39,8 +39,12 @@ body, input, button {
     box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.4);
 }
 
-.form-message {
+.form-error-message {
     color: #d9534f;
+}
+
+.form-success-message {
+    color: #5cb85c;
 }
 
 .form-user-image, .form-login {

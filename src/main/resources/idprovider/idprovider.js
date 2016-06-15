@@ -19,7 +19,7 @@ exports.get = function (req) {
     if (user) {
         body = generateLogoutPage(user);
     } else {
-        body = generateLoginPage();
+        body = generateLoginPage(req.params.loggedOut);
     }
 
     return {
@@ -31,21 +31,18 @@ exports.get = function (req) {
 exports.logout = function (req) {
     authLib.logout();
 
-    var redirectUrl = generateRedirectUrl();
+    var redirectUrl = portalLib.idProviderUrl({
+        params: {
+            loggedOut: ""
+        }
+    });
+
     return {
         redirect: redirectUrl
     }
 };
 
-function generateRedirectUrl() {
-    var site = portalLib.getSite();
-    if (site) {
-        return portalLib.pageUrl({id: site._id});
-    }
-    return '/';
-}
-
-function generateLoginPage() {
+function generateLoginPage(loggedOut) {
     var userStoreKey = authLib.getUserStore().key;
     var idProviderConfig = authLib.getIdProviderConfig();
     var title = idProviderConfig.title || "User Login";
@@ -56,15 +53,20 @@ function generateLoginPage() {
     var loginStyleUrl = portalLib.assetUrl({path: "css/login.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
 
+    var redirectUrl = generateRedirectUrl();
+
     var loginServiceUrl = portalLib.serviceUrl({service: "login"});
     var loginConfigView = resolve('login-config.txt');
     var loginConfig = mustacheLib.render(loginConfigView, {
+        redirectUrl: redirectUrl,
         userStoreKey: userStoreKey,
         loginServiceUrl: loginServiceUrl
     });
 
     var backgroundStyleUrl = generateBackgroundStyleUrl(theme);
     var colorStyleUrl = generateColorStyleUrl(theme);
+
+    log.info("loggedOut" + loggedOut);
 
     var view = resolve("login.html");
     return mustacheLib.render(view, {
@@ -75,8 +77,18 @@ function generateLoginPage() {
         jQueryUrl: jQueryUrl,
         loginScriptUrl: loginScriptUrl,
         loginStyleUrl: loginStyleUrl,
-        userImgUrl: userImgUrl
+        userImgUrl: userImgUrl,
+        redirectUrl: redirectUrl,
+        loggedOut: loggedOut
     });
+}
+
+function generateRedirectUrl() {
+    var site = portalLib.getSite();
+    if (site) {
+        return portalLib.pageUrl({id: site._id});
+    }
+    return '/';
 }
 
 function generateLogoutPage(user) {
@@ -89,9 +101,16 @@ function generateLogoutPage(user) {
     var loginStyleUrl = portalLib.assetUrl({path: "css/login.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
 
+    var redirectUrl = portalLib.idProviderUrl({
+        params: {
+            loggedOut: ""
+        }
+    });
+
     var logoutServiceUrl = portalLib.serviceUrl({service: "logout"});
     var logoutConfigView = resolve('logout-config.txt');
     var logoutConfig = mustacheLib.render(logoutConfigView, {
+        redirectUrl: redirectUrl,
         logoutServiceUrl: logoutServiceUrl
     });
 

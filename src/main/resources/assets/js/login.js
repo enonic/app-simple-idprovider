@@ -1,8 +1,10 @@
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
-        location.reload();
+        location.href = CONFIG.redirectUrl;
     } else {
-        $("#errorMessage").removeClass("hidden");
+        $("#message").html("Login failed!");
+        $("#message").addClass("form-error-message");
+        $("#message").removeClass("form-success-message hidden");
         $("#inputPassword").focus();
     }
 }
@@ -30,6 +32,6 @@ $(".form-login").submit(function (event) {
 
 $("#inputUsername, #inputPassword").keyup(function (event) {
     if (event.which !== 13) {
-        $("#errorMessage").addClass("hidden");
+        $("#message").addClass("hidden");
     }
 });

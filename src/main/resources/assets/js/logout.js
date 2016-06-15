@@ -1,6 +1,6 @@
 function formSubmitted() {
     $.get(CONFIG.logoutServiceUrl, function () {
-        location.reload();
+        location.href = CONFIG.redirectUrl;
     });
 }
 
