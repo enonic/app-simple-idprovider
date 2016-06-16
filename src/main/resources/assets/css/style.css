@@ -28,7 +28,7 @@ body, input, button {
     line-height: 1.1;
 }
 
-.form-input, .form-button, .form-message {
+.form-input, .form-button, .form-error-message {
     font-size: 16px;
     border: none;
 }
@@ -41,10 +41,6 @@ body, input, button {
 
 .form-error-message {
     color: #d9534f;
-}
-
-.form-success-message {
-    color: #5cb85c;
 }
 
 .form-user-image, .form-login {
@@ -89,12 +85,12 @@ body, input, button {
     top: -48px;
 }
 
-.form-login-heading, .form-input, .form-message, .form-button {
+.form-login-heading, .form-input, .form-error-message, .form-button {
     text-align: center;
     width: 100%;
 }
 
-.form-input, .form-button, .form-message {
+.form-input, .form-button, .form-error-message {
     padding: 10px;
     margin-top: 10px;
     margin-bottom: 10px;

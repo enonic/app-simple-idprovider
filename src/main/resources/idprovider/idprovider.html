@@ -6,12 +6,12 @@
 
     <title>{{title}}</title>
 
-    <link href="{{loginStyleUrl}}" rel="stylesheet">
+    <link href="{{styleUrl}}" rel="stylesheet">
     <link href="{{backgroundStyleUrl}}" rel="stylesheet">
     <link href="{{colorStyleUrl}}" rel="stylesheet">
     <script src="{{jQueryUrl}}"></script>
 
-    {{{loginConfig}}}
+    {{{config}}}
 </head>
 
 <body>
@@ -21,14 +21,26 @@
     </div>
 
     <form class="form-login">
+        {{#logout}}
+        <h2 class="form-login-heading">{{userName}}</h2>
+        <button type="submit" class="form-button">LOGOUT</button>
+        {{/logout}}
+
+        {{#login}}
         <h2 class="form-login-heading">{{title}}</h2>
         <input type="text" id="inputUsername" class="form-input" placeholder="Username" required autofocus>
         <input type="password" id="inputPassword" class="form-input" placeholder="Password" required>
         <button type="submit" class="form-button">LOGIN</button>
-        <span id="message" class="form-message form-success-message {{^loggedOut}}hidden{{/loggedOut}}">Successfully logged out!</span>
+        <span id="errorMessage" class="form-error-message hidden">Login failed!</span>
+        {{/login}}
+
+        {{#loggedOut}}
+        <h2 class="form-login-heading">Successfully logged out!</h2>
+        <button type="submit" class="form-button">LOGIN</button>
+        {{/loggedOut}}
     </form>
 </div>
 
-<script src="{{loginScriptUrl}}"></script>
+<script src="{{scriptUrl}}"></script>
 </body>
 </html>

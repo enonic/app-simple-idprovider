@@ -2,9 +2,7 @@ function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
         location.href = CONFIG.redirectUrl;
     } else {
-        $("#message").html("Login failed!").
-            addClass("form-error-message").
-            removeClass("form-success-message hidden");
+        $("#errorMessage").removeClass("hidden");
         $("#inputPassword").focus();
     }
 }
