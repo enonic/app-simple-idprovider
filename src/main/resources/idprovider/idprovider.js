@@ -29,7 +29,8 @@ exports.get = function (req) {
 };
 
 exports.login = function (req) {
-    var body = generateLoginPage(req.params.redirect);
+    var redirectUrl = req.validTicket ? req.params.redirect : undefined;
+    var body = generateLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
         body: body
@@ -39,7 +40,7 @@ exports.login = function (req) {
 exports.logout = function (req) {
     authLib.logout();
 
-    if (req.params.redirect) {
+    if (req.validTicket && req.params.redirect) {
         return {
             redirect: req.params.redirect
         };
