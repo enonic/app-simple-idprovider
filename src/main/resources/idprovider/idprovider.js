@@ -1,6 +1,5 @@
-var mustacheLib = require('/lib/xp/mustache');
-var portalLib = require('/lib/xp/portal');
 var authLib = require('/lib/xp/auth');
+var portalLib = require('/lib/xp/portal');
 
 exports.handle401 = function (req) {
     var body = generateLoginPage();
@@ -12,15 +11,8 @@ exports.handle401 = function (req) {
     };
 };
 
-exports.get = function (req) {
-    var body;
-
-    var user = authLib.getUser();
-    if (user) {
-        body = generateLogoutPage(user);
-    } else {
-        body = generateLoginPage();
-    }
+exports.get = function () {
+    var body = generateLoginPage();
 
     return {
         contentType: 'text/html',
@@ -30,6 +22,7 @@ exports.get = function (req) {
 
 exports.login = function (req) {
     var body = generateLoginPage(req.params.redirect);
+
     return {
         contentType: 'text/html',
         body: body
@@ -38,72 +31,15 @@ exports.login = function (req) {
 
 exports.logout = function (req) {
     authLib.logout();
-
-    if (req.params.redirect) {
-        return {
-            redirect: req.params.redirect
-        };
-    }
-
-    var body = generateLoggedOutPage();
+    var redirectUrl = req.params.redirect || generateRedirectUrl();
     return {
-        contentType: 'text/html',
-        body: body
+        redirect: redirectUrl
     };
 };
 
-function generateLoginPage(redirectUrl) {
-    var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
-
-    var redirectUrl = redirectUrl || generateRedirectUrl();
-    var userStoreKey = authLib.getUserStore().key;
-    var loginServiceUrl = portalLib.serviceUrl({service: "login"});
-    var loginConfigView = resolve('login-config.txt');
-    var config = mustacheLib.render(loginConfigView, {
-        redirectUrl: redirectUrl,
-        userStoreKey: userStoreKey,
-        loginServiceUrl: loginServiceUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        login: true
-    });
-}
-
-function generateLogoutPage(user) {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.logoutUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        userName: user.displayName,
-        logout: true
-    });
-}
-
-function generateLoggedOutPage() {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.loginUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        loggedOut: true
-    });
-}
+exports.autoLogin = function (req) {
+    log.info('Auto login. Invoked only when user is not authenticated');
+};
 
 function generateRedirectUrl() {
     var site = portalLib.getSite();
@@ -113,42 +49,8 @@ function generateRedirectUrl() {
     return '/';
 }
 
-function generatePage(params) {
-    var idProviderConfig = authLib.getIdProviderConfig();
-    var title = idProviderConfig.title || "User Login";
-
-    var theme = idProviderConfig.theme || "light-blue";
-    var backgroundStyleUrl = generateBackgroundStyleUrl(theme);
-    var colorStyleUrl = generateColorStyleUrl(theme);
-
-    var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
-    var styleUrl = portalLib.assetUrl({path: "css/style.css"});
-    var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            loggedOut: ""
-        }
-    });
-
-    var view = resolve("idprovider.html");
-    params.title = title;
-    params.styleUrl = styleUrl;
-    params.backgroundStyleUrl = backgroundStyleUrl;
-    params.colorStyleUrl = colorStyleUrl;
-    params.jQueryUrl = jQueryUrl;
-    params.userImgUrl = userImgUrl;
-
-    return mustacheLib.render(view, params);
-}
-
-function generateBackgroundStyleUrl(theme) {
-    var stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
-}
-
-function generateColorStyleUrl(theme) {
-    var stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
-}
-
+function generateLoginPage(redirectUrl) {
+    var authConfig = authLib.getIdProviderConfig();
+    var title = authConfig.title || "User Login";
+    return '<html><head></head><body><h1>' + title + '</h1></body></html>';
+};
