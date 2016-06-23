@@ -19,7 +19,7 @@ exports.get = function (req) {
     if (user) {
         body = generateLogoutPage(user);
     } else {
-        body = generateLoginPage();
+        body = generateLoginPage(generateRedirectUrl());
     }
 
     return {
@@ -29,7 +29,7 @@ exports.get = function (req) {
 };
 
 exports.login = function (req) {
-    var redirectUrl = req.validTicket ? req.params.redirect : undefined;
+    var redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
     var body = generateLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
@@ -56,8 +56,7 @@ exports.logout = function (req) {
 function generateLoginPage(redirectUrl) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
 
-    var redirectUrl = redirectUrl || generateRedirectUrl();
-    var userStoreKey = authLib.getUserStore().key;
+    var userStoreKey = portalLib.getUserStoreKey();
     var loginServiceUrl = portalLib.serviceUrl({service: "login"});
     var loginConfigView = resolve('login-config.txt');
     var config = mustacheLib.render(loginConfigView, {
