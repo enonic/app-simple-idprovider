@@ -1,5 +1,5 @@
 <script>
     var CONFIG = {
-        redirectUrl: "{{redirectUrl}}"
+        redirectUrl: "{{{redirectUrl}}}"
     };
 </script>
