@@ -1,7 +1,6 @@
 # Simple ID Provider App for Enonic XP
 
 This app contains an ID Provider displaying a simple login page on 401 errors.
-The ID Provider uses basic access authentication to log the user.
 
 
 ## Releases and Compatibility
