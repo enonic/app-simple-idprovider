@@ -8,7 +8,7 @@ The ID Provider uses basic access authentication to log the user.
 
 | App version | Required XP version | Download |
 | ----------- | ------------------- | -------- |
-| 1.0.0-SNAPSHOT | 6.6.0 | Not available |
+| 1.0.0 | 6.6.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.0.0/simpleidprovider-1.0.0.jar) |
 
 
 ## Building and deploying
