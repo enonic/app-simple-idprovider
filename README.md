@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/enonic/app-simple-idprovider.svg?branch=master)](https://travis-ci.org/enonic/app-simple-idprovider)
 [![License](https://img.shields.io/github/license/enonic/app-simple-idprovider.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
-[![Coverage Status](https://coveralls.io/repos/github/enonic/app-simple-idprovider/badge.svg?branch=master)](https://coveralls.io/github/enonic/app-simple-idprovider?branch=master)
 
 This app contains an ID Provider displaying a simple login page on 401 errors.
 
