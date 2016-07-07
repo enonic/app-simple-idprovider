@@ -5,7 +5,7 @@ sudo: false
 jdk:
 - oraclejdk8
 
-script: ./gradlew build
+script: ./gradlew ci
 
 cache:
   directories:

@@ -9,11 +9,13 @@ buildscript {
 
     dependencies {
         classpath "com.enonic.xp:gradle-plugin:${xpVersion}"
+        classpath "org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3"
     }
 }
 
 apply plugin: 'maven'
 apply plugin: 'com.enonic.xp.app'
+apply plugin: 'com.github.kt3k.coveralls'
 
 app {
     name = project.appName
@@ -47,3 +49,8 @@ uploadArchives {
         }
     }
 }
+
+task ci {}
+
+ci.dependsOn += 'build'
+ci.dependsOn += 'coveralls'
