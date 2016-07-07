@@ -1,5 +1,7 @@
 # Simple ID Provider App for Enonic XP
 
+[![Build Status](https://travis-ci.org/enonic/app-simple-idprovider.svg?branch=master)](https://travis-ci.org/enonic/app-simple-idprovider)
+
 This app contains an ID Provider displaying a simple login page on 401 errors.
 
 
