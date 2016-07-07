@@ -1,5 +1,5 @@
 var idProviderConfigJson = {
-    title: "mytitle"
+    title: "User Login Test"
 };
 var userJson = null;
 
@@ -9,6 +9,9 @@ var mock = {
     },
     getIdProviderConfig: function () {
         return idProviderConfigJson;
+    },
+    logout: function () {
+        userJson = null;
     }
 };
 
