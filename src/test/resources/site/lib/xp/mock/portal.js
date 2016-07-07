@@ -37,6 +37,10 @@ var mock = {
         return createUrl('idprovider', params);
     },
 
+    logoutUrl: function (params) {
+        return createUrl('logout', params);
+    },
+
     processHtml: function (params) {
         return 'process-' + JSON.stringify(params);
     },
