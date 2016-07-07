@@ -15,11 +15,17 @@ exports.handle401 = function (req) {
 exports.get = function (req) {
     var body;
 
-    var user = authLib.getUser();
-    if (user) {
-        body = generateLogoutPage(user);
+    if (req.params.sentEmail) {
+        body = generateSentMailPage();
+    } else if (req.params.forgot) {
+        body = generateForgotPasswordPage();
     } else {
-        body = generateLoginPage(generateRedirectUrl());
+        var user = authLib.getUser();
+        if (user) {
+            body = generateLogoutPage(user);
+        } else {
+            body = generateLoginPage(generateRedirectUrl());
+        }
     }
 
     return {
@@ -58,6 +64,12 @@ function generateLoginPage(redirectUrl) {
 
     var userStoreKey = portalLib.getUserStoreKey();
     var loginServiceUrl = portalLib.serviceUrl({service: "login"});
+    var forgotPasswordUrl = portalLib.idProviderUrl({
+        params: {
+            forgot: true
+        }
+    });
+
     var loginConfigView = resolve('login-config.txt');
     var config = mustacheLib.render(loginConfigView, {
         redirectUrl: redirectUrl,
@@ -67,6 +79,7 @@ function generateLoginPage(redirectUrl) {
 
     return generatePage({
         scriptUrl: scriptUrl,
+        forgotPasswordUrl: forgotPasswordUrl,
         config: config,
         login: true
     });
@@ -104,6 +117,43 @@ function generateLoggedOutPage() {
         loggedOut: true
     });
 }
+
+function generateForgotPasswordPage() {
+    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
+
+    var redirectUrl = portalLib.idProviderUrl({
+        params: {
+            sentEmail: true
+        }
+    });
+    var logoutConfigView = resolve('redirect-config.txt');
+    var config = mustacheLib.render(logoutConfigView, {
+        redirectUrl: redirectUrl
+    });
+
+    return generatePage({
+        scriptUrl: scriptUrl,
+        config: config,
+        forgotPwd: true
+    });
+}
+
+function generateSentMailPage() {
+    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
+
+    var redirectUrl = portalLib.loginUrl();
+    var logoutConfigView = resolve('redirect-config.txt');
+    var config = mustacheLib.render(logoutConfigView, {
+        redirectUrl: redirectUrl
+    });
+
+    return generatePage({
+        scriptUrl: scriptUrl,
+        config: config,
+        sentMail: true
+    });
+}
+
 
 function generateRedirectUrl() {
     var site = portalLib.getSite();

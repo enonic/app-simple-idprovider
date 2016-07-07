@@ -12,7 +12,9 @@ exports.testHandle401 = function () {
 };
 
 exports.testGet = function () {
-    var result = idProvider.get({});
+    var result = idProvider.get({
+        params: {}
+    });
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assert.assertNotNull(result.body);
@@ -29,11 +31,23 @@ exports.testGet = function () {
         userStore: "enonic"
     });
 
-    var result = idProvider.get({});
+    var result = idProvider.get({
+        params: {}
+    });
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertLogoutPage(result.body);
-};
+
+    var result = idProvider.get({
+        params: {
+            forgot: "true"
+        }
+    });
+    assert.assertEquals('text/html', result.contentType);
+    assert.assertTrue(!result.status || 200 == result.status);
+    assertForgotPwdPage(result.body);
+}
+;
 
 exports.testLogin = function () {
     var result = idProvider.login({});
@@ -65,4 +79,8 @@ function assertLoggedOutPage(body) {
     assert.assertTrue(body.indexOf("Successfully logged out!") != -1);
     assert.assertTrue(body.indexOf("LOGIN") != -1);
     assert.assertTrue(body.indexOf("LOGOUT") == -1);
+}
+
+function assertForgotPwdPage(body) {
+    assert.assertTrue(body.indexOf("Password reset") != -1);
 }
