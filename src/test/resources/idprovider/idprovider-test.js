@@ -11,7 +11,6 @@ exports.testHandle401 = function () {
     assertLoginPage(result.body);
 };
 
-
 exports.testGet = function () {
     var result = idProvider.get({});
     assert.assertEquals('text/html', result.contentType);
