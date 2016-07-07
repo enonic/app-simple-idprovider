@@ -15,6 +15,7 @@ buildscript {
 
 apply plugin: 'maven'
 apply plugin: 'com.enonic.xp.app'
+apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 
 app {
@@ -49,6 +50,15 @@ uploadArchives {
         }
     }
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 task ci {}
 
