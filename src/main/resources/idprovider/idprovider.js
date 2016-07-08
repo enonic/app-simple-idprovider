@@ -4,6 +4,8 @@ var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
 
+var tokenPerUser = {};
+
 exports.handle401 = function (req) {
     var body = generateLoginPage();
 
@@ -38,6 +40,11 @@ exports.post = function (req) {
     if (user) {
         var token = tokenLib.generateToken();
         log.info("Token generated:" + token);
+
+        tokenPerUser[user.key] = {
+            token: token,
+            timestamp: Date.now()
+        };
 
         //TODO Configure mail
         //mailLib.send({
