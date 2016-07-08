@@ -1,6 +1,8 @@
+var authLib = require('/lib/xp/auth');
+var contextLib = require('/lib/xp/context');
 var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
-var authLib = require('/lib/xp/auth');
+var tokenLib = require('/lib/token');
 
 exports.handle401 = function (req) {
     var body = generateLoginPage();
@@ -9,6 +11,49 @@ exports.handle401 = function (req) {
         status: 401,
         contentType: 'text/html',
         body: body
+    };
+};
+
+exports.post = function (req) {
+    var body = JSON.parse(req.body);
+
+    var user = contextLib.run({
+        user: {
+            login: 'su',   //TODO Remove.
+            userStore: 'system'
+        }
+    }, function () {
+        return authLib.findPrincipals({
+            type: 'user',
+            userStore: portalLib.getUserStoreKey(),
+            start: 0,
+            count: 1,
+            name: body.user
+        }).hits[0];
+    });
+
+    log.info("user: " + JSON.stringify(user, null, 2));
+    log.info("portalLib.getUserStoreKey(): " + JSON.stringify(portalLib.getUserStoreKey(), null, 2));
+    log.info("body.user: " + JSON.stringify(body.user, null, 2));
+    if (user) {
+        var token = tokenLib.generateToken();
+        log.info("Token generated:" + token);
+
+        //TODO Configure mail
+        //mailLib.send({
+        //    from: 'noreply@enonic.com',
+        //    to: user.email,
+        //    subject: 'HTML email test',
+        //    body: '<h1>HTML Email!</h1><p>Test token.</p>',
+        //    contentType: 'text/html; charset="UTF-8"'
+        //});
+
+
+    }
+
+    return {
+        body: {},
+        contentType: 'application/json'
     };
 };
 
@@ -119,16 +164,19 @@ function generateLoggedOutPage() {
 }
 
 function generateForgotPasswordPage() {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
+    var scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
 
     var redirectUrl = portalLib.idProviderUrl({
         params: {
             sentEmail: true
         }
     });
-    var logoutConfigView = resolve('redirect-config.txt');
+    var sendTokenUrl = portalLib.idProviderUrl();
+
+    var logoutConfigView = resolve('forgot-pwd-config.txt');
     var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl
+        redirectUrl: redirectUrl,
+        sendTokenUrl: sendTokenUrl
     });
 
     return generatePage({
