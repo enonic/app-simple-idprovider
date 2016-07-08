@@ -4,7 +4,8 @@ var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
 
-var tokenPerUser = {};
+var tokenByUser = {};
+var infoByToken = {};
 
 exports.handle401 = function (req) {
     var body = generateLoginPage();
@@ -37,12 +38,18 @@ exports.post = function (req) {
     log.info("user: " + JSON.stringify(user, null, 2));
     log.info("portalLib.getUserStoreKey(): " + JSON.stringify(portalLib.getUserStoreKey(), null, 2));
     log.info("body.user: " + JSON.stringify(body.user, null, 2));
-    if (user) {
+    if (user && user.email) {
+
+        var existingToken = tokenByUser[user.email];
+        if (existingToken) {
+            delete infoByToken[existingToken];
+        }
+
         var token = tokenLib.generateToken();
         log.info("Token generated:" + token);
-
-        tokenPerUser[user.key] = {
-            token: token,
+        tokenByUser[user.email] = token;
+        infoByToken[token] = {
+            email: user.email,
             timestamp: Date.now()
         };
 
@@ -54,8 +61,6 @@ exports.post = function (req) {
         //    body: '<h1>HTML Email!</h1><p>Test token.</p>',
         //    contentType: 'text/html; charset="UTF-8"'
         //});
-
-
     }
 
     return {
