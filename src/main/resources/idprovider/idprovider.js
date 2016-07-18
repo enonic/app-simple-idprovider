@@ -32,7 +32,7 @@ exports.post = function (req) {
             userStore: portalLib.getUserStoreKey(),
             start: 0,
             count: 1,
-            name: body.user
+            email: body.user
         }).hits[0];
     });
 
@@ -41,6 +41,7 @@ exports.post = function (req) {
     log.info("body.user: " + JSON.stringify(body.user, null, 2));
     if (user && user.email) {
 
+        log.info("user found: " + JSON.stringify(user, null, 2));
         var existingToken = tokenByUser[user.email];
         if (existingToken) {
             delete infoByToken[existingToken];
