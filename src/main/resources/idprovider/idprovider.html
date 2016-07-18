@@ -50,6 +50,11 @@
         <h2 class="form-login-heading">An email has been sent</h2>
         <button type="submit" class="form-button">LOGIN</button>
         {{/sentMail}}
+
+        {{#expiredToken}}
+        <h2 class="form-login-heading">This link has expired!</h2>
+        <button type="submit" class="form-button">RETRY</button>
+        {{/expiredToken}}
     </form>
 </div>
 

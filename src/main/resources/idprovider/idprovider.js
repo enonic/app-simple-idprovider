@@ -32,38 +32,32 @@ exports.post = function (req) {
             userStore: portalLib.getUserStoreKey(),
             start: 0,
             count: 1,
-            email: body.user
+            name: body.user
         }).hits[0];
     });
 
-    log.info("user: " + JSON.stringify(user, null, 2));
-    log.info("portalLib.getUserStoreKey(): " + JSON.stringify(portalLib.getUserStoreKey(), null, 2));
-    log.info("body.user: " + JSON.stringify(body.user, null, 2));
-    if (user && user.email) {
 
-        log.info("user found: " + JSON.stringify(user, null, 2));
+    if (user && user.email) {
         var existingToken = tokenByUser[user.email];
         if (existingToken) {
             delete infoByToken[existingToken];
         }
 
         var token = tokenLib.generateToken();
-        log.info("Token generated:" + token);
         tokenByUser[user.email] = token;
         infoByToken[token] = {
             email: user.email,
             timestamp: Date.now()
         };
 
-        log.info("Req: " + JSON.stringify(req, null, 2));
-
-
-        var passwordResetUrl = portalLib.idProviderUrl({params: {token: token}, type: 'absolute'});
+        var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
         mailLib.send({
             from: 'noreply@gmail.com',
             to: 'test-smtp@googlegroups.com',
             subject: 'HTML email test',
-            body: 'Test2',
+            body: '<p>Somebody asked to reset your password on ' + req.host + '. If it was not you, you can safely ignore this email.</p>' +
+                  '<p>To reset your password, click on the following link:</p>' +
+                  '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>',
             contentType: 'text/html; charset="UTF-8"'
         });
     }
@@ -77,7 +71,17 @@ exports.post = function (req) {
 exports.get = function (req) {
     var body;
 
-    if (req.params.sentEmail) {
+    if (req.params.reset) {
+        var token = req.params.reset;
+
+        var userInfo = infoByToken[token];
+        if (!userInfo || (userInfo.timestamp - Date.now()) > 86400000) {
+            body = generateExpiredTokenPage();
+        } else {
+            body = generateExpiredTokenPage();
+        }
+
+    } else if (req.params.sentEmail) {
         body = generateSentMailPage();
     } else if (req.params.forgot) {
         body = generateForgotPasswordPage();
@@ -207,8 +211,8 @@ function generateSentMailPage() {
     var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
 
     var redirectUrl = portalLib.loginUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
+    var redirectConfigView = resolve('redirect-config.txt');
+    var config = mustacheLib.render(redirectConfigView, {
         redirectUrl: redirectUrl
     });
 
@@ -219,6 +223,25 @@ function generateSentMailPage() {
     });
 }
 
+function generateExpiredTokenPage() {
+    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
+
+    var redirectUrl = portalLib.idProviderUrl({
+        params: {
+            forgot: true
+        }
+    });
+    var redirectConfigView = resolve('redirect-config.txt');
+    var config = mustacheLib.render(redirectConfigView, {
+        redirectUrl: redirectUrl
+    });
+
+    return generatePage({
+        scriptUrl: scriptUrl,
+        config: config,
+        expiredToken: true
+    });
+}
 
 function generateRedirectUrl() {
     var site = portalLib.getSite();
