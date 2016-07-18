@@ -42,7 +42,8 @@
 
         {{#forgotPwd}}
         <h2 class="form-login-heading">Password reset</h2>
-        <input type="text" id="inputUsername" class="form-input" placeholder="Username" required autofocus>
+        <input type="text" id="inputUsername" class="form-input" placeholder="Email address"
+               pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" required autofocus>
         <button type="submit" class="form-button">RESET</button>
         {{/forgotPwd}}
 

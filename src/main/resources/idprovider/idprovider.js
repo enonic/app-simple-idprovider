@@ -1,5 +1,6 @@
 var authLib = require('/lib/xp/auth');
 var contextLib = require('/lib/xp/context');
+var mailLib = require('/lib/xp/mail');
 var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
@@ -53,14 +54,17 @@ exports.post = function (req) {
             timestamp: Date.now()
         };
 
-        //TODO Configure mail
-        //mailLib.send({
-        //    from: 'noreply@enonic.com',
-        //    to: user.email,
-        //    subject: 'HTML email test',
-        //    body: '<h1>HTML Email!</h1><p>Test token.</p>',
-        //    contentType: 'text/html; charset="UTF-8"'
-        //});
+        log.info("Req: " + JSON.stringify(req, null, 2));
+
+
+        var passwordResetUrl = portalLib.idProviderUrl({params: {token: token}, type: 'absolute'});
+        mailLib.send({
+            from: 'noreply@gmail.com',
+            to: 'test-smtp@googlegroups.com',
+            subject: 'HTML email test',
+            body: 'Test2',
+            contentType: 'text/html; charset="UTF-8"'
+        });
     }
 
     return {
