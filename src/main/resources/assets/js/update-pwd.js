@@ -1,4 +1,5 @@
-function handleAuthenticateResponse(loginResult) {
+function handleAuthenticateResponse() {
+    console.log("handleAuthenticateResponse");
     location.href = CONFIG.idProviderUrl;
 }
 
@@ -7,6 +8,7 @@ function formSubmitted() {
         password: $("#inputPassword").val(),
         token: CONFIG.token
     };
+    console.log(data);
     $.ajax({
         url: CONFIG.idProviderUrl,
         type: 'post',
