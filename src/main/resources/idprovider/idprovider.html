@@ -51,6 +51,12 @@
         <button type="submit" class="form-button">LOGIN</button>
         {{/sentMail}}
 
+        {{#updatePwd}}
+        <h2 class="form-login-heading">Please choose a new password</h2>
+        <input type="password" id="inputPassword" class="form-input" placeholder="Password" required>
+        <button type="submit" class="form-button">UPDATE</button>
+        {{/updatePwd}}
+
         {{#expiredToken}}
         <h2 class="form-login-heading">This link has expired!</h2>
         <button type="submit" class="form-button">RETRY</button>

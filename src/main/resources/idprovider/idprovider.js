@@ -75,12 +75,13 @@ exports.get = function (req) {
         var token = req.params.reset;
 
         var userInfo = infoByToken[token];
+        log.info("userInfo: " + JSON.stringify(userInfo, null, 2));
+        log.info("Date.now(): " + Date.now());
         if (!userInfo || (userInfo.timestamp - Date.now()) > 86400000) {
             body = generateExpiredTokenPage();
         } else {
-            body = generateExpiredTokenPage();
+            body = generateUpdatePasswordPage(token);
         }
-
     } else if (req.params.sentEmail) {
         body = generateSentMailPage();
     } else if (req.params.forgot) {
@@ -240,6 +241,24 @@ function generateExpiredTokenPage() {
         scriptUrl: scriptUrl,
         config: config,
         expiredToken: true
+    });
+}
+
+function generateUpdatePasswordPage(token) {
+    var scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
+
+    var idProviderUrl = portalLib.idProviderUrl();
+
+    var configView = resolve('update-pwd-config.txt');
+    var config = mustacheLib.render(configView, {
+        idProviderUrl: idProviderUrl,
+        token: token
+    });
+
+    return generatePage({
+        scriptUrl: scriptUrl,
+        config: config,
+        updatePwd: true
     });
 }
 
