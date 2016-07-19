@@ -21,49 +21,14 @@ exports.handle401 = function (req) {
 exports.post = function (req) {
     var body = JSON.parse(req.body);
 
-    var user = contextLib.run({
-        user: {
-            login: 'su',   //TODO Remove.
-            userStore: 'system'
-        }
-    }, function () {
-        return authLib.findPrincipals({
-            type: 'user',
-            userStore: portalLib.getUserStoreKey(),
-            start: 0,
-            count: 1,
-            name: body.user
-        }).hits[0];
-    });
-
-
-    if (user && user.email) {
-        var existingToken = tokenByUser[user.email];
-        if (existingToken) {
-            delete infoByToken[existingToken];
-        }
-
-        var token = tokenLib.generateToken();
-        tokenByUser[user.email] = token;
-        infoByToken[token] = {
-            email: user.email,
-            timestamp: Date.now()
-        };
-
-        var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
-        mailLib.send({
-            from: 'noreply@gmail.com',
-            to: 'test-smtp@googlegroups.com',
-            subject: 'HTML email test',
-            body: '<p>Somebody asked to reset your password on ' + req.host + '. If it was not you, you can safely ignore this email.</p>' +
-                  '<p>To reset your password, click on the following link:</p>' +
-                  '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>',
-            contentType: 'text/html; charset="UTF-8"'
-        });
+    if (body.user) {
+        return handleForgotPwd(req, body.user);
+    } else if (body.token && body.password) {
+        return handleUpdatePwd(body.token, body.password);
     }
 
     return {
-        body: {},
+        status: 400,
         contentType: 'application/json'
     };
 };
@@ -73,14 +38,10 @@ exports.get = function (req) {
 
     if (req.params.reset) {
         var token = req.params.reset;
-
-        var userInfo = infoByToken[token];
-        log.info("userInfo: " + JSON.stringify(userInfo, null, 2));
-        log.info("Date.now(): " + Date.now());
-        if (!userInfo || (userInfo.timestamp - Date.now()) > 86400000) {
-            body = generateExpiredTokenPage();
-        } else {
+        if (isTokenValid(token)) {
             body = generateUpdatePasswordPage(token);
+        } else {
+            body = generateExpiredTokenPage();
         }
     } else if (req.params.sentEmail) {
         body = generateSentMailPage();
@@ -125,6 +86,93 @@ exports.logout = function (req) {
         body: body
     };
 };
+
+function isTokenValid(token) {
+    var userInfo = infoByToken[token];
+    return userInfo && (userInfo.timestamp - Date.now()) < 86400000
+
+}
+
+function handleForgotPwd(req, userName) {
+    var user = runAdAdmin(function () {
+        return authLib.findPrincipals({
+            type: 'user',
+            userStore: portalLib.getUserStoreKey(),
+            start: 0,
+            count: 1,
+            name: userName
+        }).hits[0];
+    });
+
+
+    if (user && user.email) {
+        var existingToken = tokenByUser[user.email];
+        if (existingToken) {
+            delete infoByToken[existingToken];
+        }
+
+        var token = tokenLib.generateToken();
+        tokenByUser[user.email] = token;
+        infoByToken[token] = {
+            key: user.key,
+            email: user.email,
+            timestamp: Date.now()
+        };
+
+        var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
+        mailLib.send({
+            from: 'noreply@gmail.com',
+            to: 'test-smtp@googlegroups.com',
+            subject: 'HTML email test',
+            body: '<p>Somebody asked to reset your password on ' + req.host + '. If it was not you, you can safely ignore this email.</p>' +
+                  '<p>To reset your password, click on the following link:</p>' +
+                  '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>',
+            contentType: 'text/html; charset="UTF-8"'
+        });
+    }
+
+    return {
+        body: {},
+        contentType: 'application/json'
+    };
+}
+
+function runAdAdmin(callback) {
+    return contextLib.run({
+        user: {
+            login: 'su',   //TODO Change.
+            userStore: 'system'
+        }
+    }, callback);
+}
+
+function handleUpdatePwd(token, password) {
+    if (isTokenValid(token)) {
+        var userInfo = infoByToken[token];
+        runAdAdmin(function () {
+            authLib.changePassword({
+                userKey: userInfo.key,
+                password: password
+            });
+
+            authLib.login({
+                user: userInfo.email,
+                password: password,
+                userStore: portalLib.getUserStoreKey()
+            });
+        });
+
+        return {
+            body: {updated: true},
+            contentType: 'application/json'
+        };
+    }
+
+    return {
+        body: {updated: false},
+        contentType: 'application/json'
+    };
+}
 
 function generateLoginPage(redirectUrl) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
