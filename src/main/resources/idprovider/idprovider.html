@@ -28,10 +28,10 @@
 
         {{#login}}
         <h2 class="form-login-heading">{{title}}</h2>
-        <input type="text" id="inputUsername" class="form-input" placeholder="Username" required autofocus>
+        <input type="text" id="inputUsername" class="form-input" placeholder="Username or email" required autofocus>
         <input type="password" id="inputPassword" class="form-input" placeholder="Password" required>
         <button type="submit" class="form-button">LOGIN</button>
-        <a class="form-forgot-pwd-link" href="{{forgotPasswordUrl}}">Forgot password?</a>
+        <a class="form-forgot-pwd-link" href="{{forgotPasswordUrl}}">Forgot your password?</a>
         <span id="errorMessage" class="form-error-message hidden">Login failed!</span>
         {{/login}}
 
@@ -41,24 +41,33 @@
         {{/loggedOut}}
 
         {{#forgotPwd}}
-        <h2 class="form-login-heading">Password reset</h2>
-        <input type="text" id="inputUsername" class="form-input" placeholder="Username" required autofocus>
-        <button type="submit" class="form-button">RESET</button>
+        <h2 class="form-login-heading">Forgot your password?</h2>
+
+        <p class="form-login-text">
+            Enter the email address you use to sign in.<br/>
+            We will send you a link to reset your password.
+        </p>
+        <input type="email" id="inputEmail" class="form-input" placeholder="Email" required autofocus>
+        <button type="submit" class="form-button">SEND LINK</button>
         {{/forgotPwd}}
 
         {{#sentMail}}
-        <h2 class="form-login-heading">An email has been sent</h2>
+        <h2 class="form-login-heading">Email sent</h2>
+
+        <p class="form-login-text">A password reset email has been sent to the specified address.</p>
         <button type="submit" class="form-button">LOGIN</button>
         {{/sentMail}}
 
         {{#updatePwd}}
-        <h2 class="form-login-heading">Please choose a new password</h2>
+        <h2 class="form-login-heading">Reset your password</h2>
         <input type="password" id="inputPassword" class="form-input" placeholder="Password" required>
         <button type="submit" class="form-button">UPDATE</button>
         {{/updatePwd}}
 
         {{#expiredToken}}
-        <h2 class="form-login-heading">This link has expired!</h2>
+        <h2 class="form-login-heading">Expired link</h2>
+
+        <p class="form-login-text">Sorry, but this link has expired. You can request another one below.</p>
         <button type="submit" class="form-button">RETRY</button>
         {{/expiredToken}}
     </form>

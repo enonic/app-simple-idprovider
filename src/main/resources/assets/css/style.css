@@ -76,13 +76,17 @@ body, input, button {
 }
 
 .form-login {
-    width: 230px;
+    min-width: 230px;
     padding: 48px 40px 10px 40px;
     display: flex;
     flex-direction: column;
     align-items: center;
     position: relative;
     top: -48px;
+}
+
+.form-login-text {
+    width: 350px;
 }
 
 .form-login-heading, .form-input, .form-error-message, .form-button {

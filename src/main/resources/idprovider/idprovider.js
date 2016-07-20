@@ -21,8 +21,8 @@ exports.handle401 = function (req) {
 exports.post = function (req) {
     var body = JSON.parse(req.body);
 
-    if (body.user) {
-        return handleForgotPwd(req, body.user);
+    if (body.email) {
+        return handleForgotPassword(req, body.email);
     } else if (body.token && body.password) {
         return handleUpdatePwd(body.token, body.password);
     }
@@ -93,24 +93,18 @@ function isTokenValid(token) {
 
 }
 
-function handleForgotPwd(req, userName) {
-    var user = runAdAdmin(function () {
-        return authLib.findPrincipals({
-            type: 'user',
-            userStore: portalLib.getUserStoreKey(),
-            start: 0,
-            count: 1,
-            name: userName
-        }).hits[0];
-    });
-
+function handleForgotPassword(req, email) {
+    var user = findUserByEmail(email);
 
     if (user && user.email) {
+
+        //Deletes existing token
         var existingToken = tokenByUser[user.email];
         if (existingToken) {
             delete infoByToken[existingToken];
         }
 
+        //Generates new token
         var token = tokenLib.generateToken();
         tokenByUser[user.email] = token;
         infoByToken[token] = {
@@ -119,12 +113,14 @@ function handleForgotPwd(req, userName) {
             timestamp: Date.now()
         };
 
+        //Sends the reset mail
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
         mailLib.send({
             from: 'noreply@gmail.com',
             to: 'test-smtp@googlegroups.com',
             subject: 'HTML email test',
-            body: '<p>Somebody asked to reset your password on ' + req.host + '. If it was not you, you can safely ignore this email.</p>' +
+            body: '<p>Somebody asked to reset your password on ' + req.host + '.<br/>' +
+                  'If it was not you, you can safely ignore this email.</p>' +
                   '<p>To reset your password, click on the following link:</p>' +
                   '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>',
             contentType: 'text/html; charset="UTF-8"'
@@ -135,6 +131,25 @@ function handleForgotPwd(req, userName) {
         body: {},
         contentType: 'application/json'
     };
+}
+
+
+function findUserByEmail(email) {
+    return runAdAdmin(function () {
+        var users = authLib.findPrincipals({
+            type: 'user',
+            userStore: portalLib.getUserStoreKey(),
+            start: 0,
+            count: 1
+        }).hits;
+
+        return users.filter(function (user) {
+            if (user.email == email) {
+                log.info("match");
+                return user;
+            }
+        })[0];
+    });
 }
 
 function runAdAdmin(callback) {
