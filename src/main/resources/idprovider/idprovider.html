@@ -54,7 +54,9 @@
         {{#sentMail}}
         <h2 class="form-login-heading">Email sent</h2>
 
-        <p class="form-login-text">A password reset email has been sent to the specified address.</p>
+        <p class="form-login-text">
+            A password reset email has been sent to the specified address.
+        </p>
         <button type="submit" class="form-button">LOGIN</button>
         {{/sentMail}}
 
@@ -67,7 +69,10 @@
         {{#expiredToken}}
         <h2 class="form-login-heading">Expired link</h2>
 
-        <p class="form-login-text">Sorry, but this link has expired. You can request another one below.</p>
+        <p class="form-login-text">
+            Sorry, but this link has expired.<br/>
+            You can request another one below.
+        </p>
         <button type="submit" class="form-button">RETRY</button>
         {{/expiredToken}}
     </form>

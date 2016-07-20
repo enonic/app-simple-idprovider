@@ -96,8 +96,9 @@ function isTokenValid(token) {
 function handleForgotPassword(req, email) {
     var user = findUserByEmail(email);
 
+    var toEmailAddress;
+    var body;
     if (user && user.email) {
-
         //Deletes existing token
         var existingToken = tokenByUser[user.email];
         if (existingToken) {
@@ -115,17 +116,24 @@ function handleForgotPassword(req, email) {
 
         //Sends the reset mail
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
-        mailLib.send({
-            from: 'noreply@gmail.com',
-            to: 'test-smtp@googlegroups.com',
-            subject: 'HTML email test',
-            body: '<p>Somebody asked to reset your password on ' + req.host + '.<br/>' +
-                  'If it was not you, you can safely ignore this email.</p>' +
-                  '<p>To reset your password, click on the following link:</p>' +
-                  '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>',
-            contentType: 'text/html; charset="UTF-8"'
-        });
+        body = '<p>Somebody asked to reset your password on ' + req.host + '.<br/>' +
+               'If it was not you, you can safely ignore this email.</p>' +
+               '<p>To reset your password, click on the following link:</p>' +
+               '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>';
+    } else {
+        body = '<p>Somebody asked to reset your password on ' + req.host + '.<br/>' +
+               'If it was not you, you can safely ignore this email.</p>' +
+               '<p>There is no user linked to this email address.<br/>' +
+               'You might have signed up with a different address</p>';
     }
+
+    mailLib.send({
+        from: 'noreply@gmail.com',
+        to: email,
+        subject: 'HTML email test',
+        body: body,
+        contentType: 'text/html; charset="UTF-8"'
+    });
 
     return {
         body: {},

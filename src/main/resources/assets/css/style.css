@@ -85,10 +85,6 @@ body, input, button {
     top: -48px;
 }
 
-.form-login-text {
-    width: 350px;
-}
-
 .form-login-heading, .form-input, .form-error-message, .form-button {
     text-align: center;
     width: 100%;
