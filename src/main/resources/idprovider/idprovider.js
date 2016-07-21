@@ -118,14 +118,16 @@ function handleForgotPassword(req, email) {
 
         //Prepares the reset email
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
-        body = '<p>Somebody asked to reset your password on <a href="' + req.host + '">' + req.host + '</a>.<br/>' +
+        body = '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
+               '</a>.<br/>' +
                'If it was not you, you can safely ignore this email.</p>' +
                '<p>To reset your password, click on the following link:</p>' +
                '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>';
     } else {
 
         //Else, prepares a warning email
-        body = '<p>Somebody asked to reset your password on <a href="' + req.host + '">' + req.host + '</a>.<br/>' +
+        body = '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
+               '</a>.<br/>' +
                'If it was not you, you can safely ignore this email.</p>' +
                '<p>There is no user linked to this email address.<br/>' +
                'You might have signed up with a different address</p>';
@@ -158,7 +160,8 @@ function handleUpdatePwd(req, token, password) {
         });
 
         sendMail(req, userInfo.email, 'Password updated',
-            '<p>You have successfully changed your password on <a href="' + req.host + '">' + req.host + '</a>.</p>');
+            '<p>You have successfully changed your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' +
+            req.host + '</a>.</p>');
 
         return {
             body: {updated: true},
