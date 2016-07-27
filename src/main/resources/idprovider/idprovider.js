@@ -5,9 +5,6 @@ var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
 var renderLib = require('/lib/render/render');
 
-var tokenByUser = {};
-var infoByToken = {};
-
 exports.handle401 = function (req) {
     var body = renderLib.generateLoginPage();
 
@@ -87,12 +84,6 @@ exports.post = function (req) {
     };
 };
 
-function isTokenValid(token) {
-    var userInfo = infoByToken[token];
-    return userInfo && (userInfo.timestamp - Date.now()) < 86400000
-}
-
-
 function generateRedirectUrl() {
     var site = portalLib.getSite();
     if (site) {
@@ -110,20 +101,8 @@ function handleForgotPassword(req, email) {
     //If a user has the email provider
     if (user && user.email) {
 
-        //Deletes existing token
-        var existingToken = tokenByUser[user.email];
-        if (existingToken) {
-            delete infoByToken[existingToken];
-        }
-
-        //Generates new token
+        //Generates a token
         var token = tokenLib.generateToken();
-        tokenByUser[user.email] = token;
-        infoByToken[token] = {
-            key: user.key,
-            email: user.email,
-            timestamp: Date.now()
-        };
 
         //Prepares the reset email
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
@@ -153,8 +132,8 @@ function handleForgotPassword(req, email) {
 }
 
 function handleUpdatePwd(req, token, password) {
-    if (isTokenValid(token)) {
-        var userInfo = infoByToken[token];
+    if (tokenLib.isTokenValid(token)) {
+        var userInfo = tokenLib.getUserInfo(token);
         runAdAdmin(function () {
             authLib.changePassword({
                 userKey: userInfo.key,
