@@ -1,15 +1,12 @@
 var authLib = require('/lib/xp/auth');
 var contextLib = require('/lib/xp/context');
 var mailLib = require('/lib/xp/mail');
-var mustacheLib = require('/lib/xp/mustache');
 var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
-
-var tokenByUser = {};
-var infoByToken = {};
+var renderLib = require('/lib/render/render');
 
 exports.handle401 = function (req) {
-    var body = generateLoginPage();
+    var body = renderLib.generateLoginPage();
 
     return {
         status: 401,
@@ -20,7 +17,7 @@ exports.handle401 = function (req) {
 
 exports.login = function (req) {
     var redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
-    var body = generateLoginPage(redirectUrl);
+    var body = renderLib.generateLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
         body: body
@@ -36,7 +33,7 @@ exports.logout = function (req) {
         };
     }
 
-    var body = generateLoggedOutPage();
+    var body = renderLib.generateLoggedOutPage();
     return {
         contentType: 'text/html',
         body: body
@@ -48,21 +45,21 @@ exports.get = function (req) {
 
     if (req.params.reset) {
         var token = req.params.reset;
-        if (isTokenValid(token)) {
-            body = generateUpdatePasswordPage(token);
+        if (tokenLib.isTokenValid(token)) {
+            body = renderLib.generateUpdatePasswordPage(token);
         } else {
-            body = generateExpiredTokenPage();
+            body = renderLib.generateExpiredTokenPage();
         }
     } else if (req.params.sentEmail) {
-        body = generateSentMailPage();
+        body = renderLib.generateSentMailPage();
     } else if (req.params.forgot) {
-        body = generateForgotPasswordPage();
+        body = renderLib.generateForgotPasswordPage();
     } else {
         var user = authLib.getUser();
         if (user) {
-            body = generateLogoutPage(user);
+            body = renderLib.generateLogoutPage(user);
         } else {
-            body = generateLoginPage(generateRedirectUrl());
+            body = renderLib.generateLoginPage(generateRedirectUrl());
         }
     }
 
@@ -87,54 +84,45 @@ exports.post = function (req) {
     };
 };
 
-function isTokenValid(token) {
-    var userInfo = infoByToken[token];
-    return userInfo && (userInfo.timestamp - Date.now()) < 86400000
+function generateRedirectUrl() {
+    var site = portalLib.getSite();
+    if (site) {
+        return portalLib.pageUrl({id: site._id});
+    }
+    return '/';
 }
 
 function handleForgotPassword(req, email) {
     var user = findUserByEmail(email);
-
-    var toEmailAddress;
-    var body;
+    var mailBody;
 
     //If a user has the email provider
     if (user && user.email) {
 
-        //Deletes existing token
-        var existingToken = tokenByUser[user.email];
-        if (existingToken) {
-            delete infoByToken[existingToken];
-        }
-
-        //Generates new token
-        var token = tokenLib.generateToken();
-        tokenByUser[user.email] = token;
-        infoByToken[token] = {
-            key: user.key,
-            email: user.email,
-            timestamp: Date.now()
-        };
+        //Generates a token
+        var token = tokenLib.generateToken(user);
 
         //Prepares the reset email
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
-        body = '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
-               '</a>.<br/>' +
-               'If it was not you, you can safely ignore this email.</p>' +
-               '<p>To reset your password, click on the following link:</p>' +
-               '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>';
+        mailBody =
+            '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
+            '</a>.<br/>' +
+            'If it was not you, you can safely ignore this email.</p>' +
+            '<p>To reset your password, click on the following link:</p>' +
+            '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>';
     } else {
 
         //Else, prepares a warning email
-        body = '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
-               '</a>.<br/>' +
-               'If it was not you, you can safely ignore this email.</p>' +
-               '<p>There is no user linked to this email address.<br/>' +
-               'You might have signed up with a different address</p>';
+        mailBody =
+            '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
+            '</a>.<br/>' +
+            'If it was not you, you can safely ignore this email.</p>' +
+            '<p>There is no user linked to this email address.<br/>' +
+            'You might have signed up with a different address</p>';
     }
 
     //Sends email
-    sendMail(req, email, 'Password reset', body);
+    sendMail(req, email, 'Password reset', mailBody);
 
 
     return {
@@ -144,8 +132,8 @@ function handleForgotPassword(req, email) {
 }
 
 function handleUpdatePwd(req, token, password) {
-    if (isTokenValid(token)) {
-        var userInfo = infoByToken[token];
+    if (tokenLib.isTokenValid(token)) {
+        var userInfo = tokenLib.getUserInfo(token);
         runAdAdmin(function () {
             authLib.changePassword({
                 userKey: userInfo.key,
@@ -211,188 +199,5 @@ function runAdAdmin(callback) {
             userStore: 'system'
         }
     }, callback);
-}
-
-function generateLoginPage(redirectUrl) {
-    var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
-
-    var userStoreKey = portalLib.getUserStoreKey();
-    var loginServiceUrl = portalLib.serviceUrl({service: "login"});
-    var forgotPasswordUrl = portalLib.idProviderUrl({
-        params: {
-            forgot: true
-        }
-    });
-
-    var loginConfigView = resolve('login-config.txt');
-    var config = mustacheLib.render(loginConfigView, {
-        redirectUrl: redirectUrl,
-        userStoreKey: userStoreKey,
-        loginServiceUrl: loginServiceUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        forgotPasswordUrl: forgotPasswordUrl,
-        config: config,
-        login: true
-    });
-}
-
-function generateLogoutPage(user) {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.logoutUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        userName: user.displayName,
-        logout: true
-    });
-}
-
-function generateLoggedOutPage() {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.loginUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        loggedOut: true
-    });
-}
-
-function generateForgotPasswordPage() {
-    var scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
-
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            sentEmail: true
-        }
-    });
-    var sendTokenUrl = portalLib.idProviderUrl();
-
-    var logoutConfigView = resolve('forgot-pwd-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl,
-        sendTokenUrl: sendTokenUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        forgotPwd: true
-    });
-}
-
-function generateSentMailPage() {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.loginUrl();
-    var redirectConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(redirectConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        sentMail: true
-    });
-}
-
-function generateExpiredTokenPage() {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            forgot: true
-        }
-    });
-    var redirectConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(redirectConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        expiredToken: true
-    });
-}
-
-function generateUpdatePasswordPage(token) {
-    var scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
-
-    var idProviderUrl = portalLib.idProviderUrl();
-
-    var configView = resolve('update-pwd-config.txt');
-    var config = mustacheLib.render(configView, {
-        idProviderUrl: idProviderUrl,
-        token: token
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        updatePwd: true
-    });
-}
-
-function generateRedirectUrl() {
-    var site = portalLib.getSite();
-    if (site) {
-        return portalLib.pageUrl({id: site._id});
-    }
-    return '/';
-}
-
-function generatePage(params) {
-    var idProviderConfig = authLib.getIdProviderConfig();
-    var title = idProviderConfig.title || "User Login";
-
-    var theme = idProviderConfig.theme || "light-blue";
-    var backgroundStyleUrl = generateBackgroundStyleUrl(theme);
-    var colorStyleUrl = generateColorStyleUrl(theme);
-
-    var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
-    var styleUrl = portalLib.assetUrl({path: "css/style.css"});
-    var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            loggedOut: ""
-        }
-    });
-
-    var view = resolve("idprovider.html");
-    params.title = title;
-    params.styleUrl = styleUrl;
-    params.backgroundStyleUrl = backgroundStyleUrl;
-    params.colorStyleUrl = colorStyleUrl;
-    params.jQueryUrl = jQueryUrl;
-    params.userImgUrl = userImgUrl;
-
-    return mustacheLib.render(view, params);
-}
-
-function generateBackgroundStyleUrl(theme) {
-    var stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
-}
-
-function generateColorStyleUrl(theme) {
-    var stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
 }
 
