@@ -1,5 +1,6 @@
-var mustacheLib = require('/lib/xp/mustache');
+var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
+var mustacheLib = require('/lib/xp/mustache');
 
 exports.generateLoginPage = function (redirectUrl) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
@@ -135,14 +136,6 @@ exports.generateUpdatePasswordPage = function (token) {
         config: config,
         updatePwd: true
     });
-}
-
-function generateRedirectUrl() {
-    var site = portalLib.getSite();
-    if (site) {
-        return portalLib.pageUrl({id: site._id});
-    }
-    return '/';
 }
 
 function generatePage(params) {

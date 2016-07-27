@@ -92,6 +92,15 @@ function isTokenValid(token) {
     return userInfo && (userInfo.timestamp - Date.now()) < 86400000
 }
 
+
+function generateRedirectUrl() {
+    var site = portalLib.getSite();
+    if (site) {
+        return portalLib.pageUrl({id: site._id});
+    }
+    return '/';
+}
+
 function handleForgotPassword(req, email) {
     var user = findUserByEmail(email);
 
