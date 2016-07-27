@@ -94,9 +94,7 @@ function generateRedirectUrl() {
 
 function handleForgotPassword(req, email) {
     var user = findUserByEmail(email);
-
-    var toEmailAddress;
-    var body;
+    var mailBody;
 
     //If a user has the email provider
     if (user && user.email) {
@@ -106,23 +104,25 @@ function handleForgotPassword(req, email) {
 
         //Prepares the reset email
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});
-        body = '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
-               '</a>.<br/>' +
-               'If it was not you, you can safely ignore this email.</p>' +
-               '<p>To reset your password, click on the following link:</p>' +
-               '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>';
+        mailBody =
+            '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
+            '</a>.<br/>' +
+            'If it was not you, you can safely ignore this email.</p>' +
+            '<p>To reset your password, click on the following link:</p>' +
+            '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>';
     } else {
 
         //Else, prepares a warning email
-        body = '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
-               '</a>.<br/>' +
-               'If it was not you, you can safely ignore this email.</p>' +
-               '<p>There is no user linked to this email address.<br/>' +
-               'You might have signed up with a different address</p>';
+        mailBody =
+            '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
+            '</a>.<br/>' +
+            'If it was not you, you can safely ignore this email.</p>' +
+            '<p>There is no user linked to this email address.<br/>' +
+            'You might have signed up with a different address</p>';
     }
 
     //Sends email
-    sendMail(req, email, 'Password reset', body);
+    sendMail(req, email, 'Password reset', mailBody);
 
 
     return {
