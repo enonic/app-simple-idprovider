@@ -26,7 +26,7 @@ exports.generateLoginPage = function (redirectUrl) {
         config: config,
         login: true
     });
-}
+};
 
 exports.generateLogoutPage = function (user) {
     var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
@@ -43,7 +43,7 @@ exports.generateLogoutPage = function (user) {
         userName: user.displayName,
         logout: true
     });
-}
+};
 
 exports.generateLoggedOutPage = function () {
     var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
@@ -59,7 +59,7 @@ exports.generateLoggedOutPage = function () {
         config: config,
         loggedOut: true
     });
-}
+};
 
 exports.generateForgotPasswordPage = function () {
     var scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
@@ -82,7 +82,7 @@ exports.generateForgotPasswordPage = function () {
         config: config,
         forgotPwd: true
     });
-}
+};
 
 exports.generateSentMailPage = function () {
     var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
@@ -98,7 +98,7 @@ exports.generateSentMailPage = function () {
         config: config,
         sentMail: true
     });
-}
+};
 
 exports.generateExpiredTokenPage = function () {
     var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
@@ -118,7 +118,7 @@ exports.generateExpiredTokenPage = function () {
         config: config,
         expiredToken: true
     });
-}
+};
 
 exports.generateUpdatePasswordPage = function (token) {
     var scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
@@ -136,7 +136,7 @@ exports.generateUpdatePasswordPage = function (token) {
         config: config,
         updatePwd: true
     });
-}
+};
 
 function generatePage(params) {
     var idProviderConfig = authLib.getIdProviderConfig();

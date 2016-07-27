@@ -45,7 +45,7 @@ exports.get = function (req) {
 
     if (req.params.reset) {
         var token = req.params.reset;
-        if (isTokenValid(token)) {
+        if (tokenLib.isTokenValid(token)) {
             body = renderLib.generateUpdatePasswordPage(token);
         } else {
             body = renderLib.generateExpiredTokenPage();
@@ -100,7 +100,7 @@ function handleForgotPassword(req, email) {
     if (user && user.email) {
 
         //Generates a token
-        var token = tokenLib.generateToken();
+        var token = tokenLib.generateToken(user);
 
         //Prepares the reset email
         var passwordResetUrl = portalLib.idProviderUrl({params: {reset: token}, type: 'absolute'});

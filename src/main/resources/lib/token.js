@@ -8,9 +8,9 @@ exports.isTokenValid = function (token) {
 
 exports.getUserInfo = function (token) {
     return infoByToken[token];
-}
+};
 
-exports.generateToken = function () {
+exports.generateToken = function (user) {
     //Deletes existing token
     var existingToken = tokenByUser[user.email];
     if (existingToken) {
@@ -18,7 +18,7 @@ exports.generateToken = function () {
     }
 
     //Generates new token
-    var token = tokenLib.generateToken();
+    var token = doGenerateToken();
     tokenByUser[user.email] = token;
     infoByToken[token] = {
         key: user.key,
@@ -29,8 +29,7 @@ exports.generateToken = function () {
     return token;
 };
 
-
 function doGenerateToken() {
     var bean = __.newBean('com.enonic.app.simpleidprovider.TokenGeneratorService');
     return bean.generateToken();
-};
+}
