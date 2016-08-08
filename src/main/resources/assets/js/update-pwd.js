@@ -5,7 +5,8 @@ function handleAuthenticateResponse() {
 function formSubmitted() {
     var data = {
         password: $("#inputPassword").val(),
-        token: CONFIG.token
+        token: CONFIG.token,
+        user: CONFIG.userName
     };
     $.ajax({
         url: CONFIG.idProviderUrl,

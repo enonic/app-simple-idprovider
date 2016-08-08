@@ -21,7 +21,7 @@
       <default>light-blue</default>
     </input>
     <input name="email" type="TextLine">
-      <label>Sender email address for password reset emails</label>
+      <label>Password reset email address</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
   </config>

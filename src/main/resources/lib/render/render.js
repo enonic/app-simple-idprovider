@@ -120,7 +120,7 @@ exports.generateExpiredTokenPage = function () {
     });
 };
 
-exports.generateUpdatePasswordPage = function (token) {
+exports.generateUpdatePasswordPage = function (token, userName) {
     var scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
 
     var idProviderUrl = portalLib.idProviderUrl();
@@ -128,7 +128,8 @@ exports.generateUpdatePasswordPage = function (token) {
     var configView = resolve('update-pwd-config.txt');
     var config = mustacheLib.render(configView, {
         idProviderUrl: idProviderUrl,
-        token: token
+        token: token,
+        userName: userName
     });
 
     return generatePage({
