@@ -10,8 +10,13 @@ exports.isTokenValid = function (userKey, token) {
     return userInfo && userInfo.token && userInfo.token == token && (userInfo.timestamp - Date.now()) < 86400000
 };
 
-exports.getUserInfo = function (token) {
-    return infoByToken[token];
+exports.getUserInfo = function (userKey) {
+    var userInfo = authLib.getUserExtraData({
+        key: userKey,
+        namespace: "com.enonic.app.simpleidprovider"
+    });
+    log.info("getUserExtraData:" + JSON.stringify(userInfo));
+    return userInfo;
 };
 
 exports.generateToken = function (userKey) {

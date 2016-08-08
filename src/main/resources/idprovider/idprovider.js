@@ -141,20 +141,21 @@ function handleForgotPassword(req, email) {
 function handleUpdatePwd(req, token, userKey, password) {
     if (isTokenValid(userKey, token)) {
         runAsAdmin(function () {
-            var userInfo = tokenLib.getUserInfo(token);
+            var user = findUserByKey(userKey);
+            var userInfo = tokenLib.getUserInfo(userKey);
 
             authLib.changePassword({
-                userKey: userInfo.key,
+                userKey: userKey,
                 password: password
             });
 
             authLib.login({
-                user: userInfo.email,
+                user: user.login,
                 password: password,
                 userStore: portalLib.getUserStoreKey()
             });
 
-            sendMail(req, userInfo.email, 'Password updated',
+            sendMail(req, user.email, 'Password updated',
                 '<p>You have successfully changed your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' +
                 req.host + '</a>.</p>');
 
@@ -190,6 +191,12 @@ function sendMail(req, to, subject, body) {
         subject: subject,
         body: body,
         contentType: 'text/html; charset="UTF-8"'
+    });
+}
+
+function findUserByKey(userKey) {
+    return runAsAdmin(function () {
+        return authLib.getPrincipal('user:' + portalLib.getUserStoreKey() + ':' + userKey);
     });
 }
 

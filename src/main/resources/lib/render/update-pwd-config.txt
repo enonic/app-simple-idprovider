@@ -2,6 +2,6 @@
     var CONFIG = {
         idProviderUrl: "{{{idProviderUrl}}}",
         token: "{{token}}",
-        name: "{{userName}}"
+        userName: "{{userName}}"
     };
 </script>
