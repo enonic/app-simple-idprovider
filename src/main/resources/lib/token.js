@@ -2,29 +2,27 @@ var authLib = require('/lib/xp/auth');
 
 exports.isTokenValid = function (userKey, token) {
 
-    var userInfo = authLib.getUserExtraData({
+    var userInfo = authLib.getProfile({
         key: userKey,
-        namespace: "com.enonic.app.simpleidprovider"
+        scope: "simpleidprovider"
     });
-    log.info("getUserExtraData:" + JSON.stringify(userInfo));
     return userInfo && userInfo.token && userInfo.token == token && (userInfo.timestamp - Date.now()) < 86400000
 };
 
 exports.getUserInfo = function (userKey) {
-    var userInfo = authLib.getUserExtraData({
+    var userInfo = authLib.getProfile({
         key: userKey,
-        namespace: "com.enonic.app.simpleidprovider"
+        scope: "simpleidprovider"
     });
-    log.info("getUserExtraData:" + JSON.stringify(userInfo));
     return userInfo;
 };
 
 exports.generateToken = function (userKey) {
     var token = doGenerateToken();
 
-    var userInfo = authLib.modifyUserExtraData({
+    var userInfo = authLib.modifyProfile({
         key: userKey,
-        namespace: "com.enonic.app.simpleidprovider",
+        scope: "simpleidprovider",
         editor: function () {
             return {
                 token: token,
@@ -32,7 +30,6 @@ exports.generateToken = function (userKey) {
             };
         }
     });
-    log.info("modifyUserExtraData:" + JSON.stringify(userInfo));
 
     return token;
 };
