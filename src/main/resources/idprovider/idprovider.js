@@ -118,7 +118,7 @@ function handleForgotPassword(req, email) {
             '<p>To reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
             '</a>, please click on the following link:</p>' +
             '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>' +
-            "<p>If you don't want to reset your password or if you didn't request this, you can safely ignore this email.</p>.";
+            "<p>If you don't want to reset your password or if you didn't request this, you can safely ignore this email.</p>";
     } else {
 
         //Else, prepares a warning email
