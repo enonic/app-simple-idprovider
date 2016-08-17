@@ -9,7 +9,7 @@ exports.generateLoginPage = function (redirectUrl) {
     var loginServiceUrl = portalLib.serviceUrl({service: "login"});
     var forgotPasswordUrl = portalLib.idProviderUrl({
         params: {
-            forgot: true
+            action: 'forgot'
         }
     });
 
@@ -66,7 +66,7 @@ exports.generateForgotPasswordPage = function () {
 
     var redirectUrl = portalLib.idProviderUrl({
         params: {
-            sentEmail: true
+            action: 'sent'
         }
     });
     var sendTokenUrl = portalLib.idProviderUrl();
@@ -105,7 +105,7 @@ exports.generateExpiredTokenPage = function () {
 
     var redirectUrl = portalLib.idProviderUrl({
         params: {
-            forgot: true
+            action: 'forgot'
         }
     });
     var redirectConfigView = resolve('redirect-config.txt');
@@ -120,7 +120,7 @@ exports.generateExpiredTokenPage = function () {
     });
 };
 
-exports.generateUpdatePasswordPage = function (token, userName) {
+exports.generateUpdatePasswordPage = function (token) {
     var scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
 
     var idProviderUrl = portalLib.idProviderUrl();
@@ -128,8 +128,7 @@ exports.generateUpdatePasswordPage = function (token, userName) {
     var configView = resolve('update-pwd-config.txt');
     var config = mustacheLib.render(configView, {
         idProviderUrl: idProviderUrl,
-        token: token,
-        userName: userName
+        token: token
     });
 
     return generatePage({
@@ -150,12 +149,6 @@ function generatePage(params) {
     var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
     var styleUrl = portalLib.assetUrl({path: "css/style.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            loggedOut: ""
-        }
-    });
 
     var view = resolve("page.html");
     params.title = title;

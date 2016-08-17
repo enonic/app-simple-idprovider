@@ -1,9 +1,10 @@
 var authLib = require('/lib/xp/auth');
-var contextLib = require('/lib/xp/context');
 var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
 var renderLib = require('/lib/render/render');
+var contextLib = require('/lib/context');
 var mailLib = require('/lib/mail');
+var userLib = require('/lib/user');
 
 exports.handle401 = function (req) {
     var body = renderLib.generateLoginPage();
@@ -43,19 +44,18 @@ exports.logout = function (req) {
 exports.get = function (req) {
     var body;
 
-    if (req.params.reset && req.params.user) {
-        var token = req.params.reset;
-        var userName = req.params.user;
-        var userKey = "user:" + portalLib.getUserStoreKey() + ":" + userName;
-        if (isTokenValid(userKey, token)) {
-            body = renderLib.generateUpdatePasswordPage(token, userName);
+    var action = req.params.action;
+    if (action == 'forgot') {
+        body = renderLib.generateForgotPasswordPage();
+    }
+    else if (action == 'sent') {
+        body = renderLib.generateSentMailPage();
+    } else if (action == 'reset' && req.params.token) {
+        if (tokenLib.isTokenValid(req.params.token)) {
+            body = renderLib.generateUpdatePasswordPage(req.params.token);
         } else {
             body = renderLib.generateExpiredTokenPage();
         }
-    } else if (req.params.sentEmail) {
-        body = renderLib.generateSentMailPage();
-    } else if (req.params.forgot) {
-        body = renderLib.generateForgotPasswordPage();
     } else {
         var user = authLib.getUser();
         if (user) {
@@ -74,10 +74,11 @@ exports.get = function (req) {
 exports.post = function (req) {
     var body = JSON.parse(req.body);
 
-    if (body.email) {
+    var action = body.action;
+    if (action == 'send' && body.email) {
         return handleForgotPassword(req, body.email);
-    } else if (body.token && body.password && body.user) {
-        return handleUpdatePwd(req, body.token, toUserKey(body.user), body.password);
+    } else if (action == 'update' && body.token && body.password) {
+        return handleUpdatePwd(req, body.token, body.password);
     }
 
     return {
@@ -95,25 +96,14 @@ function generateRedirectUrl() {
 }
 
 function handleForgotPassword(req, email) {
-    var user = findUserByEmail(email);
+    var user = userLib.findUserByEmail(email);
 
     //If a user has the email provided
-    if (user && user.email) {
-
+    if (user) {
         //Generates a token
-        var token = runAsAdmin(function () {
-            return tokenLib.generateToken(user.key)
-        });
+        var token = tokenLib.generateToken(user.key);
 
-        //Prepares the reset email
-        var passwordResetUrl = portalLib.idProviderUrl({
-            params: {
-                reset: token,
-                user: user.login
-            },
-            type: 'absolute'
-        });
-        mailLib.sendResetMail(req, email, passwordResetUrl)
+        mailLib.sendResetMail(req, email, token)
 
     } else {
         mailLib.sendIncorrectResetMail(req, email)
@@ -126,13 +116,13 @@ function handleForgotPassword(req, email) {
     };
 }
 
-function handleUpdatePwd(req, token, userKey, password) {
-    if (isTokenValid(userKey, token)) {
-        runAsAdmin(function () {
-            var user = findUserByKey(userKey);
+function handleUpdatePwd(req, token, password) {
+    if (tokenLib.isTokenValid(token)) {
+        contextLib.runAsAdmin(function () {
+            var user = tokenLib.findUserByToken(token);
 
             authLib.changePassword({
-                userKey: userKey,
+                userKey: user.key,
                 password: password
             });
 
@@ -155,50 +145,5 @@ function handleUpdatePwd(req, token, userKey, password) {
         body: {updated: false},
         contentType: 'application/json'
     };
-}
-
-function toUserKey(userName) {
-    return "user:" + portalLib.getUserStoreKey() + ":" + userName;
-}
-
-function isTokenValid(userKey, token) {
-    return runAsAdmin(function () {
-        return tokenLib.isTokenValid(userKey, token);
-    });
-}
-
-
-function findUserByKey(userKey) {
-    return runAsAdmin(function () {
-        return authLib.getPrincipal('user:' + portalLib.getUserStoreKey() + ':' + userKey);
-    });
-}
-
-function findUserByEmail(email) {
-    //TODO There is no efficient way to find a user by email
-    return runAsAdmin(function () {
-        var users = authLib.findPrincipals({
-            type: 'user',
-            userStore: portalLib.getUserStoreKey(),
-            start: 0,
-            count: -1
-        }).hits;
-
-        return users.filter(function (user) {
-            if (user.email == email) {
-                log.info("match");
-                return user;
-            }
-        })[0];
-    });
-}
-
-function runAsAdmin(callback) {
-    return contextLib.run({
-        user: {
-            login: 'su',   //TODO Change.
-            userStore: 'system'
-        }
-    }, callback);
 }
 

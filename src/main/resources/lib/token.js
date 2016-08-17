@@ -1,37 +1,68 @@
 var authLib = require('/lib/xp/auth');
+var portalLib = require('/lib/xp/portal');
+var contextLib = require('/lib/context');
 
-exports.isTokenValid = function (userKey, token) {
-
-    var userInfo = authLib.getProfile({
-        key: userKey,
-        scope: "simpleidprovider"
-    });
-    return userInfo && userInfo.token && userInfo.token == token && (userInfo.timestamp - Date.now()) < 86400000
+exports.isTokenValid = function (token) {
+    var user = findUserByToken(token);
+    if (user) {
+        var timestamp = user.profile.userpwd.reset.timestamp;
+        if ((timestamp - Date.now()) < 86400000) {
+            return true;
+        } else {
+            removeToken(user.key);
+        }
+    }
+    return false;
 };
 
-exports.getUserInfo = function (userKey) {
-    var userInfo = authLib.getProfile({
-        key: userKey,
-        scope: "simpleidprovider"
-    });
-    return userInfo;
-};
+exports.findUserByToken = function (token) {
+    return findUserByToken(token);
+}
+
+//exports.getUserInfo = function (userKey) {
+//    var userInfo = authLib.getProfile({
+//        key: userKey,
+//        scope: "userpwd.reset"
+//    });
+//    return userInfo;
+//};
 
 exports.generateToken = function (userKey) {
     var token = doGenerateToken();
 
-    var userInfo = authLib.modifyProfile({
-        key: userKey,
-        scope: "simpleidprovider",
-        editor: function () {
-            return {
-                token: token,
-                timestamp: Date.now()
-            };
-        }
+    contextLib.runAsAdmin(function () {
+        return authLib.modifyProfile({
+            key: userKey,
+            scope: "userpwd.reset",
+            editor: function () {
+                return {
+                    token: token,
+                    timestamp: Date.now()
+                };
+            }
+        });
     });
 
     return token;
+};
+
+function removeToken(userKey) {
+    authLib.modifyProfile({
+        key: userKey,
+        scope: "userpwd.reset",
+        editor: function () {
+            return null;
+        }
+    });
+}
+
+function findUserByToken(token) {
+    return contextLib.runAsAdmin(function () {
+        return authLib.findUsers({
+            count: 1,
+            query: "userstorekey = '" + portalLib.getUserStoreKey() + "' AND profile.userpwd.reset.token = '" + token + "'"
+        }).hits[0];
+    });
 };
 
 function doGenerateToken() {

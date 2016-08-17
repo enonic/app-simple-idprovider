@@ -41,7 +41,7 @@ exports.testGet = function () {
 
     var result = idProvider.get({
         params: {
-            forgot: "true"
+            action: "forgot"
         }
     });
     assert.assertEquals('text/html', result.contentType);

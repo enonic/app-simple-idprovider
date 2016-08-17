@@ -1,7 +1,16 @@
 var authLib = require('/lib/xp/auth');
 var mailLib = require('/lib/xp/mail');
+var portalLib = require('/lib/xp/portal');
 
-exports.sendResetMail = function (req, to, passwordResetUrl) {
+exports.sendResetMail = function (req, to, token) {
+    var passwordResetUrl = portalLib.idProviderUrl({
+        params: {
+            action: "reset",
+            token: token
+        },
+        type: 'absolute'
+    });
+
     var body =
         '<p>To reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
         '</a>, please click on the following link:</p>' +

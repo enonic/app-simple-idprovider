@@ -4,9 +4,9 @@ function handleAuthenticateResponse() {
 
 function formSubmitted() {
     var data = {
-        password: $("#inputPassword").val(),
+        action: 'update',
         token: CONFIG.token,
-        user: CONFIG.userName
+        password: $("#inputPassword").val()
     };
     $.ajax({
         url: CONFIG.idProviderUrl,
