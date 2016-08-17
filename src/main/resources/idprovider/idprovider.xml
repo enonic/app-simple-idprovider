@@ -20,5 +20,9 @@
       </config>
       <default>light-blue</default>
     </input>
+    <input name="email" type="TextLine">
+      <label>Password reset email address</label>
+      <occurrences minimum="0" maximum="1"/>
+    </input>
   </config>
 </id-provider>
