@@ -1,9 +1,9 @@
 var authLib = require('/lib/xp/auth');
 var contextLib = require('/lib/xp/context');
-var mailLib = require('/lib/xp/mail');
 var portalLib = require('/lib/xp/portal');
 var tokenLib = require('/lib/token');
 var renderLib = require('/lib/render/render');
+var mailLib = require('/lib/mail');
 
 exports.handle401 = function (req) {
     var body = renderLib.generateLoginPage();
@@ -96,7 +96,6 @@ function generateRedirectUrl() {
 
 function handleForgotPassword(req, email) {
     var user = findUserByEmail(email);
-    var mailBody;
 
     //If a user has the email provided
     if (user && user.email) {
@@ -114,22 +113,11 @@ function handleForgotPassword(req, email) {
             },
             type: 'absolute'
         });
-        mailBody =
-            '<p>To reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
-            '</a>, please click on the following link:</p>' +
-            '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>' +
-            "<p>If you don't want to reset your password or if you didn't request this, you can safely ignore this email.</p>";
+        mailLib.sendResetMail(req, email, passwordResetUrl)
+
     } else {
-
-        //Else, prepares a warning email
-        mailBody =
-            '<p>Somebody asked to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
-            '</a>, but there is no user linked to this email address. </p>' +
-            "<p>If you don't want to reset your password or if you didn't request this, you can safely ignore this email.</p>";
+        mailLib.sendIncorrectResetMail(req, email)
     }
-
-    //Sends email
-    sendMail(req, email, 'Password reset', mailBody);
 
 
     return {
@@ -142,7 +130,6 @@ function handleUpdatePwd(req, token, userKey, password) {
     if (isTokenValid(userKey, token)) {
         runAsAdmin(function () {
             var user = findUserByKey(userKey);
-            var userInfo = tokenLib.getUserInfo(userKey);
 
             authLib.changePassword({
                 userKey: userKey,
@@ -155,10 +142,7 @@ function handleUpdatePwd(req, token, userKey, password) {
                 userStore: portalLib.getUserStoreKey()
             });
 
-            sendMail(req, user.email, 'Password updated',
-                '<p>You have successfully changed your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' +
-                req.host + '</a>.</p>');
-
+            mailLib.sendUpdatedPasswordMail(req, user.email);
         });
 
         return {
@@ -183,16 +167,6 @@ function isTokenValid(userKey, token) {
     });
 }
 
-function sendMail(req, to, subject, body) {
-    var from = authLib.getIdProviderConfig().email || ('noreply@' + req.host);
-    mailLib.send({
-        from: from,
-        to: to,
-        subject: subject,
-        body: body,
-        contentType: 'text/html; charset="UTF-8"'
-    });
-}
 
 function findUserByKey(userKey) {
     return runAsAdmin(function () {
