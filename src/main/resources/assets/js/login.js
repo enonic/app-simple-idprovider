@@ -34,6 +34,6 @@ $(".form-login").submit(function (event) {
 
 $("#inputUsername, #inputPassword").keyup(function (event) {
     if (event.which !== 13) {
-        $("#message").addClass("hidden");
+        $("#errorMessage").addClass("hidden");
     }
 });

@@ -149,6 +149,7 @@ function generatePage(params) {
     var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
     var styleUrl = portalLib.assetUrl({path: "css/style.css"});
     var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
+    var opensansRegularUrl = portalLib.assetUrl({path: "fonts/opensans-regular"});
 
     var view = resolve("page.html");
     params.title = title;
@@ -157,6 +158,8 @@ function generatePage(params) {
     params.colorStyleUrl = colorStyleUrl;
     params.jQueryUrl = jQueryUrl;
     params.userImgUrl = userImgUrl;
+    params.opensansRegularUrl = opensansRegularUrl;
+
 
     return mustacheLib.render(view, params);
 }
