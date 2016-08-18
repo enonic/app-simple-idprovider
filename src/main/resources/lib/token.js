@@ -60,7 +60,8 @@ function findUserByToken(token) {
     return contextLib.runAsAdmin(function () {
         return authLib.findUsers({
             count: 1,
-            query: "userstorekey = '" + portalLib.getUserStoreKey() + "' AND profile.userpwd.reset.token = '" + token + "'"
+            query: "userstorekey = '" + portalLib.getUserStoreKey() + "' AND profile.userpwd.reset.token = '" + token + "'",
+            includeProfile: true
         }).hits[0];
     });
 };
