@@ -4,7 +4,7 @@ var mustacheLib = require('/lib/xp/mustache');
 var displayLib = require('/lib/display');
 
 
-exports.generateLoginPage = function (redirectUrl, loggedOut) {
+exports.generateLoginPage = function (redirectUrl, message) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
 
     var userStoreKey = portalLib.getUserStoreKey();
@@ -25,7 +25,7 @@ exports.generateLoginPage = function (redirectUrl, loggedOut) {
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        message: loggedOut ? "Successfully logged out" : undefined,
+        message: message,
         body: {
             username: "Username or email",
             password: "Password",
@@ -73,22 +73,6 @@ exports.generateForgotPasswordPage = function () {
     });
 };
 
-exports.generateSentMailPage = function () {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.loginUrl();
-    var redirectConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(redirectConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        sentMail: true
-    });
-};
-
 exports.generateExpiredTokenPage = function () {
     var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
 
@@ -123,7 +107,10 @@ exports.generateUpdatePasswordPage = function (token) {
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        updatePwd: true
+        title: "Update password",
+        body: {
+            username: "New Password"
+        }
     });
 };
 

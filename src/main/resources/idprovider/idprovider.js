@@ -33,8 +33,8 @@ exports.logout = function (req) {
             redirect: req.params.redirect
         };
     }
-    
-    var body = renderLib.generateLoginPage(generateRedirectUrl(), true);
+
+    var body = renderLib.generateLoginPage(generateRedirectUrl(), "Successfully logged out");
     return {
         contentType: 'text/html',
         body: body
@@ -49,7 +49,8 @@ exports.get = function (req) {
         body = renderLib.generateForgotPasswordPage();
     }
     else if (action == 'sent') {
-        body = renderLib.generateSentMailPage();
+        body =
+            renderLib.generateLoginPage(generateRedirectUrl(), "  We have sent an email with instructions on how to reset your password");
     } else if (action == 'reset' && req.params.token) {
         if (tokenLib.isTokenValid(req.params.token)) {
             body = renderLib.generateUpdatePasswordPage(req.params.token);

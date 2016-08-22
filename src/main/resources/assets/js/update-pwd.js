@@ -6,7 +6,7 @@ function formSubmitted() {
     var data = {
         action: 'update',
         token: CONFIG.token,
-        password: $("#inputPassword").val()
+        password: $("#inputUsername").val()
     };
     $.ajax({
         url: CONFIG.idProviderUrl,

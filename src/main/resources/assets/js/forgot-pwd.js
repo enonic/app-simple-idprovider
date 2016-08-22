@@ -5,7 +5,7 @@ function handleAuthenticateResponse(loginResult) {
 function formSubmitted() {
     var data = {
         action: 'send',
-        email: $("#inputEmail").val()
+        email: $("#inputUsername").val()
     };
     $.ajax({
         url: CONFIG.sendTokenUrl,
