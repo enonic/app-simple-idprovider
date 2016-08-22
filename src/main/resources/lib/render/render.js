@@ -1,8 +1,10 @@
 var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
 var mustacheLib = require('/lib/xp/mustache');
+var displayLib = require('/lib/display');
 
-exports.generateLoginPage = function (redirectUrl) {
+
+exports.generateLoginPage = function (redirectUrl, loggedOut) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
 
     var userStoreKey = portalLib.getUserStoreKey();
@@ -22,9 +24,13 @@ exports.generateLoginPage = function (redirectUrl) {
 
     return generatePage({
         scriptUrl: scriptUrl,
-        forgotPasswordUrl: forgotPasswordUrl,
         config: config,
-        login: true
+        message: loggedOut ? "Successfully logged out" : undefined,
+        body: {
+            username: "Username or email",
+            password: "Password",
+            forgotPasswordUrl: forgotPasswordUrl
+        }
     });
 };
 
@@ -40,37 +46,16 @@ exports.generateLogoutPage = function (user) {
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        userName: user.displayName,
-        logout: true
-    });
-};
-
-exports.generateLoggedOutPage = function () {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.loginUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        loggedOut: true
+        title: user.displayName,
+        submit: "LOG OUT"
     });
 };
 
 exports.generateForgotPasswordPage = function () {
     var scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
 
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            action: 'sent'
-        }
-    });
+    var redirectUrl = portalLib.idProviderUrl({params: {action: 'sent'}});
     var sendTokenUrl = portalLib.idProviderUrl();
-
     var logoutConfigView = resolve('forgot-pwd-config.txt');
     var config = mustacheLib.render(logoutConfigView, {
         redirectUrl: redirectUrl,
@@ -80,7 +65,11 @@ exports.generateForgotPasswordPage = function () {
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        forgotPwd: true
+        title: "Password reset",
+        body: {
+            username: "Email"
+        },
+        submit: "RESET"
     });
 };
 
@@ -140,28 +129,9 @@ exports.generateUpdatePasswordPage = function (token) {
 
 function generatePage(params) {
     var idProviderConfig = authLib.getIdProviderConfig();
-    var title = idProviderConfig.title || "User Login";
-
-    var theme = idProviderConfig.theme || "light-blue";
-    var backgroundStyleUrl = generateBackgroundStyleUrl(theme);
-    var colorStyleUrl = generateColorStyleUrl(theme);
-
-    var jQueryUrl = portalLib.assetUrl({path: "js/jquery-2.2.0.min.js"});
-    var styleUrl = portalLib.assetUrl({path: "css/style.css"});
-    var userImgUrl = portalLib.assetUrl({path: "img/user.svg"});
-    var opensansRegularUrl = portalLib.assetUrl({path: "fonts/opensans-regular"});
-
-    var view = resolve("page.html");
-    params.title = title;
-    params.styleUrl = styleUrl;
-    params.backgroundStyleUrl = backgroundStyleUrl;
-    params.colorStyleUrl = colorStyleUrl;
-    params.jQueryUrl = jQueryUrl;
-    params.userImgUrl = userImgUrl;
-    params.opensansRegularUrl = opensansRegularUrl;
-
-
-    return mustacheLib.render(view, params);
+    params.title = params.title || idProviderConfig.title || "User Login";
+    params.theme = idProviderConfig.theme || "light-blue";
+    return displayLib.render(params);
 }
 
 function generateBackgroundStyleUrl(theme) {

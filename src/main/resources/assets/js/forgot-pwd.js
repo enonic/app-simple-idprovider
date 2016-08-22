@@ -16,8 +16,3 @@ function formSubmitted() {
         data: JSON.stringify(data)
     });
 }
-
-$(".form-login").submit(function (event) {
-    formSubmitted();
-    event.preventDefault();
-});

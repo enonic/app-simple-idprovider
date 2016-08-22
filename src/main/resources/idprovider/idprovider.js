@@ -33,8 +33,8 @@ exports.logout = function (req) {
             redirect: req.params.redirect
         };
     }
-
-    var body = renderLib.generateLoggedOutPage();
+    
+    var body = renderLib.generateLoginPage(generateRedirectUrl(), true);
     return {
         contentType: 'text/html',
         body: body
