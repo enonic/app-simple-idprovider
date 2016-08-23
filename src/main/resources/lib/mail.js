@@ -12,9 +12,8 @@ exports.sendResetMail = function (req, to, token) {
     });
 
     var body =
-        '<p>To reset your password on <a href="' + req.scheme + '://' + req.host + ':' + req.port + '">' + req.host +
-        '</a>, please click on the following link:</p>' +
-        '<a href="' + passwordResetUrl + '">' + passwordResetUrl + '</a>' +
+        '<p>To reset your password on ' + authLib.getIdProviderConfig().forgotPassword.site +
+        ', please click on the following link: <a href="' + passwordResetUrl + '">Click here</a></p>' +
         "<p>If you don't want to reset your password or if you didn't request this, you can safely ignore this email.</p>";
 
     sendMail(req, to, "Password reset", body);
@@ -22,15 +21,15 @@ exports.sendResetMail = function (req, to, token) {
 
 exports.sendIncorrectResetMail = function (req, to) {
     var body =
-        '<p>A request to reset your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' + req.host +
-        '</a> has been made, but there is no user linked to this email address. </p>' +
+        '<p>A request to reset your password on ' + authLib.getIdProviderConfig().forgotPassword.site +
+        ' has been made, but there is no user linked to this email address. </p>' +
         "<p>If you don't want to reset your password or if you didn't request this, you can safely ignore this email.</p>";
     sendMail(req, to, "Password reset", body);
 };
 
 exports.sendUpdatedPasswordMail = function (req, to) {
-    var body = '<p>You have successfully changed your password on <a href="' + req.scheme + '://' + req.host + ":" + req.port + '">' +
-               req.host + '</a>.</p>';
+    var body = '<p>You have successfully changed your password on ' + authLib.getIdProviderConfig().forgotPassword.site +
+               '.</p>';
     sendMail(req, to, "Password updated", body);
 }
 

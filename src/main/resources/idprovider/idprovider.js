@@ -50,7 +50,7 @@ exports.get = function (req) {
     }
     else if (action == 'sent') {
         body =
-            renderLib.generateLoginPage(generateRedirectUrl(), "  We have sent an email with instructions on how to reset your password");
+            renderLib.generateLoginPage(generateRedirectUrl(), "We have sent an email with instructions on how to reset your password");
     } else if (action == 'reset' && req.params.token) {
         if (tokenLib.isTokenValid(req.params.token)) {
             body = renderLib.generateUpdatePasswordPage(req.params.token);

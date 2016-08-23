@@ -9,11 +9,11 @@ exports.generateLoginPage = function (redirectUrl, info) {
 
     var userStoreKey = portalLib.getUserStoreKey();
     var loginServiceUrl = portalLib.serviceUrl({service: "login"});
-    var forgotPasswordUrl = portalLib.idProviderUrl({
+    var forgotPasswordUrl = authLib.getIdProviderConfig().forgotPassword ? portalLib.idProviderUrl({
         params: {
             action: 'forgot'
         }
-    });
+    }) : undefined;
 
     var loginConfigView = resolve('login-config.txt');
     var config = mustacheLib.render(loginConfigView, {
