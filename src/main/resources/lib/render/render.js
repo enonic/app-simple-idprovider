@@ -91,7 +91,8 @@ exports.generateUpdatePasswordPage = function (token) {
         title: "Update password",
         body: {
             username: "New Password"
-        }
+        },
+        submit: "UPDATE"
     });
 };
 

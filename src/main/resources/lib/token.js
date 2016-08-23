@@ -5,7 +5,7 @@ var contextLib = require('/lib/context');
 exports.isTokenValid = function (token) {
     var user = findUserByToken(token);
     if (user) {
-        var timestamp = user.profile.userpwd.reset.timestamp;
+        var timestamp = user.profile.userpwd.resetTimestamp;
         if ((timestamp - Date.now()) < 86400000) {
             return true;
         } else {
@@ -17,15 +17,7 @@ exports.isTokenValid = function (token) {
 
 exports.findUserByToken = function (token) {
     return findUserByToken(token);
-}
-
-//exports.getUserInfo = function (userKey) {
-//    var userInfo = authLib.getProfile({
-//        key: userKey,
-//        scope: "userpwd.reset"
-//    });
-//    return userInfo;
-//};
+};
 
 exports.generateToken = function (userKey) {
     var token = doGenerateToken();
@@ -33,12 +25,14 @@ exports.generateToken = function (userKey) {
     contextLib.runAsAdmin(function () {
         return authLib.modifyProfile({
             key: userKey,
-            scope: "userpwd.reset",
-            editor: function () {
-                return {
-                    token: token,
-                    timestamp: Date.now()
-                };
+            scope: "userpwd",
+            editor: function (p) {
+                if (!p) {
+                    p = {};
+                }
+                p.resetToken = token;
+                p.resetTimestamp = Date.now();
+                return p;
             }
         });
     });
@@ -49,9 +43,11 @@ exports.generateToken = function (userKey) {
 function removeToken(userKey) {
     authLib.modifyProfile({
         key: userKey,
-        scope: "userpwd.reset",
-        editor: function () {
-            return null;
+        scope: "userpwd",
+        editor: function (p) {
+            p.resetToken = null;
+            p.resetTimestamp = null;
+            return p;
         }
     });
 }
@@ -60,11 +56,11 @@ function findUserByToken(token) {
     return contextLib.runAsAdmin(function () {
         return authLib.findUsers({
             count: 1,
-            query: "userstorekey = '" + portalLib.getUserStoreKey() + "' AND profile.userpwd.reset.token = '" + token + "'",
+            query: "userstorekey = '" + portalLib.getUserStoreKey() + "' AND profile.userpwd.resetToken = '" + token + "'",
             includeProfile: true
         }).hits[0];
     });
-};
+}
 
 function doGenerateToken() {
     var bean = __.newBean('com.enonic.app.simpleidprovider.TokenGeneratorService');
