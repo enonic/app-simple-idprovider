@@ -4,7 +4,7 @@ var mustacheLib = require('/lib/xp/mustache');
 var displayLib = require('/lib/display');
 
 
-exports.generateLoginPage = function (redirectUrl, message) {
+exports.generateLoginPage = function (redirectUrl, info) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
 
     var userStoreKey = portalLib.getUserStoreKey();
@@ -25,7 +25,7 @@ exports.generateLoginPage = function (redirectUrl, message) {
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        message: message,
+        info: info,
         body: {
             username: "Username or email",
             password: "Password",
@@ -51,7 +51,7 @@ exports.generateLogoutPage = function (user) {
     });
 };
 
-exports.generateForgotPasswordPage = function () {
+exports.generateForgotPasswordPage = function (expired) {
     var scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
 
     var redirectUrl = portalLib.idProviderUrl({params: {action: 'sent'}});
@@ -66,30 +66,11 @@ exports.generateForgotPasswordPage = function () {
         scriptUrl: scriptUrl,
         config: config,
         title: "Password reset",
+        error: expired ? "Sorry, but this link has expired. You can request another one below." : undefined,
         body: {
             username: "Email"
         },
         submit: "RESET"
-    });
-};
-
-exports.generateExpiredTokenPage = function () {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
-
-    var redirectUrl = portalLib.idProviderUrl({
-        params: {
-            action: 'forgot'
-        }
-    });
-    var redirectConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(redirectConfigView, {
-        redirectUrl: redirectUrl
-    });
-
-    return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
-        expiredToken: true
     });
 };
 

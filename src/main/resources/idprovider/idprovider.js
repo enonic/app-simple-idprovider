@@ -55,7 +55,7 @@ exports.get = function (req) {
         if (tokenLib.isTokenValid(req.params.token)) {
             body = renderLib.generateUpdatePasswordPage(req.params.token);
         } else {
-            body = renderLib.generateExpiredTokenPage();
+            body = renderLib.generateForgotPasswordPage(true);
         }
     } else {
         var user = authLib.getUser();

@@ -6,7 +6,9 @@ function handleAuthenticateResponse(loginResult) {
             location.reload();
         }
     } else {
-        $("#formError").removeClass("hidden");
+        $("#formMessage").removeClass("hidden form-message-info");
+        $("#formMessage").addClass("form-message-error");
+        $("#message").text("Login Failed!");
         $("#inputPassword").focus();
     }
 }
@@ -29,6 +31,7 @@ function formSubmitted() {
 
 $("#inputUsername, #inputPassword").keyup(function (event) {
     if (event.which !== 13) {
-        $("#formError").addClass("hidden");
+        $("#formMessage").removeClass("form-message-info form-message-error");
+        $("#formMessage").addClass("hidden");
     }
 });
