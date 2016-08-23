@@ -134,6 +134,8 @@ function handleUpdatePwd(req, token, password) {
             });
 
             mailLib.sendUpdatedPasswordMail(req, user.email);
+
+            tokenLib.removeToken(user.key);
         });
 
         return {

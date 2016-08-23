@@ -9,7 +9,7 @@ exports.isTokenValid = function (token) {
         if ((timestamp - Date.now()) < 86400000) {
             return true;
         } else {
-            removeToken(user.key);
+            exports.removeToken(user.key);
         }
     }
     return false;
@@ -40,7 +40,7 @@ exports.generateToken = function (userKey) {
     return token;
 };
 
-function removeToken(userKey) {
+exports.removeToken = function (userKey) {
     authLib.modifyProfile({
         key: userKey,
         scope: "userpwd",
