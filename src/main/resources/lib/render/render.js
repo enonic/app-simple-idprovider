@@ -90,7 +90,8 @@ exports.generateUpdatePasswordPage = function (token) {
         config: config,
         title: "Update password",
         body: {
-            username: "New Password"
+            password: "New Password",
+            confirmation: "Confirm new password"
         },
         submit: "UPDATE"
     });
