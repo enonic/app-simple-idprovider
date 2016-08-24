@@ -68,7 +68,8 @@ exports.generateForgotPasswordPage = function (expired) {
         title: "Password reset",
         error: expired ? "Sorry, but this link has expired. You can request another one below." : undefined,
         body: {
-            username: "Email"
+            username: "Email",
+            reCaptcha: authLib.getIdProviderConfig().forgotPassword && authLib.getIdProviderConfig().forgotPassword.reCaptcha
         },
         submit: "RESET"
     });

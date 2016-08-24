@@ -34,6 +34,10 @@
           <occurrences minimum="1" maximum="1"/>
           <default>MyWebsite</default>
         </input>
+        <input name="reCaptcha" type="TextLine">
+          <label>ReCaptcha Site Key</label>
+          <occurrences minimum="0" maximum="1"/>
+        </input>
       </items>
     </item-set>
   </config>
