@@ -62,6 +62,8 @@ exports.generateForgotPasswordPage = function (expired) {
         sendTokenUrl: sendTokenUrl
     });
 
+    var reCaptcha = authLib.getIdProviderConfig().forgotPassword && authLib.getIdProviderConfig().forgotPassword.reCaptcha;
+
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
@@ -69,7 +71,7 @@ exports.generateForgotPasswordPage = function (expired) {
         error: expired ? "Sorry, but this link has expired. You can request another one below." : undefined,
         body: {
             username: "Email",
-            reCaptcha: authLib.getIdProviderConfig().forgotPassword && authLib.getIdProviderConfig().forgotPassword.reCaptcha
+            reCaptcha: reCaptcha && reCaptcha.siteKey
         },
         submit: "RESET"
     });

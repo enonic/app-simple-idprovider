@@ -27,6 +27,7 @@ dependencies {
     compile "com.enonic.xp:core-api:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
+    include "com.enonic.xp:lib-http-client:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.xp:lib-mustache:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"

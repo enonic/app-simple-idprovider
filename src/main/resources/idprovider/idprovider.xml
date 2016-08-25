@@ -34,10 +34,22 @@
           <occurrences minimum="1" maximum="1"/>
           <default>MyWebsite</default>
         </input>
-        <input name="reCaptcha" type="TextLine">
-          <label>ReCaptcha Site Key</label>
+
+
+        <item-set name="reCaptcha">
+          <label>ReCaptcha</label>
           <occurrences minimum="0" maximum="1"/>
-        </input>
+          <items>
+            <input name="siteKey" type="TextLine">
+              <label>Site Key</label>
+              <occurrences minimum="1" maximum="1"/>
+            </input>
+            <input name="secretKey" type="TextLine">
+              <label>Secret Key</label>
+              <occurrences minimum="1" maximum="1"/>
+            </input>
+          </items>
+        </item-set>
       </items>
     </item-set>
   </config>

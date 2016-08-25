@@ -1,5 +1,6 @@
 var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
+var httpClientLib = require('/lib/xp/http-client');
 var tokenLib = require('/lib/token');
 var renderLib = require('/lib/render/render');
 var contextLib = require('/lib/context');
@@ -77,7 +78,7 @@ exports.post = function (req) {
 
     var action = body.action;
     if (action == 'send' && body.email) {
-        return handleForgotPassword(req, body.email);
+        return handleForgotPassword(req, body);
     } else if (action == 'update' && body.token && body.password) {
         return handleUpdatePwd(req, body.token, body.password);
     }
@@ -96,18 +97,46 @@ function generateRedirectUrl() {
     return '/';
 }
 
-function handleForgotPassword(req, email) {
-    var user = userLib.findUserByEmail(email);
+function handleForgotPassword(req, params) {
+
+    var reCaptcha = authLib.getIdProviderConfig().forgotPassword && authLib.getIdProviderConfig().forgotPassword.reCaptcha;
+    if (reCaptcha) {
+        var reCaptchaVerificationResponse = httpClientLib.request({
+            url: 'https://www.google.com/recaptcha/api/siteverify',
+            method: 'POST',
+            contentType: 'application/x-www-form-urlencoded',
+            multipart: [
+                {
+                    name: 'secret',
+                    value: reCaptcha.secretKey
+                },
+                {
+                    name: 'response',
+                    value: params.reCaptcha
+                }
+            ]
+        });
+
+        var reCaptchaVerification = JSON.parse(reCaptchaVerificationResponse.body);
+        if (!reCaptchaVerification || !reCaptchaVerification.success) {
+            return {
+                status: 400,
+                contentType: 'application/json'
+            }
+        }
+    }
+
+    var user = userLib.findUserByEmail(params.email);
 
     //If a user has the email provided
     if (user) {
         //Generates a token
         var token = tokenLib.generateToken(user.key);
 
-        mailLib.sendResetMail(req, email, token)
+        mailLib.sendResetMail(req, params.email, token)
 
     } else {
-        mailLib.sendIncorrectResetMail(req, email)
+        mailLib.sendIncorrectResetMail(req, params.email)
     }
 
 

@@ -3,9 +3,16 @@ function handleAuthenticateResponse(loginResult) {
 }
 
 function formSubmitted() {
+
+    var reCaptcha;
+    if ($("#g-recaptcha-response").length) {
+        reCaptcha = $("#g-recaptcha-response").val();
+    }
+
     var data = {
         action: 'send',
-        email: $("#inputUsername").val()
+        email: $("#inputUsername").val(),
+        reCaptcha: reCaptcha
     };
     $.ajax({
         url: CONFIG.sendTokenUrl,
