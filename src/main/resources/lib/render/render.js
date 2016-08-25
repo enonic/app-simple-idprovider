@@ -2,6 +2,7 @@ var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
 var mustacheLib = require('/lib/xp/mustache');
 var displayLib = require('/lib/display');
+var gravatarLib = require('/lib/gravatar');
 
 
 exports.generateLoginPage = function (redirectUrl, info) {
@@ -43,10 +44,17 @@ exports.generateLogoutPage = function (user) {
         redirectUrl: redirectUrl
     });
 
+    var profileUrl;
+    if (user.email) {
+        var gravatarHash = gravatarLib.hash(user.email);
+        profileUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?d=blank";
+    }
+
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
         title: user.displayName,
+        profileUrl: profileUrl,
         submit: "LOG OUT"
     });
 };
