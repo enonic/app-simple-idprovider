@@ -1,9 +1,10 @@
 function handleAuthenticateResponse(loginResult) {
+    enableFormSubmit(true);
     location.href = CONFIG.redirectUrl;
 }
 
 function formSubmitted() {
-
+    enableFormSubmit(false);
     var reCaptcha;
     if ($("#g-recaptcha-response").length) {
         reCaptcha = $("#g-recaptcha-response").val();

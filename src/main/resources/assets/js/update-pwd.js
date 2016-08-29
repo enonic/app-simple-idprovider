@@ -1,9 +1,10 @@
 function handleAuthenticateResponse() {
+    enableFormSubmit(true);
     location.href = CONFIG.idProviderUrl;
 }
 
 function formSubmitted() {
-
+    enableFormSubmit(false);
     if ($("#inputPassword").val() == $("#inputConfirmation").val()) {
         var data = {
             action: 'update',
