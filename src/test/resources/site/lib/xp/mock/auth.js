@@ -1,5 +1,9 @@
 var idProviderConfigJson = {
-    title: "User Login Test"
+    title: "User Login Test",
+    forgotPassword: {
+        email: "noreply@example.com",
+        site: "WebsiteTest"
+    }
 };
 var userJson = null;
 

@@ -68,20 +68,21 @@ exports.testLogout = function () {
 
 function assertLoginPage(body) {
     assert.assertTrue(body.indexOf("User Login Test") != -1);
-    assert.assertTrue(body.indexOf("LOGIN") != -1);
+    assert.assertTrue(body.indexOf("LOG IN") != -1);
 }
 
 function assertLogoutPage(body) {
-    assert.assertTrue(body.indexOf("LOGIN") == -1);
-    assert.assertTrue(body.indexOf("LOGOUT") != -1);
+    assert.assertTrue(body.indexOf("LOG IN") == -1);
+    assert.assertTrue(body.indexOf("LOG OUT") != -1);
 }
 
 function assertLoggedOutPage(body) {
-    assert.assertTrue(body.indexOf("Successfully logged out!") != -1);
-    assert.assertTrue(body.indexOf("LOGIN") != -1);
-    assert.assertTrue(body.indexOf("LOGOUT") == -1);
+    assert.assertTrue(body.indexOf("Successfully logged out") != -1);
+    assert.assertTrue(body.indexOf("LOG IN") != -1);
+    assert.assertTrue(body.indexOf("LOG OUT") == -1);
 }
 
 function assertForgotPwdPage(body) {
-    assert.assertTrue(body.indexOf("Forgot your password?") != -1);
+    log.info(body);
+    assert.assertTrue(body.indexOf("Password reset") != -1);
 }
