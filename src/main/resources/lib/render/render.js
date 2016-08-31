@@ -45,7 +45,7 @@ exports.generateLogoutPage = function (user) {
     });
 
     var profileUrl;
-    if (user.email) {
+    if (user.email && authLib.getIdProviderConfig().gravatar) {
         var gravatarHash = gravatarLib.hash(user.email);
         profileUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?d=blank";
     }
