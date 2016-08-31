@@ -34,10 +34,15 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 (See [Virtual Host Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#configuration-vhost) for more information).
 
     ```ini
-    enabled=true  
+    enabled=true
+      
+    mapping.admin.host = localhost
+    mapping.admin.source = /admin
+    mapping.admin.target = /admin
+    mapping.admin.userStore = system
     
     mapping.mysite.host = localhost
-    mapping.mysite.source = /mysite
+    mapping.mysite.source = /
     mapping.mysite.target = /portal/master/mysite
     mapping.mysite.userStore = myuserstore
     ```
