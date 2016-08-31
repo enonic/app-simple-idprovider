@@ -53,6 +53,7 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 | App version | Required XP version | Download |
 | ----------- | ------------------- | -------- |
 | 1.0.0 | 6.6.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.0.0/simpleidprovider-1.0.0.jar) |
+| 1.1.0 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.0/simpleidprovider-1.1.0.jar) |
 
 
 ## Building and deploying
