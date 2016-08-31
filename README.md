@@ -10,22 +10,34 @@ This ID Provider contains a simple login/logout page to authenticate your local 
 ## Usage
 
 ### Step 1: Install the application
-In the admin tool "Applications" of your Enonic XP installation, click on "Install". 
-Select the tab "Enonic Market", find "Simple ID Provider", and click the link "Install".
+1. In the admin tool "Applications" of your Enonic XP installation, click on "Install". 
+2. Select the tab "Enonic Market", find "Simple ID Provider", and click the link "Install".
 
 ### Step 2: Create and configure the user store
-In the admin tool "Users", click on "New".
-Fill in the fields and for the field "ID Provider", select the application "Simple ID Provider".
-Configure the ID Provider:
-* Title: Title used by the login/logout page
-* Theme: Display theme of the login/logout page
-* (Optional) Forgot password: If set, the login/logout page will propose a password reset mechanism
- * Email author: The author of the password reset mail
- * Site name: Name used in the password reset mail
- * (Optional) ReCaptcha: Add a reCaptcha field for forgot password form
-  * Site key: Your reCaptcha site key.  [Get reCaptcha](https://www.google.com/recaptcha/admin)
-  * Secret key: Your reCaptcha secret key. [Get reCaptcha](https://www.google.com/recaptcha/admin)
+1. In the admin tool "Users", click on "New".
+2. Fill in the fields and, for the field "ID Provider", select the application "Simple ID Provider".
+3. Configure the ID Provider:
+    * Title: Title used by the login/logout page
+    * Theme: Display theme of the login/logout page
+    * (Optional) Forgot password: If set, the login page will propose a password reset mechanism
+        * Email author: The author of the password reset mail
+        * Site name: Name used in the password reset mail
+        * (Optional) ReCaptcha: Add a reCaptcha field for forgot password form [Get reCaptcha](https://www.google.com/recaptcha/admin)
+            * Site key: Your reCaptcha site key.  
+            * Secret key: Your reCaptcha secret key.
+            
+### Step 3: Create and configure the user store
+1. Edit the configuration file "com.enonic.xp.web.vhost.cfg", and set the new user store to your virtual host.
+(See [Virtual Host Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#configuration-vhost) for more information).
 
+    ```ini
+    enabled=true  
+    
+    mapping.mysite.host = localhost
+    mapping.mysite.source = /mysite
+    mapping.mysite.target = /portal/master/mysite
+    mapping.mysite.userStore = myuserstore
+    ```
 
 
 ## Releases and Compatibility
