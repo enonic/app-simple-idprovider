@@ -19,6 +19,7 @@ This ID Provider contains a simple login/logout page to authenticate your local 
 3. Configure the ID Provider:
     * Title: Title used by the login/logout page
     * Theme: Display theme of the login/logout page
+    * Gravatar picture: If enabled, the Gravatar picture of the logged in user will be displayed on the logout page
     * (Optional) Forgot password: If set, the login page will propose a password reset mechanism. 
 You need to have set up the mail configuration 
 (See [Mail Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) for more information).
