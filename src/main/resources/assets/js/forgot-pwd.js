@@ -1,5 +1,4 @@
 function handleAuthenticateResponse(loginResult) {
-    enableFormSubmit(true);
     location.href = CONFIG.redirectUrl;
 }
 
@@ -22,5 +21,7 @@ function formSubmitted() {
         contentType: 'application/json',
         success: handleAuthenticateResponse,
         data: JSON.stringify(data)
+    }).always(function () {
+        enableFormSubmit(true);
     });
 }

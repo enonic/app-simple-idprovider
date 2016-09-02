@@ -1,11 +1,10 @@
 function handleAuthenticateResponse() {
-    enableFormSubmit(true);
     location.href = CONFIG.idProviderUrl;
 }
 
 function formSubmitted() {
-    enableFormSubmit(false);
     if ($("#inputPassword").val() == $("#inputConfirmation").val()) {
+        enableFormSubmit(false);
         var data = {
             action: 'update',
             token: CONFIG.token,
@@ -18,6 +17,8 @@ function formSubmitted() {
             contentType: 'application/json',
             success: handleAuthenticateResponse,
             data: JSON.stringify(data)
+        }).always(function () {
+            enableFormSubmit(true);
         });
     } else {
         $("#formMessage").removeClass("hidden form-message-info");

@@ -6,7 +6,6 @@ function handleAuthenticateResponse(loginResult) {
             location.reload();
         }
     } else {
-        enableFormSubmit(true);
         $("#formMessage").removeClass("hidden form-message-info");
         $("#formMessage").addClass("form-message-error");
         $("#message").text("Login Failed!");
@@ -28,6 +27,8 @@ function formSubmitted() {
         contentType: 'application/json',
         success: handleAuthenticateResponse,
         data: JSON.stringify(data)
+    }).always(function () {
+        enableFormSubmit(true);
     });
 }
 
