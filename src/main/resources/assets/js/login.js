@@ -16,9 +16,9 @@ function handleAuthenticateResponse(loginResult) {
 function formSubmitted() {
     enableFormSubmit(false);
     var data = {
+        action: 'login',
         user: $("#inputUsername").val(),
-        password: $("#inputPassword").val(),
-        userStore: CONFIG.userStoreKey
+        password: $("#inputPassword").val()
     };
     $.ajax({
         url: CONFIG.loginServiceUrl,
