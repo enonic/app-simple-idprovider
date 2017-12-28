@@ -9,7 +9,7 @@ exports.generateLoginPage = function (redirectUrl, info) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
 
     var userStoreKey = portalLib.getUserStoreKey();
-    var loginServiceUrl = portalLib.serviceUrl({service: "login"});
+    var loginServiceUrl = portalLib.idProviderUrl();
     var forgotPasswordUrl = authLib.getIdProviderConfig().forgotPassword ? portalLib.idProviderUrl({
         params: {
             action: 'forgot'

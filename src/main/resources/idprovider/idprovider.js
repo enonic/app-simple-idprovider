@@ -77,7 +77,9 @@ exports.post = function (req) {
     var body = JSON.parse(req.body);
 
     var action = body.action;
-    if (action == 'send' && body.email) {
+    if (action == 'login' && body.user && body.password) {
+        return handleLogin(req, body.user, body.password);
+    } else if (action == 'send' && body.email) {
         return handleForgotPassword(req, body);
     } else if (action == 'update' && body.token && body.password) {
         return handleUpdatePwd(req, body.token, body.password);
@@ -95,6 +97,18 @@ function generateRedirectUrl() {
         return portalLib.pageUrl({id: site._id});
     }
     return '/';
+}
+
+function handleLogin(req, user, password) {
+    var loginResult = authLib.login({
+        user: user,
+        password: password,
+        userStore: portalLib.getUserStoreKey()
+    });
+    return {
+        body: loginResult,
+        contentType: 'application/json'
+    };
 }
 
 function handleForgotPassword(req, params) {
