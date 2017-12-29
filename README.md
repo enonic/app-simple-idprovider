@@ -57,6 +57,7 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 | 1.1.0 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.0/simpleidprovider-1.1.0.jar) |
 | 1.1.1 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.1/simpleidprovider-1.1.1.jar) |
 | 1.1.2 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.2/simpleidprovider-1.1.2.jar) |
+| 1.1.3 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.3/simpleidprovider-1.1.3.jar) |
 
 
 ## Building and deploying
