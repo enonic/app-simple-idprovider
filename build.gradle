@@ -33,11 +33,3 @@ repositories {
     jcenter()
     xp.enonicRepo()
 }
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository( url: 'http://repo.enonic.net/artifactory/public' )
-        }
-    }
-}
