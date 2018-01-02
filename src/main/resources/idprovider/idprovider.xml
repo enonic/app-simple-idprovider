@@ -24,6 +24,10 @@
       <label>Gravatar picture</label>
       <occurrences minimum="0" maximum="0"/>
     </input>
+    <input name="sessionTimeout" type="Long">
+      <label>Session timeout</label>
+      <occurrences minimum="0" maximum="1"/>
+    </input>
     <item-set name="forgotPassword">
       <label>Forgot password</label>
       <occurrences minimum="0" maximum="1"/>

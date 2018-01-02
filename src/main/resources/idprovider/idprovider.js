@@ -100,10 +100,12 @@ function generateRedirectUrl() {
 }
 
 function handleLogin(req, user, password) {
+    var sessionTimeout = authLib.getIdProviderConfig().sessionTimeout;
     var loginResult = authLib.login({
         user: user,
         password: password,
-        userStore: portalLib.getUserStoreKey()
+        userStore: portalLib.getUserStoreKey(),
+        sessionTimeout: sessionTimeout == null ? null : sessionTimeout
     });
     return {
         body: loginResult,
