@@ -20,6 +20,7 @@ This ID Provider contains a simple login/logout page to authenticate your local 
     * Title: Title used by the login/logout page
     * Theme: Display theme of the login/logout page
     * Gravatar picture: If enabled, the Gravatar picture of the logged in user will be displayed on the logout page
+    * (Optional) Session timeout: Session timeout (in seconds). By default, the value of session.timeout from com.enonic.xp.web.jetty.cfg
     * (Optional) Forgot password: If set, the login page will propose a password reset mechanism. 
 You need to have set up the mail configuration 
 (See [Mail Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) for more information).
@@ -58,6 +59,7 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 | 1.1.1 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.1/simpleidprovider-1.1.1.jar) |
 | 1.1.2 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.2/simpleidprovider-1.1.2.jar) |
 | 1.1.3 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.3/simpleidprovider-1.1.3.jar) |
+| 1.2.0 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.0/simpleidprovider-1.2.0.jar) |
 
 
 ## Building and deploying
