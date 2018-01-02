@@ -1,6 +1,6 @@
 package com.enonic.app.simpleidprovider;
 
-import com.enonic.xp.testing.script.ScriptRunnerSupport;
+import com.enonic.xp.testing.ScriptRunnerSupport;
 
 public class SimpleIdProviderTest
     extends ScriptRunnerSupport
