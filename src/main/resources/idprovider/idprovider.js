@@ -92,7 +92,9 @@ exports.post = function (req) {
 };
 
 function generateRedirectUrl() {
-    var site = portalLib.getSite();
+    var site = contextLib.runAsAdmin(function () {
+        return portalLib.getSite();
+    }); 
     if (site) {
         return portalLib.pageUrl({id: site._id});
     }
