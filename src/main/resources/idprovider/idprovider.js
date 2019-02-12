@@ -6,6 +6,7 @@ var renderLib = require('/lib/render/render');
 var contextLib = require('/lib/context');
 var mailLib = require('/lib/mail');
 var userLib = require('/lib/user');
+var configLib = require('/lib/config');
 
 exports.handle401 = function (req) {
     var body = renderLib.generateLoginPage();
@@ -102,7 +103,7 @@ function generateRedirectUrl() {
 }
 
 function handleLogin(req, user, password) {
-    var sessionTimeout = authLib.getIdProviderConfig().sessionTimeout;
+    var sessionTimeout = configLib.getSessionTimeout();
     var loginResult = authLib.login({
         user: user,
         password: password,
@@ -117,7 +118,7 @@ function handleLogin(req, user, password) {
 
 function handleForgotPassword(req, params) {
 
-    var reCaptcha = authLib.getIdProviderConfig().forgotPassword && authLib.getIdProviderConfig().forgotPassword.reCaptcha;
+    var reCaptcha = configLib.getRecaptcha();
     if (reCaptcha) {
         var reCaptchaVerificationResponse = httpClientLib.request({
             url: 'https://www.google.com/recaptcha/api/siteverify',

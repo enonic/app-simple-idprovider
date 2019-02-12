@@ -1,8 +1,8 @@
-var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
 var mustacheLib = require('/lib/xp/mustache');
 var displayLib = require('/lib/display');
 var gravatarLib = require('/lib/gravatar');
+var configLib = require('/lib/config');
 
 
 exports.generateLoginPage = function (redirectUrl, info) {
@@ -10,7 +10,7 @@ exports.generateLoginPage = function (redirectUrl, info) {
 
     var userStoreKey = portalLib.getUserStoreKey();
     var loginServiceUrl = portalLib.idProviderUrl();
-    var forgotPasswordUrl = authLib.getIdProviderConfig().forgotPassword ? portalLib.idProviderUrl({
+    var forgotPasswordUrl = configLib.getForgotPassword() ? portalLib.idProviderUrl({
         params: {
             action: 'forgot'
         }
@@ -45,7 +45,7 @@ exports.generateLogoutPage = function (user) {
     });
 
     var profileUrl;
-    if (user.email && authLib.getIdProviderConfig().gravatar) {
+    if (user.email && configLib.getGravatar()) {
         var gravatarHash = gravatarLib.hash(user.email);
         profileUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?d=blank";
     }
@@ -70,7 +70,7 @@ exports.generateForgotPasswordPage = function (expired) {
         sendTokenUrl: sendTokenUrl
     });
 
-    var reCaptcha = authLib.getIdProviderConfig().forgotPassword && authLib.getIdProviderConfig().forgotPassword.reCaptcha;
+    var siteKey = configLib.getSiteKey();
 
     return generatePage({
         scriptUrl: scriptUrl,
@@ -79,7 +79,7 @@ exports.generateForgotPasswordPage = function (expired) {
         error: expired ? "Sorry, but this link has expired. You can request another one below." : undefined,
         body: {
             username: "Email",
-            reCaptcha: reCaptcha && reCaptcha.siteKey
+            reCaptcha: siteKey
         },
         submit: "RESET"
     });
@@ -109,7 +109,7 @@ exports.generateUpdatePasswordPage = function (token) {
 };
 
 function generatePage(params) {
-    var idProviderConfig = authLib.getIdProviderConfig();
+    var idProviderConfig = configLib.getConfig();
     params.title = params.title || idProviderConfig.title || "User Login";
     params.theme = idProviderConfig.theme || "light-blue";
     return displayLib.render(params);
