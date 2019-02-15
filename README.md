@@ -54,13 +54,14 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 
 | App version | Required XP version | Download |
 | ----------- | ------------------- | -------- |
-| 1.0.0 | 6.6.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.0.0/simpleidprovider-1.0.0.jar) |
-| 1.1.0 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.0/simpleidprovider-1.1.0.jar) |
-| 1.1.1 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.1/simpleidprovider-1.1.1.jar) |
-| 1.1.2 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.2/simpleidprovider-1.1.2.jar) |
-| 1.1.3 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.3/simpleidprovider-1.1.3.jar) |
-| 1.2.0 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.0/simpleidprovider-1.2.0.jar) |
+| 1.2.2 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.2/simpleidprovider-1.2.2.jar) |
 | 1.2.1 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.1/simpleidprovider-1.2.1.jar) |
+| 1.2.0 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.0/simpleidprovider-1.2.0.jar) |
+| 1.1.3 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.3/simpleidprovider-1.1.3.jar) |
+| 1.1.2 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.2/simpleidprovider-1.1.2.jar) |
+| 1.1.1 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.1/simpleidprovider-1.1.1.jar) |
+| 1.1.0 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.0/simpleidprovider-1.1.0.jar) |
+| 1.0.0 | 6.6.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.0.0/simpleidprovider-1.0.0.jar) |
 
 
 ## Building and deploying
