@@ -1,6 +1,4 @@
-var authMock = require('/lib/xp/mock/auth');
-var contextMock = require('/lib/xp/mock/context');
-var portalMock = require('/lib/xp/mock/portal');
+var authMock = require('/site/lib/xp/mock/auth');
 var idProvider = require('/idprovider/idprovider');
 var assert = require('/lib/xp/testing');
 
