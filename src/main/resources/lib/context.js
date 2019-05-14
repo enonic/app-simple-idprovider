@@ -4,7 +4,7 @@ exports.runAsAdmin = function (callback) {
     return contextLib.run({
         user: {
             login: 'su',
-            userStore: 'system'
+            idProvider: 'system'
         },
         principals: ["role:system.admin"]
     }, callback);

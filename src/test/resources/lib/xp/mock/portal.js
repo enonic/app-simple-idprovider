@@ -2,7 +2,7 @@ var siteJson = {};
 var siteConfigJson = {};
 var contentJson = {};
 var componentJson = {};
-var userStoreKey = "system";
+var idProviderKey = "system";
 
 function createUrl(name, params) {
     return name + "/" + JSON.stringify(params);
@@ -65,8 +65,8 @@ var mock = {
         return componentJson;
     },
 
-    getUserStoreKey: function () {
-        return userStoreKey;
+    getIdProviderKey: function () {
+        return idProviderKey;
     }
 };
 
