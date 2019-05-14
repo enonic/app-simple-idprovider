@@ -1,5 +1,5 @@
 var portalLib = require('/lib/xp/portal');
-var mustacheLib = require('/lib/xp/mustache');
+var mustacheLib = require('/lib/mustache');
 var displayLib = require('/lib/display');
 var gravatarLib = require('/lib/gravatar');
 var configLib = require('/lib/config');
@@ -8,7 +8,7 @@ var configLib = require('/lib/config');
 exports.generateLoginPage = function (redirectUrl, info) {
     var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
 
-    var userStoreKey = portalLib.getUserStoreKey();
+    var idProviderKey = portalLib.getIdProviderKey();
     var loginServiceUrl = portalLib.idProviderUrl();
     var forgotPasswordUrl = configLib.getForgotPassword() ? portalLib.idProviderUrl({
         params: {
@@ -19,7 +19,7 @@ exports.generateLoginPage = function (redirectUrl, info) {
     var loginConfigView = resolve('login-config.txt');
     var config = mustacheLib.render(loginConfigView, {
         redirectUrl: redirectUrl,
-        userStoreKey: userStoreKey,
+        idProviderKey: idProviderKey,
         loginServiceUrl: loginServiceUrl
     });
 

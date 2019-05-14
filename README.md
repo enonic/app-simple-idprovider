@@ -41,12 +41,12 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
     mapping.admin.host = localhost
     mapping.admin.source = /admin
     mapping.admin.target = /admin
-    mapping.admin.userStore = system
+    mapping.admin.idProvider.system = default
     
     mapping.mysite.host = localhost
     mapping.mysite.source = /
     mapping.mysite.target = /portal/master/mysite
-    mapping.mysite.userStore = myuserstore
+    mapping.mysite.idProvider.myidprovider = default
     ```
 
 
@@ -54,6 +54,7 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 
 | App version | Required XP version | Download |
 | ----------- | ------------------- | -------- |
+| 2.0.0 | 7.0.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/2.0.0/simpleidprovider-2.0.0.jar) |
 | 1.2.2 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.2/simpleidprovider-1.2.2.jar) |
 | 1.2.1 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.1/simpleidprovider-1.2.1.jar) |
 | 1.2.0 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.0/simpleidprovider-1.2.0.jar) |

@@ -29,7 +29,7 @@ exports.testGet = function () {
         disabled: false,
         email: "user1@enonic.com",
         login: "user1",
-        userStore: "enonic"
+        idProvider: "enonic"
     });
 
     var result = idProvider.get({

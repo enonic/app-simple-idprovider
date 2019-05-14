@@ -6,7 +6,7 @@ exports.findUserByEmail = function (email) {
     return contextLib.runAsAdmin(function () {
         return authLib.findUsers({
             count: 1,
-            query: "userstorekey = '" + portalLib.getUserStoreKey() + "' AND email = '" + email + "'",
+            query: "userstorekey = '" + portalLib.getIdProviderKey() + "' AND email = '" + email + "'",
             includeProfile: true
         }).hits[0];
     });

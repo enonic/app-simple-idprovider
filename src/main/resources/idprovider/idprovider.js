@@ -1,6 +1,6 @@
 var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
-var httpClientLib = require('/lib/xp/http-client');
+var httpClientLib = require('/lib/http-client');
 var tokenLib = require('/lib/token');
 var renderLib = require('/lib/render/render');
 var contextLib = require('/lib/context');
@@ -107,7 +107,7 @@ function handleLogin(req, user, password) {
     var loginResult = authLib.login({
         user: user,
         password: password,
-        userStore: portalLib.getUserStoreKey(),
+        idProvider: portalLib.getIdProviderKey(),
         sessionTimeout: sessionTimeout == null ? null : sessionTimeout
     });
     return {
@@ -178,7 +178,7 @@ function handleUpdatePwd(req, token, password) {
             authLib.login({
                 user: user.login,
                 password: password,
-                userStore: portalLib.getUserStoreKey()
+                idProvider: portalLib.getIdProviderKey()
             });
 
             mailLib.sendUpdatedPasswordMail(req, user.email);
