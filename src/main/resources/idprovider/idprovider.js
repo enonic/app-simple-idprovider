@@ -1,6 +1,6 @@
 var authLib = require('/lib/xp/auth');
 var portalLib = require('/lib/xp/portal');
-var httpClientLib = require('/lib/xp/http-client');
+var httpClientLib = require('/lib/http-client');
 var tokenLib = require('/lib/token');
 var renderLib = require('/lib/render/render');
 var contextLib = require('/lib/context');
