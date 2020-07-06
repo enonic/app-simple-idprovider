@@ -1,6 +1,6 @@
 # Simple ID Provider App for Enonic XP
 
-[![Build Status](https://travis-ci.org/enonic/app-simple-idprovider.svg?branch=master)](https://travis-ci.org/enonic/app-simple-idprovider)
+[![Actions Status](https://github.com/enonic/app-simple-idprovider/workflows/Gradle%20Build/badge.svg)](https://github.com/enonic/app-simple-idprovider/actions)
 [![License](https://img.shields.io/github/license/enonic/app-simple-idprovider.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 This ID Provider contains a simple login/logout page to authenticate your local users.
