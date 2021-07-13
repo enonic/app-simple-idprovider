@@ -104,16 +104,39 @@ function generateRedirectUrl() {
 
 function handleLogin(req, user, password) {
     const sessionTimeout = configLib.getSessionTimeout();
-    const loginResult = authLib.login({
-        user: user,
-        password: password,
-        idProvider: portalLib.getIdProviderKey(),
-        sessionTimeout: sessionTimeout == null ? null : sessionTimeout
-    });
-    return {
-        body: loginResult,
-        contentType: 'application/json'
-    };
+    const idproviderConfig = authLib.getIdProviderConfig();
+
+    if (idproviderConfig.twoStepAuth == false) {
+        const loginResult = authLib.login({
+            user: user,
+            password: password,
+            idProvider: portalLib.getIdProviderKey(),
+            sessionTimeout: sessionTimeout == null ? null : sessionTimeout,
+        });
+        return {
+            body: {
+                login: loginResult,
+            },
+            contentType: 'application/json'
+        };
+    } else {
+        const loginResult = authLib.login({
+            user: user,
+            password: password,
+            idProvider: portalLib.getIdProviderKey(),
+            sessionTimeout: sessionTimeout == null ? null : sessionTimeout,
+            scope: "REQUEST"
+        });
+
+        return {
+            body: {
+                login: loginResult,
+                twoStep: true,
+            },
+            contentType: 'application/json'
+        }
+        
+    }
 }
 
 function handleForgotPassword(req, params) {
@@ -198,3 +221,11 @@ function handleUpdatePwd(req, token, password) {
     };
 }
 
+function handleTwoFactorSecret(req, user) {
+    
+}
+
+
+function handleTwoFactorLogin() {
+
+}

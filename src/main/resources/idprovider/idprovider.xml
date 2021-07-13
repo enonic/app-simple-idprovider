@@ -28,6 +28,10 @@
       <label>Session timeout</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
+    <input name="twoStepAuth" type="checkbox">
+      <label>Two step authentication (2FA)</label>
+      <default>checked</default>
+    </input>
     <item-set name="forgotPassword">
       <label>Forgot password</label>
       <occurrences minimum="0" maximum="1"/>

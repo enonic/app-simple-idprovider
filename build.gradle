@@ -19,8 +19,11 @@ dependencies {
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
+    include "com.enonic.xp:lib-repo:${xpVersion}"
+    include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.lib:lib-idproviderdisplay:2.0.0"
-    include "com.enonic.lib:lib-http-client:2.0.0"
+    include 'com.enonic.lib:lib-cache:2.1.0'
+    include "com.enonic.lib:lib-http-client:2.3.0"
     include "com.enonic.lib:lib-mustache:2.0.0"
     include "dev.samstevens.totp:totp:1.7.1"
 

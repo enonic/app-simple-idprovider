@@ -12,3 +12,12 @@ exports.findUserByEmail = function (email) {
     });
 };
 
+exports.findUserByName = function(user) {
+    return contextLib.runAsAdmin(function () {
+        return authLib.findUsers({
+            count: 1,
+            query: `userstorekey = '${portalLib.getIdProviderKey()}' AND login='${user}' OR userstorekey = '${portalLib.getIdProviderKey()}' AND email='${user}'`,
+            includeProfile: true
+        }).hits[0];
+    });
+}

@@ -5,8 +5,8 @@ exports.get = function(req) {
 
   const params = req.params;
   if (params && params.secret) {
-    const token = params.token;
-    const secret = params.secret;
+    const token = params.token; // 6 code
+    const secret = params.secret; // full user code saved localy
     body.valid = twoStep.isValidSecret(secret, token);
       
   } else {

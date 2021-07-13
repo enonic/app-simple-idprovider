@@ -1,9 +1,30 @@
-function handleAuthenticateResponse(loginResult) {
-    if (loginResult.authenticated) {
-        if (CONFIG.redirectUrl) {
-            location.href = CONFIG.redirectUrl;
+
+
+$("#inputUsername, #inputPassword").keyup(function (event) {
+    if (event.which !== 13) {
+        $("#formMessage").removeClass("form-message-info form-message-error");
+        $("#formMessage").addClass("hidden");
+    }
+});
+
+function handleRedirect() {
+    if (CONFIG.redirectUrl) {
+        location.href = CONFIG.redirectUrl;
+    } else {
+        location.reload();
+    }
+}
+
+function handleAuthenticateResponse(body) {
+    if (body.login.authenticated) {
+        if (body.twoStep) {
+            // ask for two step authentication
         } else {
-            location.reload();
+            if (CONFIG.redirectUrl) {
+                location.href = CONFIG.redirectUrl;
+            } else {
+                location.reload();
+            }
         }
     } else {
         $("#formMessage").removeClass("hidden form-message-info");
@@ -13,10 +34,15 @@ function handleAuthenticateResponse(loginResult) {
     }
 }
 
-function formSubmitted() {
+function showTwoStepAuth() {
+    $("#login").remove();
+    $("#twoStepAuth").removeClass("hidden");
+}
+
+function formSubmitted(action) {
     enableFormSubmit(false);
     var data = {
-        action: 'login',
+        action: action ? action : 'login',
         user: $("#inputUsername").val(),
         password: $("#inputPassword").val()
     };
@@ -31,10 +57,3 @@ function formSubmitted() {
         enableFormSubmit(true);
     });
 }
-
-$("#inputUsername, #inputPassword").keyup(function (event) {
-    if (event.which !== 13) {
-        $("#formMessage").removeClass("form-message-info form-message-error");
-        $("#formMessage").addClass("hidden");
-    }
-});
