@@ -1,15 +1,15 @@
-var authLib = require('/lib/xp/auth');
-var portalLib = require('/lib/xp/portal');
-var httpClientLib = require('/lib/http-client');
-var tokenLib = require('/lib/token');
-var renderLib = require('/lib/render/render');
-var contextLib = require('/lib/context');
-var mailLib = require('/lib/mail');
-var userLib = require('/lib/user');
-var configLib = require('/lib/config');
+const authLib = require('/lib/xp/auth');
+const portalLib = require('/lib/xp/portal');
+const httpClientLib = require('/lib/http-client');
+const tokenLib = require('/lib/token');
+const renderLib = require('/lib/render/render');
+const contextLib = require('/lib/context');
+const mailLib = require('/lib/mail');
+const userLib = require('/lib/user');
+const configLib = require('/lib/config');
 
 exports.handle401 = function (req) {
-    var body = renderLib.generateLoginPage();
+    const body = renderLib.generateLoginPage();
 
     return {
         status: 401,
@@ -19,8 +19,8 @@ exports.handle401 = function (req) {
 };
 
 exports.login = function (req) {
-    var redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
-    var body = renderLib.generateLoginPage(redirectUrl);
+    const redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
+    const body = renderLib.generateLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
         body: body
@@ -36,7 +36,7 @@ exports.logout = function (req) {
         };
     }
 
-    var body = renderLib.generateLoginPage(generateRedirectUrl(), "Successfully logged out");
+    const body = renderLib.generateLoginPage(generateRedirectUrl(), "Successfully logged out");
     return {
         contentType: 'text/html',
         body: body
@@ -44,9 +44,9 @@ exports.logout = function (req) {
 };
 
 exports.get = function (req) {
-    var body;
+    let body;
 
-    var action = req.params.action;
+    const action = req.params.action;
     if (action == 'forgot') {
         body = renderLib.generateForgotPasswordPage();
     }
@@ -60,7 +60,7 @@ exports.get = function (req) {
             body = renderLib.generateForgotPasswordPage(true);
         }
     } else {
-        var user = authLib.getUser();
+        const user = authLib.getUser();
         if (user) {
             body = renderLib.generateLogoutPage(user);
         } else {
@@ -75,15 +75,18 @@ exports.get = function (req) {
 };
 
 exports.post = function (req) {
-    var body = JSON.parse(req.body);
+    const body = JSON.parse(req.body);
+    log.info(JSON.stringify(body, null, 4));
 
-    var action = body.action;
+    const action = body.action;
     if (action == 'login' && body.user && body.password) {
         return handleLogin(req, body.user, body.password);
     } else if (action == 'send' && body.email) {
         return handleForgotPassword(req, body);
     } else if (action == 'update' && body.token && body.password) {
         return handleUpdatePwd(req, body.token, body.password);
+    } else if (action == 'code') {
+        //TODO create code
     }
 
     return {
@@ -93,7 +96,7 @@ exports.post = function (req) {
 };
 
 function generateRedirectUrl() {
-    var site = contextLib.runAsAdmin(function () {
+    const site = contextLib.runAsAdmin(function () {
         return portalLib.getSite();
     }); 
     if (site) {
@@ -103,13 +106,27 @@ function generateRedirectUrl() {
 }
 
 function handleLogin(req, user, password) {
-    var sessionTimeout = configLib.getSessionTimeout();
-    var loginResult = authLib.login({
-        user: user,
-        password: password,
-        idProvider: portalLib.getIdProviderKey(),
-        sessionTimeout: sessionTimeout == null ? null : sessionTimeout
-    });
+    const idProviderConfig = configLib.getConfig();
+    const sessionTimeout = configLib.getSessionTimeout();
+    let loginResult;
+
+    if (idProviderConfig.emailCode != false || idProviderConfig.emailCode == undefined) { //default true
+        loginResult = authLib.login({
+            user: user,
+            password: password,
+            idProvider: portalLib.getIdProviderKey(),
+            scope: "REQUEST",
+        });
+        loginResult.additionalCode = true;
+    } else {
+        loginResult = authLib.login({
+            user: user,
+            password: password,
+            idProvider: portalLib.getIdProviderKey(),
+            sessionTimeout: sessionTimeout == null ? null : sessionTimeout,
+            scope: "SESSION",
+        });
+    }
     return {
         body: loginResult,
         contentType: 'application/json'
@@ -118,9 +135,9 @@ function handleLogin(req, user, password) {
 
 function handleForgotPassword(req, params) {
 
-    var reCaptcha = configLib.getRecaptcha();
+    const reCaptcha = configLib.getRecaptcha();
     if (reCaptcha) {
-        var reCaptchaVerificationResponse = httpClientLib.request({
+        const reCaptchaVerificationResponse = httpClientLib.request({
             url: 'https://www.google.com/recaptcha/api/siteverify',
             method: 'POST',
             contentType: 'application/x-www-form-urlencoded',
@@ -136,7 +153,7 @@ function handleForgotPassword(req, params) {
             ]
         });
 
-        var reCaptchaVerification = JSON.parse(reCaptchaVerificationResponse.body);
+        const reCaptchaVerification = JSON.parse(reCaptchaVerificationResponse.body);
         if (!reCaptchaVerification || !reCaptchaVerification.success) {
             return {
                 status: 400,
@@ -145,12 +162,12 @@ function handleForgotPassword(req, params) {
         }
     }
 
-    var user = userLib.findUserByEmail(params.email);
+    const user = userLib.findUserByEmail(params.email);
 
     //If a user has the email provided
     if (user) {
         //Generates a token
-        var token = tokenLib.generateToken(user.key);
+        const token = tokenLib.generateToken(user.key);
 
         mailLib.sendResetMail(req, params.email, token)
 
@@ -168,7 +185,7 @@ function handleForgotPassword(req, params) {
 function handleUpdatePwd(req, token, password) {
     if (tokenLib.isTokenValid(token)) {
         contextLib.runAsAdmin(function () {
-            var user = tokenLib.findUserByToken(token);
+            const user = tokenLib.findUserByToken(token);
 
             authLib.changePassword({
                 userKey: user.key,

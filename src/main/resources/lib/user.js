@@ -1,6 +1,6 @@
-var authLib = require('/lib/xp/auth');
-var portalLib = require('/lib/xp/portal');
-var contextLib = require('/lib/context');
+const authLib = require('/lib/xp/auth');
+const portalLib = require('/lib/xp/portal');
+const contextLib = require('/lib/context');
 
 exports.findUserByEmail = function (email) {
     return contextLib.runAsAdmin(function () {

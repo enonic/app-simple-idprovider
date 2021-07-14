@@ -12,7 +12,7 @@ exports.testHandle401 = function () {
     assertLoginPage(result.body);
 };
 
-exports.testGet = function () {
+/*exports.testGet = function () {
     var result = idProvider.get({
         params: {}
     });
@@ -64,7 +64,7 @@ exports.testLogout = function () {
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertLoggedOutPage(result.body);
-};
+};*/
 
 function assertLoginPage(body) {
     assert.assertTrue(body.indexOf("User Login Test") != -1);

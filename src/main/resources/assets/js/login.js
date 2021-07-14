@@ -1,9 +1,9 @@
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
-        if (CONFIG.redirectUrl) {
-            location.href = CONFIG.redirectUrl;
+        if (loginResult.additionalCode) {
+            handleAdditionStep();
         } else {
-            location.reload();
+            handleRedirect();
         }
     } else {
         $("#formMessage").removeClass("hidden form-message-info");
@@ -13,13 +13,38 @@ function handleAuthenticateResponse(loginResult) {
     }
 }
 
+function handleRedirect() {
+    if (CONFIG.redirectUrl) {
+        location.href = CONFIG.redirectUrl;
+    } else {
+        location.reload();
+    }
+}
+
+function handleAdditionStep() {
+    const codeFormField = $("#inputCode").parent();
+    codeFormField.removeClass("hidden");
+    codeFormField.remove();
+    $("#formSubmit").before(codeFormField);
+    $("#inputConfirmation, #inputPassword").parent().remove();
+    $(".g-recaptcha, .form-forgot-pwd-link").remove();
+    $("#inputUsername").parent().addClass("hidden");
+}
+
 function formSubmitted() {
     enableFormSubmit(false);
-    var data = {
+    const pass = $('#inputPassword');
+    const code = $('#inputCode');
+    const data = {
         action: 'login',
         user: $("#inputUsername").val(),
-        password: $("#inputPassword").val()
     };
+    if (pass) {
+        data.password = pass.val();
+    }
+    if (code && code.parent().hasClass('hidden') == false) {
+        data.code = code.val();
+    }
     $.ajax({
         url: CONFIG.loginServiceUrl,
         type: 'post',
