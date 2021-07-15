@@ -22,6 +22,7 @@ dependencies {
     include "com.enonic.lib:lib-idproviderdisplay:2.1.0-SNAPSHOT"
     include "com.enonic.lib:lib-http-client:2.0.0"
     include "com.enonic.lib:lib-mustache:2.0.0"
+    include "com.enonic.lib:lib-text-encoding:2.0.0"
 
     testCompile 'junit:junit:4.13.2'
     testCompile "com.enonic.xp:testing:${xpVersion}"

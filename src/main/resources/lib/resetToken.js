@@ -1,11 +1,11 @@
-var authLib = require('/lib/xp/auth');
-var portalLib = require('/lib/xp/portal');
-var contextLib = require('/lib/context');
+const authLib = require('/lib/xp/auth');
+const portalLib = require('/lib/xp/portal');
+const contextLib = require('/lib/context');
 
 exports.isTokenValid = function (token) {
-    var user = findUserByToken(token);
+    const user = findUserByToken(token);
     if (user) {
-        var timestamp = user.profile.userpwd.resetTimestamp;
+        const timestamp = user.profile.userpwd.resetTimestamp;
         if ((timestamp - Date.now()) < 86400000) {
             return true;
         } else {
@@ -20,7 +20,7 @@ exports.findUserByToken = function (token) {
 };
 
 exports.generateToken = function (userKey) {
-    var token = doGenerateToken();
+    const token = doGenerateToken();
 
     contextLib.runAsAdmin(function () {
         return authLib.modifyProfile({
@@ -63,6 +63,6 @@ function findUserByToken(token) {
 }
 
 function doGenerateToken() {
-    var bean = __.newBean('com.enonic.app.simpleidprovider.TokenGeneratorService');
+    const bean = __.newBean('com.enonic.app.simpleidprovider.TokenGeneratorService');
     return bean.generateToken();
 }

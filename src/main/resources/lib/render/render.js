@@ -4,7 +4,7 @@ const displayLib = require('/lib/display');
 const gravatarLib = require('/lib/gravatar');
 const configLib = require('/lib/config');
 
-exports.generateLoginPage = function (redirectUrl, info) {
+exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
     const scriptUrl = portalLib.assetUrl({path: "js/login.js"});
     
     const idProviderConfig = configLib.getConfig();
@@ -18,7 +18,8 @@ exports.generateLoginPage = function (redirectUrl, info) {
 
     const loginConfigView = resolve('login-config.txt');
     const config = mustacheLib.render(loginConfigView, {
-        redirectUrl: redirectUrl,
+        codeUrl,
+        redirectUrl,
         idProviderKey: idProviderKey,
         loginServiceUrl: loginServiceUrl
     });
@@ -26,12 +27,11 @@ exports.generateLoginPage = function (redirectUrl, info) {
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        info: info,
+        info,
         body: {
             username: "Username or email",
             password: "Password",
             forgotPasswordUrl: forgotPasswordUrl,
-            code: idProviderConfig.emailCode ? idProviderConfig.emailCode : "email code", // Email default is true
         }
     });
 };
@@ -108,6 +108,24 @@ exports.generateUpdatePasswordPage = function (token) {
         submit: "UPDATE"
     });
 };
+
+exports.generateCodePage = function (redirectUrl, code) {
+    const scriptUrl = portalLib.assetUrl({path: "js/send-code.js"});
+
+    const logoutConfigView = resolve('redirect-config.txt');
+    const config = mustacheLib.render(logoutConfigView, {
+        redirectUrl,
+    });
+
+    return generatePage({
+        title: "Email code authentication",
+        scriptUrl,
+        config,
+        body: {
+            code,
+        }
+    });
+}
 
 function generatePage(params) {
     const idProviderConfig = configLib.getConfig();

@@ -4,7 +4,9 @@ var portalMock = require('/lib/xp/mock/portal');
 var idProvider = require('/idprovider/idprovider');
 var assert = require('/lib/xp/testing');
 
-exports.testHandle401 = function () {
+
+//TODO write test for 2step login and simple login
+/*exports.testHandle401 = function () {
     var result = idProvider.handle401({});
 
     assert.assertEquals('text/html', result.contentType);
@@ -12,7 +14,7 @@ exports.testHandle401 = function () {
     assertLoginPage(result.body);
 };
 
-/*exports.testGet = function () {
+exports.testGet = function () {
     var result = idProvider.get({
         params: {}
     });
