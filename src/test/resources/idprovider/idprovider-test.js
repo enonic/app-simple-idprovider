@@ -85,6 +85,5 @@ function assertLoggedOutPage(body) {
 }
 
 function assertForgotPwdPage(body) {
-    log.info(body);
     assert.assertTrue(body.indexOf("Password reset") != -1);
 }

@@ -1,12 +1,12 @@
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
         if (loginResult.twoStep) {
-            window.sessionStorage.setItem("simple-id", {
-                user: $("#inputUsername").val(),
-                token: loginResult.userToken,
-            });
+            window.sessionStorage.setItem("simple-id-user", $("#inputUsername").val());
+            window.sessionStorage.setItem("simple-id-token", loginResult.userToken);
+            handleRedirect(CONFIG.codeRedirect);
+        } else {
+            handleRedirect();
         }
-        handleRedirect();
     } else {
         $("#formMessage").removeClass("hidden form-message-info");
         $("#formMessage").addClass("form-message-error");
@@ -15,9 +15,9 @@ function handleAuthenticateResponse(loginResult) {
     }
 }
 
-function handleRedirect() {
-    if (CONFIG.redirectUrl) {
-        location.href = CONFIG.redirectUrl;
+function handleRedirect(override) {
+    if (override || CONFIG.redirectUrl) {
+        location.href = override || CONFIG.redirectUrl;
     } else {
         location.reload();
     }

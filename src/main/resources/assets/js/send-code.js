@@ -17,16 +17,14 @@ function handleRedirect() {
     }
 }
 
-console.log("Code page render");
-
 function formSubmitted() {
     enableFormSubmit(false);
     const code = $("#inputCode");
-    const storrageData = window.sessionStorage.get("simple-id");
+    const storrageData = window.sessionStorage;
     const data = {
         action: "code",
-        user: storrageData.user,
-        userToken: storrageData.userToken,
+        user: storrageData.getItem("simple-id-user"),
+        userToken: storrageData.getItem("simple-id-token"),
         code: code.val()
     };
     $.ajax({

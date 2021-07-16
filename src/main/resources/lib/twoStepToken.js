@@ -14,11 +14,12 @@ exports.isTokenValid = function (userId, userToken, code) {
 
     if (user) {
         const userLogin = user.profile.userLogin;
+        
         if (
-            userlogin.twoStepTimestamp - Date.now() < 600000 &&
+            userLogin.twoStepTimestamp - Date.now() < 600000 &&
             textEncoding.sha256(userToken + code + userLogin.salt) === userLogin.twoStepToken
         ) {
-            removeToken(user._id);
+            removeToken(user.key);
             return true;
         }
     }
@@ -41,17 +42,13 @@ function getUser(user) {
 
 exports.generateTokens = function (userId) {
     const user = getUser(userId);
-    let salt;
-    if (user.profile && user.profile.userLogin && user.profile.userLogin.salt) {
-        salt = user.profile.userLogin.salt;
-    } else {
-        salt = doGenerateRandomString();   
-    }
+    const salt = doGenerateRandomString();   
     const userToken = doGenerateRandomString();
     const emailCode = doGenerateEmailCode();
     //TODO REMOVE THIS!
     log.info(`Email code: ${emailCode}`);
     const encodedToken = textEncoding.sha256(userToken + emailCode + salt);
+
 
     contextLib.runAsAdmin(function () {
         authLib.modifyProfile({
@@ -59,10 +56,8 @@ exports.generateTokens = function (userId) {
             scope: "userLogin",
             editor: function (p) {
                 if (!p) {
-                    p = {
-                        salt,
-                    };
                 }
+                p.salt = salt;
                 p.twoStepToken = encodedToken;
                 p.twoStepTimestamp = Date.now();
                 return p;
@@ -77,14 +72,17 @@ exports.generateTokens = function (userId) {
 };
 
 function removeToken(userKey) {
-    authLib.modifyProfile({
-        key: userKey,
-        scope: "userLogin",
-        editor: function (p) {
-            p.twoStepToken = null;
-            p.twoStepTimestamp = null;
-            return p;
-        },
+    contextLib.runAsAdmin(function () {
+        authLib.modifyProfile({
+            key: userKey,
+            scope: "userLogin",
+            editor: function (p) {
+                p.salt = null;
+                p.twoStepToken = null;
+                p.twoStepTimestamp = null;
+                return p;
+            },
+        });
     });
 }
 exports.removeToken = removeToken;

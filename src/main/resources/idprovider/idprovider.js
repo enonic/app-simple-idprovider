@@ -2,7 +2,7 @@ const authLib = require('/lib/xp/auth');
 const portalLib = require('/lib/xp/portal');
 const httpClientLib = require('/lib/http-client');
 const tokenLib = require('/lib/resetToken');
-const twoStepToken = require('/lib/twoStepToken');
+const twoStepLib = require('/lib/twoStepToken');
 const renderLib = require('/lib/render/render');
 const contextLib = require('/lib/context');
 const mailLib = require('/lib/mail');
@@ -10,8 +10,7 @@ const userLib = require('/lib/user');
 const configLib = require('/lib/config');
 
 exports.handle401 = function (req) {
-    log.info(JSON.stringify(req, null ,4));
-    const body = initLoginBody();
+    const body = getLoginPage();
 
     return {
         status: 401,
@@ -21,9 +20,8 @@ exports.handle401 = function (req) {
 };
 
 exports.login = function (req) {
-    log.info("login");
     const redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
-    const body = initLoginBody(redirectUrl);
+    const body = getLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
         body: body
@@ -39,7 +37,7 @@ exports.logout = function (req) {
         };
     }
 
-    const body = renderLib.generateLoginPage(generateRedirectUrl(), "Successfully logged out");
+    const body = getLoginPage(generateRedirectUrl(), "Successfully logged out");
     return {
         contentType: 'text/html',
         body: body
@@ -65,15 +63,15 @@ exports.get = function (req) {
             body = renderLib.generateForgotPasswordPage(true);
         }
     }  
-    else if (action == 'code' && params.token && tokenLib.isCodeTokenValid(params.user, params.token)) {
-        body = renderLib.generateCodePage(generateRedirectUrl(), token);
+    else if (action == 'code') {
+        body = renderLib.generateCodePage(generateRedirectUrl(), "Email code");
     }
     else {
         const user = authLib.getUser();
         if (user) {
             body = renderLib.generateLogoutPage(user);
         } else {
-            body = initLoginBody();
+            body = getLoginPage(generateRedirectUrl());
         }
     }
 
@@ -103,18 +101,15 @@ exports.post = function (req) {
     };
 };
 
-function initLoginBody(redirectUrl) {
-    let redirect;
+function getLoginPage(redirectUrl, info) {
+    let codeRedirect;
     if (isEmailCodeRequired()) {
-        log.info("Redirect to code page");
-        redirect = generateCodeRedirectpage();
-        log.info(redirect);
+        codeRedirect = generateCodeRedirectpage();
     } 
     else {
-        log.info("No email?");
         codeRedirect = generateRedirectUrl();
     }
-    body = renderLib.generateLoginPage(redirectUrl, undefined, codeRedirect);
+    return renderLib.generateLoginPage(redirectUrl, info, codeRedirect);
 }
 
 function generateRedirectUrl() {
@@ -163,7 +158,7 @@ function handleLogin(req, user, password) {
             loginResult.twoStep = true;
             authLib.logout(); // this is super hacky
 
-            const tokens = twoStepToken.generateTokens(user);
+            const tokens = twoStepLib.generateTokens(user);
             // TODO send email to user
             loginResult.userToken = tokens.userToken;
         }
@@ -183,10 +178,11 @@ function handleLogin(req, user, password) {
 }
 
 function handleCodeLogin(req, user, userToken, code) {
-    const valid = userTokenLib.isTwoStepTokenValid(user, userToken, code);
-
+    const valid = twoStepLib.isTokenValid(user, userToken, code);
+    
     if (valid) {
-        loginResult = authLib.login({
+        const sessionTimeout = configLib.getSessionTimeout();
+        const loginResult = authLib.login({
             user: user,
             idProvider: portalLib.getIdProviderKey(),
             sessionTimeout: sessionTimeout == null ? null : sessionTimeout,
@@ -200,7 +196,9 @@ function handleCodeLogin(req, user, userToken, code) {
     } 
     else {
         return {
-            status: 400,
+            body: {
+                authenticated: false,
+            },
             contentType: 'application/json'
         }
     }

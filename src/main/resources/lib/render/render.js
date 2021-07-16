@@ -112,9 +112,11 @@ exports.generateUpdatePasswordPage = function (token) {
 exports.generateCodePage = function (redirectUrl, code) {
     const scriptUrl = portalLib.assetUrl({path: "js/send-code.js"});
 
-    const logoutConfigView = resolve('redirect-config.txt');
-    const config = mustacheLib.render(logoutConfigView, {
+    const loginServiceUrl = portalLib.idProviderUrl();
+    const loginConfigView = resolve('login-config.txt');
+    const config = mustacheLib.render(loginConfigView, {
         redirectUrl,
+        loginServiceUrl,
     });
 
     return generatePage({
