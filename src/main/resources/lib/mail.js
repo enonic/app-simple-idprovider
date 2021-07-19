@@ -36,11 +36,18 @@ exports.sendUpdatedPasswordMail = function (req, to) {
 
 function sendMail(req, to, subject, body) {
     const from = configLib.getEmail() || ('noreply@' + req.host);
-    mailLib.send({
+    const result = mailLib.send({
         from: from,
         to: to,
         subject: subject,
         body: body,
         contentType: 'text/html; charset="UTF-8"'
     });
+}
+
+exports.sendLoginCodeEmail = function(req, to, code) {
+    const body = `<p>Your code to login to ${configLib.getSite()} is: </p>
+    <div><h2>${code}</h2></div>`;
+
+    sendMail(req, to, `Login to ${configLib.getSite()}`, body);
 }

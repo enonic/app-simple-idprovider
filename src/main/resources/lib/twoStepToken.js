@@ -39,16 +39,14 @@ function getUser(user) {
 
     return result;
 };
+exports.getUser = getUser;
 
 exports.generateTokens = function (userId) {
     const user = getUser(userId);
     const salt = doGenerateRandomString();   
     const userToken = doGenerateRandomString();
     const emailCode = doGenerateEmailCode();
-    //TODO REMOVE THIS!
-    log.info(`Email code: ${emailCode}`);
     const encodedToken = textEncoding.sha256(userToken + emailCode + salt);
-
 
     contextLib.runAsAdmin(function () {
         authLib.modifyProfile({
@@ -56,6 +54,7 @@ exports.generateTokens = function (userId) {
             scope: "userLogin",
             editor: function (p) {
                 if (!p) {
+                    p ={};
                 }
                 p.salt = salt;
                 p.twoStepToken = encodedToken;

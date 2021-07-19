@@ -155,11 +155,20 @@ function handleLogin(req, user, password) {
         });
         // request persists? Need to logout straight after. 
         if (loginResult.authenticated) {
+            const userNode = twoStepLib.getUser(user);
             loginResult.twoStep = true;
             authLib.logout(); // this is super hacky
 
             const tokens = twoStepLib.generateTokens(user);
-            // TODO send email to user
+            try {
+                // mailLib.sendLoginCodeEmail(req, userNode.email, tokens.emailCode);
+            } catch (e) {
+                //Locally emails fail. Change configuration or setup an email server
+                log.error(`Could not send email:`);
+                log.error(JSON.stringify(e.message, null, 4));
+                log.error(JSON.stringify(e.stacktrace, null, 4));
+            }
+
             loginResult.userToken = tokens.userToken;
         }
     } else {

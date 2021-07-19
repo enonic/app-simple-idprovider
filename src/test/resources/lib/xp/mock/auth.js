@@ -1,13 +1,13 @@
-var idProviderConfigJson = {
+let idProviderConfigJson = {
     title: "User Login Test",
     forgotPassword: {
         email: "noreply@example.com",
         site: "WebsiteTest"
     }
 };
-var userJson = null;
+let userJson = null;
 
-var mock = {
+const mock = {
     getUser: function () {
         return userJson;
     },
@@ -16,6 +16,17 @@ var mock = {
     },
     logout: function () {
         userJson = null;
+    }, 
+    findUsers: function () {
+        return { hits: [userJson] };
+    }
+};
+
+exports.mockIdProviderConfig = function(data) {
+    idProviderConfigJson = {
+        title: data.title,
+        emailCode: data.emailCode,
+        forgotPassword: data.forgotPassword,
     }
 };
 

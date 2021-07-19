@@ -1,13 +1,14 @@
-var authMock = require('/lib/xp/mock/auth');
-var contextMock = require('/lib/xp/mock/context');
-var portalMock = require('/lib/xp/mock/portal');
-var idProvider = require('/idprovider/idprovider');
-var assert = require('/lib/xp/testing');
+const authMock = require('/lib/xp/mock/auth');
+const contextMock = require('/lib/xp/mock/context');
+const portalMock = require('/lib/xp/mock/portal');
+const idProvider = require('/idprovider/idprovider');
+const assert = require('/lib/xp/testing');
+// Need to mock email so it does not break everything?
 
+//TODO write test for twoStep login and simple login
 
-//TODO write test for 2step login and simple login
-/*exports.testHandle401 = function () {
-    var result = idProvider.handle401({});
+exports.testHandle401 = function () {
+    const result = idProvider.handle401({});
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(401 == result.status);
@@ -15,7 +16,7 @@ var assert = require('/lib/xp/testing');
 };
 
 exports.testGet = function () {
-    var result = idProvider.get({
+    let result = idProvider.get({
         params: {}
     });
     assert.assertEquals('text/html', result.contentType);
@@ -34,14 +35,46 @@ exports.testGet = function () {
         idProvider: "enonic"
     });
 
-    var result = idProvider.get({
+    result = idProvider.get({
         params: {}
     });
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertLogoutPage(result.body);
+};
 
-    var result = idProvider.get({
+exports.testPostTwoStep = function () {
+    //TODO mock userprofile
+    authMock.mockUser({
+    
+    });
+
+    authMock.mockIdProviderConfig({
+        title: undefined,
+        emailCode: true,
+        forgotPassword: {
+            site: "test_site",
+            email: "no_email@test.com"
+        }
+    });
+
+    let result = idProvider.post({
+        body: JSON.stringify({
+            action: "code"
+        }),
+    });
+
+    assert.assertEquals('text/html', result.contentType);
+    assert.assertTrue(!result.status || 200 == result.status);
+    assertCodePage(result.body);
+};
+
+// exports.testTwoStepCodeLogin = function() {
+
+// };
+
+exports.testForgot = function() {
+    const result = idProvider.get({
         params: {
             action: "forgot"
         }
@@ -49,11 +82,10 @@ exports.testGet = function () {
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertForgotPwdPage(result.body);
-}
-;
+};
 
 exports.testLogin = function () {
-    var result = idProvider.login({});
+    const result = idProvider.login({});
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
@@ -61,12 +93,17 @@ exports.testLogin = function () {
 };
 
 exports.testLogout = function () {
-    var result = idProvider.logout({});
+    const result = idProvider.logout({});
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertLoggedOutPage(result.body);
-};*/
+};
+
+function assertCodePage(body) {
+    log.error(body);
+    assert.assertTrue(body.indexOf("Email code authentication") != -1)
+}
 
 function assertLoginPage(body) {
     assert.assertTrue(body.indexOf("User Login Test") != -1);
