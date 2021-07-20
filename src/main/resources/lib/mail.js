@@ -42,8 +42,6 @@ function sendMail(req, to, subject, body) {
         body: body,
         contentType: 'text/html; charset="UTF-8"'
     });
-
-    log.info(`mail: ${result}`);
 }
 
 exports.sendLoginCodeEmail = function(req, to, code) {

@@ -117,8 +117,6 @@ exports.testLogin = function () {
         validTicket: false,
     });
 
-    log.info(result.body, null, 4);
-
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertLoginPage(result.body);

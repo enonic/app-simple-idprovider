@@ -161,7 +161,7 @@ function handleLogin(req, user, password) {
 
             const tokens = twoStepLib.generateTokens(user);
             try {
-                // mailLib.sendLoginCodeEmail(req, userNode.email, tokens.emailCode);
+                mailLib.sendLoginCodeEmail(req, userNode.email, tokens.emailCode);
             } catch (e) {
                 //Locally emails fail. Change configuration or setup an email server
                 log.error(`Could not send email:`);
