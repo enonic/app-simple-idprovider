@@ -19,6 +19,12 @@ const mock = {
     }, 
     findUsers: function () {
         return { hits: [userJson] };
+    },
+    login: function () {
+        return;
+    },
+    modifyProfile: function() {
+        return;
     }
 };
 

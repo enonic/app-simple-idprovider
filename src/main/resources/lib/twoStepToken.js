@@ -39,6 +39,7 @@ function getUser(user) {
 
     return result;
 };
+
 exports.getUser = getUser;
 
 exports.generateTokens = function (userId) {

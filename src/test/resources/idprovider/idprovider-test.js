@@ -3,9 +3,8 @@ const contextMock = require('/lib/xp/mock/context');
 const portalMock = require('/lib/xp/mock/portal');
 const idProvider = require('/idprovider/idprovider');
 const assert = require('/lib/xp/testing');
+const textEncoding = require("/lib/text-encoding");
 // Need to mock email so it does not break everything?
-
-//TODO write test for twoStep login and simple login
 
 exports.testHandle401 = function () {
     const result = idProvider.handle401({});
@@ -43,10 +42,21 @@ exports.testGet = function () {
     assertLogoutPage(result.body);
 };
 
+//Used by testPostTwoStep & testTwoStepLogin
+const code = "123456";
+const userToken = "myrandomtoken";
 exports.testPostTwoStep = function () {
-    //TODO mock userprofile
     authMock.mockUser({
-    
+        displayName: "mail user",
+        login: "mailUser",
+        email: "mailUser@enonic.com",
+        profile: {
+            userLogin: {
+                salt: "2",
+                twoStepToken: textEncoding.sha256(userToken + code + "2"),
+                twoStepTimestamp: Date.now(),
+            }
+        }
     });
 
     authMock.mockIdProviderConfig({
@@ -58,20 +68,29 @@ exports.testPostTwoStep = function () {
         }
     });
 
-    let result = idProvider.post({
+    const result = idProvider.post({
         body: JSON.stringify({
-            action: "code"
+            action: "code",
+            code,
+            userToken,
         }),
+    });
+
+    assert.assertEquals('application/json', result.contentType);
+    assert.assertTrue(!result.status || 200 == result.status);
+};
+
+exports.testTwoStepLogin = function() {
+    const result = idProvider.get({
+        params: {
+            action: "code",
+        },
     });
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
     assertCodePage(result.body);
 };
-
-// exports.testTwoStepCodeLogin = function() {
-
-// };
 
 exports.testForgot = function() {
     const result = idProvider.get({
@@ -85,7 +104,20 @@ exports.testForgot = function() {
 };
 
 exports.testLogin = function () {
-    const result = idProvider.login({});
+    authMock.mockIdProviderConfig({
+        title: "User Login Test",
+        emailCode: true,
+        forgotPassword: {
+            site: "test_site",
+            email: "no_email@test.com"
+        }
+    });
+
+    const result = idProvider.login({
+        validTicket: false,
+    });
+
+    log.info(result.body, null, 4);
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
@@ -101,7 +133,6 @@ exports.testLogout = function () {
 };
 
 function assertCodePage(body) {
-    log.error(body);
     assert.assertTrue(body.indexOf("Email code authentication") != -1)
 }
 

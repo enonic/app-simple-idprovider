@@ -205,6 +205,7 @@ function handleCodeLogin(req, user, userToken, code) {
     } 
     else {
         return {
+            status: 403,
             body: {
                 authenticated: false,
             },

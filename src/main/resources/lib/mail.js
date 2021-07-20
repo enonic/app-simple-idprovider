@@ -33,7 +33,6 @@ exports.sendUpdatedPasswordMail = function (req, to) {
     sendMail(req, to, "Password updated", body);
 }
 
-
 function sendMail(req, to, subject, body) {
     const from = configLib.getEmail() || ('noreply@' + req.host);
     const result = mailLib.send({
@@ -43,6 +42,8 @@ function sendMail(req, to, subject, body) {
         body: body,
         contentType: 'text/html; charset="UTF-8"'
     });
+
+    log.info(`mail: ${result}`);
 }
 
 exports.sendLoginCodeEmail = function(req, to, code) {
