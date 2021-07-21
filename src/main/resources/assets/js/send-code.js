@@ -2,11 +2,16 @@ function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
         handleRedirect();
     } else {
-        $("#formMessage").removeClass("hidden form-message-info");
-        $("#formMessage").addClass("form-message-error");
-        $("#message").text("Login Failed!");
-        $("#inputPassword").focus();
+        showError();
     }
+}
+
+function showError(error) {
+    $("#formMessage").removeClass("hidden form-message-info");
+    $("#formMessage").addClass("form-message-error");
+    $("#message").text("Login Failed!");
+    $("#inputPassword").focus();
+    console.log(error);
 }
 
 function handleRedirect() {
@@ -33,6 +38,7 @@ function formSubmitted() {
         dataType: "json",
         contentType: "application/json",
         success: handleAuthenticateResponse,
+        error: showError,
         data: JSON.stringify(data),
     }).always(function () {
         enableFormSubmit(true);
