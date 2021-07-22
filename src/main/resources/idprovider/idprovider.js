@@ -9,98 +9,6 @@ const mailLib = require('/lib/mail');
 const userLib = require('/lib/user');
 const configLib = require('/lib/config');
 
-exports.handle401 = function (req) {
-    const body = getLoginPage();
-
-    return {
-        status: 401,
-        contentType: 'text/html',
-        body: body
-    };
-};
-
-exports.login = function (req) {
-    const redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
-    const body = getLoginPage(redirectUrl);
-    return {
-        contentType: 'text/html',
-        body: body
-    };
-};
-
-exports.logout = function (req) {
-    authLib.logout();
-
-    if (req.validTicket && req.params.redirect) {
-        return {
-            redirect: req.params.redirect
-        };
-    }
-
-    const body = getLoginPage(generateRedirectUrl(), "Successfully logged out");
-    return {
-        contentType: 'text/html',
-        body: body
-    };
-};
-
-exports.get = function (req) {
-    let body;
-
-    const action = req.params.action;
-    const params = req.params;
-    if (action == 'forgot') {
-        body = renderLib.generateForgotPasswordPage();
-    }
-    else if (action == 'sent') {
-        body =
-            renderLib.generateLoginPage(generateRedirectUrl(), "We have sent an email with instructions on how to reset your password");
-    } 
-    else if (action == 'reset' && params.token) {
-        if (tokenLib.isTokenValid(params.token)) {
-            body = renderLib.generateUpdatePasswordPage(params.token);
-        } else {
-            body = renderLib.generateForgotPasswordPage(true);
-        }
-    }  
-    else if (action == 'code') {
-        body = renderLib.generateCodePage(generateRedirectUrl(), "Email code");
-    }
-    else {
-        const user = authLib.getUser();
-        if (user) {
-            body = renderLib.generateLogoutPage(user);
-        } else {
-            body = getLoginPage(generateRedirectUrl());
-        }
-    }
-
-    return {
-        contentType: 'text/html',
-        body: body
-    };
-};
-
-exports.post = function (req) {
-    const body = JSON.parse(req.body);
-
-    const action = body.action;
-    if (action == 'login' && body.user && body.password) {
-        return handleLogin(req, body.user, body.password);
-    } else if (action == 'send' && body.email) {
-        return handleForgotPassword(req, body);
-    } else if (action == 'update' && body.token && body.password) {
-        return handleUpdatePwd(req, body.token, body.password);
-    } else if (action == 'code') {
-        return handleCodeLogin(req, body.user, body.userToken, body.code);
-    }
-
-    return {
-        status: 400,
-        contentType: 'application/json'
-    };
-};
-
 function getLoginPage(redirectUrl, info) {
     let codeRedirect;
     if (isEmailCodeRequired()) {
@@ -137,33 +45,31 @@ function isEmailCodeRequired() {
     const idProviderConfig = configLib.getConfig();
 
     return (
-        idProviderConfig.emailCode != false ||
-        idProviderConfig.emailCode == undefined
+        idProviderConfig.emailCode !== false ||
+        idProviderConfig.emailCode === undefined
     );
 }
 
 function handleLogin(req, user, password) {
     const sessionTimeout = configLib.getSessionTimeout();
-    let loginResult;
+    let loginResult = {};
 
     if (isEmailCodeRequired()) { //default true
-        loginResult = authLib.login({
-            user: user,
-            password: password,
-            idProvider: portalLib.getIdProviderKey(),
-            scope: "REQUEST",
+        const validUser = twoStepLib.checkLogin({
+            user,
+            password,
         });
-        // request persists? Need to logout straight after. 
-        if (loginResult.authenticated) {
-            const userNode = twoStepLib.getUser(user);
-            loginResult.twoStep = true;
-            authLib.logout(); // this is super hacky
 
+        if (validUser) {
+            const userNode = twoStepLib.getUser(user);
             const tokens = twoStepLib.generateTokens(user);
+            loginResult.twoStep = true;
+            loginResult.authenticated = true;
+
             try {
                 mailLib.sendLoginCodeEmail(req, userNode.email, tokens.emailCode);
             } catch (e) {
-                //Locally emails fail. Change configuration or setup an email server
+                //Locally email fails. Change configuration or setup an email server
                 log.error(`Could not send email:`);
                 log.error(JSON.stringify(e.message, null, 4));
                 log.error(JSON.stringify(e.stacktrace, null, 4));
@@ -296,3 +202,111 @@ function handleUpdatePwd(req, token, password) {
     };
 }
 
+
+exports.handle401 = function (req) {
+    const body = getLoginPage();
+
+    return {
+        status: 401,
+        contentType: 'text/html',
+        body: body
+    };
+};
+
+exports.login = function (req) {
+    const redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
+    const body = getLoginPage(redirectUrl);
+    return {
+        contentType: 'text/html',
+        body: body
+    };
+};
+
+exports.logout = function (req) {
+    authLib.logout();
+
+    if (req.validTicket && req.params.redirect) {
+        return {
+            redirect: req.params.redirect
+        };
+    }
+
+    const body = getLoginPage(generateRedirectUrl(), "Successfully logged out");
+    return {
+        contentType: 'text/html',
+        body: body
+    };
+};
+
+exports.get = function (req) {
+    let body;
+
+    const action = req.params.action;
+    const token = req.params.token;
+    const user = authLib.getUser();
+    switch(action) {
+        case 'forgot': 
+            body = renderLib.generateForgotPasswordPage();
+            break;
+        case 'sent': 
+            body = renderLib.generateLoginPage(
+                generateRedirectUrl(), 
+                "We have sent an email with instructions on how to reset your password"
+            );
+            break;
+        case 'reset':
+            if (tokenLib.isTokenValid(token)) {
+                body = renderLib.generateUpdatePasswordPage(token);
+            } else {
+                body = renderLib.generateForgotPasswordPage(true);
+            }
+            break;
+        case 'code':
+            body = renderLib.generateCodePage(generateRedirectUrl(), "Email code");
+            break;
+        default: 
+            if (user) {
+                body = renderLib.generateLogoutPage(user);
+            } else {
+                body = getLoginPage(generateRedirectUrl());
+            }
+            break;
+    }
+
+    return {
+        contentType: 'text/html',
+        body: body
+    };
+};
+
+exports.post = function (req) {
+    const body = JSON.parse(req.body);
+
+    const action = body.action;
+    switch (action) {
+        case 'login':
+            if (body.user && body.password) {
+                return handleLogin(req, body.user, body.password);
+            }
+            break;
+        case 'send':
+            if (body.email) {
+                return handleForgotPassword(req, body);
+            }
+            break;
+        case 'update':
+            if (body.token && body.password) {
+                return handleUpdatePwd(req, body.token, body.password);
+            }
+            break;
+        case 'code':
+            if (body.user && body.userToken && body.code) {
+                return handleCodeLogin(req, body.user, body.userToken, body.code);
+            }
+    }
+
+    return {
+        status: 400,
+        contentType: 'application/json'
+    };
+};

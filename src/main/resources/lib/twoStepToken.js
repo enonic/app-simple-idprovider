@@ -88,15 +88,29 @@ function removeToken(userKey) {
 exports.removeToken = removeToken;
 
 function doGenerateRandomString() {
-    var bean = __.newBean(
+    const bean = __.newBean(
         "com.enonic.app.simpleidprovider.TokenGeneratorService"
     );
     return bean.generateToken();
 }
 
 function doGenerateEmailCode() {
-    var bean = __.newBean(
+    const bean = __.newBean(
         "com.enonic.app.simpleidprovider.TokenGeneratorService"
     );
     return bean.generateCode();
+}
+
+// validated username and password. Does not do an login eg. session etc.
+exports.checkLogin = function(param) {
+    const bean = __.newBean("com.enonic.app.simpleidprovider.AuthenticateHandler");
+    const idproviderkey = contextLib.runAsAdmin(function () {
+        return portalLib.getIdProviderKey();
+    });
+    let email = getUser(param.user).email;
+    bean.setUser(email);
+    bean.setPassword(param.password);
+    bean.setIdProvider([].concat(idproviderkey));
+
+    return bean.attemptLogin();
 }

@@ -35,7 +35,7 @@ exports.sendUpdatedPasswordMail = function (req, to) {
 
 function sendMail(req, to, subject, body) {
     const from = configLib.getEmail() || ('noreply@' + req.host);
-    const result = mailLib.send({
+    mailLib.send({
         from: from,
         to: to,
         subject: subject,

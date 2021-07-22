@@ -42,10 +42,11 @@ exports.testGet = function () {
     assertLogoutPage(result.body);
 };
 
-//Used by testPostTwoStep & testTwoStepLogin
-const code = "123456";
-const userToken = "myrandomtoken";
+
 exports.testPostTwoStep = function () {
+    const code = "123456";
+    const userToken = "myrandomtoken";
+
     authMock.mockUser({
         displayName: "mail user",
         login: "mailUser",
@@ -73,9 +74,10 @@ exports.testPostTwoStep = function () {
             action: "code",
             code,
             userToken,
+            user: "mailUser"
         }),
     });
-
+    
     assert.assertEquals('application/json', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);
 };

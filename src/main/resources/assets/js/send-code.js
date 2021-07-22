@@ -24,13 +24,11 @@ function handleRedirect() {
 
 function formSubmitted() {
     enableFormSubmit(false);
-    const code = $("#inputCode");
-    const storrageData = window.sessionStorage;
     const data = {
         action: "code",
-        user: storrageData.getItem("simple-id-user"),
-        userToken: storrageData.getItem("simple-id-token"),
-        code: code.val()
+        user: sessionStorage.getItem("simple-id-user"),
+        userToken: sessionStorage.getItem("simple-id-token"),
+        code: $("#inputCode").val()
     };
     $.ajax({
         url: CONFIG.loginServiceUrl,
