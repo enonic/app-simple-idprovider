@@ -107,8 +107,11 @@ exports.checkLogin = function(param) {
     const idproviderkey = contextLib.runAsAdmin(function () {
         return portalLib.getIdProviderKey();
     });
-    let email = getUser(param.user).email;
-    bean.setUser(email);
+    const user = getUser(param.user);
+    if (!user) { //no user stop
+        return false;
+    }
+    bean.setUser(user.email);
     bean.setPassword(param.password);
     bean.setIdProvider([].concat(idproviderkey));
 
