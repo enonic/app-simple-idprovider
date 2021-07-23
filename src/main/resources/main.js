@@ -1,5 +1,7 @@
-const nodeLib = require('/lib/xp/node');
+const nodeLib = require("/lib/xp/node");
+// const contextLocal = require("/lib/context");
 const contextLib = require('/lib/xp/context');
+
 
 function exists(providers) {
     for (const idprovider in providers) {
@@ -18,30 +20,47 @@ function exists(providers) {
 function initUserStore() {
     const repoConnection = nodeLib.connect({
         repoId: "system-repo",
-        branch: "master"
+        branch: "master",
     });
+
+    log.info(`Exists: ${repoConnection.exists('/identity')}`);
     const systemidproviders = repoConnection.findChildren({
-        "parent-path": "/identity",
         start: 0,
         count: 100,
+        parentKey: "identity",
     });
 
-    log.info("connection astablished");
+    log.info("connection established");
+    log.info(systemidproviders.total);
 
     if (exists(systemidproviders.hits) === false) {
-        contextLib.runAsAdmin
-        const result = repoConnection.create({
-            _name: "simpleidprovider",
-            _parentPath: "/identity",
-            idProvider: {
-                applicationKey: "com.enonic.app.simpleidprovider",
-            }
-        });
+        const result = contextLib.run(
+            {
+                repository: "system-repo",
+                branch: "master",
+                user: {
+                    login: "su",
+                    idProvider: "system",
+                },
+                principals: ["role:system.admin"],
+            },
+            createUserStore(repoConnection)
+        );
 
         if (result) {
             log.info("Created simple idprovider userstore");
         }
     }
+}
+
+function createUserStore(connection) {
+    return connection.create({
+        _name: "simpleidprovider",
+        _parentPath: "/identity",
+        idProvider: {
+            applicationKey: "com.enonic.app.simpleidprovider",
+        },
+    });
 }
 
 initUserStore();
