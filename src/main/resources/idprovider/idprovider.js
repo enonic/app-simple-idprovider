@@ -44,7 +44,7 @@ function isEmailCodeRequired() {
 
     if (idProviderConfig.twostep === undefined) {
         return false;
-    } else if (idProviderConfig.twostep._selected == 'email') {
+    } else if (idProviderConfig.twostep.type == 'email') {
         return true;
     }
     return false;
