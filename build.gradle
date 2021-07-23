@@ -23,11 +23,28 @@ dependencies {
     include "com.enonic.lib:lib-http-client:2.0.0"
     include "com.enonic.lib:lib-mustache:2.0.0"
     include "com.enonic.lib:lib-text-encoding:2.0.0"
-    compile "com.enonic.xp:app-users:${xpVersion}"
 
     testCompile 'junit:junit:4.13.2'
     testCompile "com.enonic.xp:testing:${xpVersion}"
 }
+
+// Copy idprovider classes into the project
+task includeCopy {
+    doLast {
+        copy {
+            from "$projectDir/../app-users/src/main/resources/lib/"
+            include 'auth.js'
+            into 'src/main/resources/lib/'
+        }
+        copy {
+            from "$projectDir/../app-users/src/main/java/"
+            include '**'
+            into 'src/main/java/'
+        }
+    }
+}
+
+compileJava.dependsOn includeCopy
 
 repositories {
     mavenLocal()
