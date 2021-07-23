@@ -29,7 +29,7 @@ dependencies {
 }
 
 // Copy idprovider classes into the project
-task includeCopy {
+/* task includeCopy {
     doLast {
         copy {
             from "$projectDir/../app-users/src/main/resources/lib/"
@@ -44,7 +44,7 @@ task includeCopy {
     }
 }
 
-compileJava.dependsOn includeCopy
+compileJava.dependsOn includeCopy */
 
 repositories {
     mavenLocal()
