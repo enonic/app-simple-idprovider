@@ -19,10 +19,11 @@ dependencies {
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
-    include "com.enonic.lib:lib-idproviderdisplay:2.1.0"
+    include "com.enonic.lib:lib-idproviderdisplay:2.1.1-SNAPSHOT"
     include "com.enonic.lib:lib-http-client:2.0.0"
     include "com.enonic.lib:lib-mustache:2.0.0"
     include "com.enonic.lib:lib-text-encoding:2.0.0"
+    compile "com.enonic.xp:app-users:${xpVersion}"
 
     testCompile 'junit:junit:4.13.2'
     testCompile "com.enonic.xp:testing:${xpVersion}"

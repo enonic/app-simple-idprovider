@@ -7,7 +7,6 @@ const configLib = require('/lib/config');
 exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
     const scriptUrl = portalLib.assetUrl({path: "js/login.js"});
     
-    const idProviderConfig = configLib.getConfig();
     const idProviderKey = portalLib.getIdProviderKey();
     const loginServiceUrl = portalLib.idProviderUrl();
     const forgotPasswordUrl = configLib.getForgotPassword() ? portalLib.idProviderUrl({
@@ -20,8 +19,8 @@ exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
     const config = mustacheLib.render(loginConfigView, {
         codeUrl,
         redirectUrl,
-        idProviderKey: idProviderKey,
-        loginServiceUrl: loginServiceUrl
+        idProviderKey,
+        loginServiceUrl,
     });
 
     return generatePage({
@@ -31,7 +30,7 @@ exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
         body: {
             username: "Username or email",
             password: "Password",
-            forgotPasswordUrl: forgotPasswordUrl,
+            forgotPasswordUrl,
         }
     });
 };
@@ -52,10 +51,10 @@ exports.generateLogoutPage = function (user) {
     }
 
     return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
+        scriptUrl,
+        config,
         title: user.displayName,
-        profileUrl: profileUrl,
+        profileUrl,
         submit: "LOG OUT"
     });
 };
@@ -109,7 +108,7 @@ exports.generateUpdatePasswordPage = function (token) {
     });
 };
 
-exports.generateCodePage = function (redirectUrl, code) {
+exports.generateCodePage = function (redirectUrl, placeholder) {
     const scriptUrl = portalLib.assetUrl({path: "js/send-code.js"});
 
     const loginServiceUrl = portalLib.idProviderUrl();
@@ -120,11 +119,12 @@ exports.generateCodePage = function (redirectUrl, code) {
     });
 
     return generatePage({
-        title: "Email code authentication",
+        title: "Verification",
+        subheader: "Check your e-mail for a verification code",
         scriptUrl,
         config,
         body: {
-            code,
+            code: placeholder,
         }
     });
 }

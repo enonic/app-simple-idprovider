@@ -28,10 +28,17 @@
       <label>Session timeout</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
-    <input name="emailCode" type="Checkbox">
-      <label>Email two step authentication</label>
-      <default>checked</default>
-    </input>
+    <option-set name="twostep">
+      <label>Two factor authentication</label>
+      <occurrences minimum="0" maximum="1"/>
+      <options minimum="1" maximum="1">
+        <option name="email">
+          <label>Email</label>
+          <help-text>Send email to verfiy login</help-text>
+          <default>true</default>
+        </option>
+      </options>
+    </option-set>
     <item-set name="forgotPassword">
       <label>Forgot password</label>
       <occurrences minimum="0" maximum="1"/>

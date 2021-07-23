@@ -13,8 +13,7 @@ function getLoginPage(redirectUrl, info) {
     let codeRedirect;
     if (isEmailCodeRequired()) {
         codeRedirect = generateCodeRedirectpage();
-    } 
-    else {
+    } else {
         codeRedirect = generateRedirectUrl();
     }
     return renderLib.generateLoginPage(redirectUrl, info, codeRedirect);
@@ -23,9 +22,9 @@ function getLoginPage(redirectUrl, info) {
 function generateRedirectUrl() {
     const site = contextLib.runAsAdmin(function () {
         return portalLib.getSite();
-    }); 
+    });
     if (site) {
-        return portalLib.pageUrl({id: site._id});
+        return portalLib.pageUrl({ id: site._id });
     }
     return '/';
 }
@@ -34,27 +33,28 @@ function generateCodeRedirectpage() {
     return contextLib.runAsAdmin(function () {
         return portalLib.idProviderUrl({
             params: {
-                action: "code",
+                action: 'code',
             },
         });
     });
 }
 
-
 function isEmailCodeRequired() {
     const idProviderConfig = configLib.getConfig();
 
-    return (
-        idProviderConfig.emailCode !== false ||
-        idProviderConfig.emailCode === undefined
-    );
+    if (idProviderConfig.twostep === undefined) {
+        return false;
+    } else if (idProviderConfig.twostep._selected == 'email') {
+        return true;
+    }
+    return false;
 }
 
 function handleLogin(req, user, password) {
     const sessionTimeout = configLib.getSessionTimeout();
     let loginResult = {};
 
-    if (isEmailCodeRequired()) { //default true
+    if (isEmailCodeRequired()) {
         const validUser = twoStepLib.checkLogin({
             user,
             password,
@@ -67,7 +67,11 @@ function handleLogin(req, user, password) {
             loginResult.authenticated = true;
 
             try {
-                mailLib.sendLoginCodeEmail(req, userNode.email, tokens.emailCode);
+                mailLib.sendLoginCodeEmail(
+                    req,
+                    userNode.email,
+                    tokens.emailCode
+                );
             } catch (e) {
                 //Locally email fails. Change configuration or setup an email server
                 log.error(`Could not send email:`);
@@ -83,18 +87,18 @@ function handleLogin(req, user, password) {
             password: password,
             idProvider: portalLib.getIdProviderKey(),
             sessionTimeout: sessionTimeout == null ? null : sessionTimeout,
-            scope: "SESSION",
+            scope: 'SESSION',
         });
     }
     return {
         body: loginResult,
-        contentType: 'application/json'
+        contentType: 'application/json',
     };
 }
 
 function handleCodeLogin(req, user, userToken, code) {
     const valid = twoStepLib.isTokenValid(user, userToken, code);
-    
+
     if (valid) {
         const sessionTimeout = configLib.getSessionTimeout();
         const loginResult = authLib.login({
@@ -102,26 +106,24 @@ function handleCodeLogin(req, user, userToken, code) {
             idProvider: portalLib.getIdProviderKey(),
             sessionTimeout: sessionTimeout == null ? null : sessionTimeout,
             skipAuth: true,
-            scope: "SESSION",
+            scope: 'SESSION',
         });
         return {
             body: loginResult,
-            contentType: 'application/json'
+            contentType: 'application/json',
         };
-    } 
-    else {
+    } else {
         return {
             status: 403,
             body: {
                 authenticated: false,
             },
-            contentType: 'application/json'
-        }
+            contentType: 'application/json',
+        };
     }
 }
 
 function handleForgotPassword(req, params) {
-
     const reCaptcha = configLib.getRecaptcha();
     if (reCaptcha) {
         const reCaptchaVerificationResponse = httpClientLib.request({
@@ -131,21 +133,23 @@ function handleForgotPassword(req, params) {
             multipart: [
                 {
                     name: 'secret',
-                    value: reCaptcha.secretKey
+                    value: reCaptcha.secretKey,
                 },
                 {
                     name: 'response',
-                    value: params.reCaptcha
-                }
-            ]
+                    value: params.reCaptcha,
+                },
+            ],
         });
 
-        const reCaptchaVerification = JSON.parse(reCaptchaVerificationResponse.body);
+        const reCaptchaVerification = JSON.parse(
+            reCaptchaVerificationResponse.body
+        );
         if (!reCaptchaVerification || !reCaptchaVerification.success) {
             return {
                 status: 400,
-                contentType: 'application/json'
-            }
+                contentType: 'application/json',
+            };
         }
     }
 
@@ -156,16 +160,14 @@ function handleForgotPassword(req, params) {
         //Generates a token
         const token = tokenLib.generateToken(user.key);
 
-        mailLib.sendResetMail(req, params.email, token)
-
+        mailLib.sendResetMail(req, params.email, token);
     } else {
-        mailLib.sendIncorrectResetMail(req, params.email)
+        mailLib.sendIncorrectResetMail(req, params.email);
     }
-
 
     return {
         body: {},
-        contentType: 'application/json'
+        contentType: 'application/json',
     };
 }
 
@@ -176,13 +178,13 @@ function handleUpdatePwd(req, token, password) {
 
             authLib.changePassword({
                 userKey: user.key,
-                password: password
+                password: password,
             });
 
             authLib.login({
                 user: user.login,
                 password: password,
-                idProvider: portalLib.getIdProviderKey()
+                idProvider: portalLib.getIdProviderKey(),
             });
 
             mailLib.sendUpdatedPasswordMail(req, user.email);
@@ -191,17 +193,16 @@ function handleUpdatePwd(req, token, password) {
         });
 
         return {
-            body: {updated: true},
-            contentType: 'application/json'
+            body: { updated: true },
+            contentType: 'application/json',
         };
     }
 
     return {
-        body: {updated: false},
-        contentType: 'application/json'
+        body: { updated: false },
+        contentType: 'application/json',
     };
 }
-
 
 exports.handle401 = function (req) {
     const body = getLoginPage();
@@ -209,16 +210,18 @@ exports.handle401 = function (req) {
     return {
         status: 401,
         contentType: 'text/html',
-        body: body
+        body: body,
     };
 };
 
 exports.login = function (req) {
-    const redirectUrl = req.validTicket ? req.params.redirect : generateRedirectUrl();
+    const redirectUrl = req.validTicket
+        ? req.params.redirect
+        : generateRedirectUrl();
     const body = getLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
-        body: body
+        body: body,
     };
 };
 
@@ -227,14 +230,14 @@ exports.logout = function (req) {
 
     if (req.validTicket && req.params.redirect) {
         return {
-            redirect: req.params.redirect
+            redirect: req.params.redirect,
         };
     }
 
-    const body = getLoginPage(generateRedirectUrl(), "Successfully logged out");
+    const body = getLoginPage(generateRedirectUrl(), 'Successfully logged out');
     return {
         contentType: 'text/html',
-        body: body
+        body: body,
     };
 };
 
@@ -244,14 +247,14 @@ exports.get = function (req) {
     const action = req.params.action;
     const token = req.params.token;
     const user = authLib.getUser();
-    switch(action) {
-        case 'forgot': 
+    switch (action) {
+        case 'forgot':
             body = renderLib.generateForgotPasswordPage();
             break;
-        case 'sent': 
+        case 'sent':
             body = renderLib.generateLoginPage(
-                generateRedirectUrl(), 
-                "We have sent an email with instructions on how to reset your password"
+                generateRedirectUrl(),
+                'We have sent an email with instructions on how to reset your password'
             );
             break;
         case 'reset':
@@ -262,9 +265,12 @@ exports.get = function (req) {
             }
             break;
         case 'code':
-            body = renderLib.generateCodePage(generateRedirectUrl(), "Email code");
+            body = renderLib.generateCodePage(
+                generateRedirectUrl(),
+                'Email code'
+            );
             break;
-        default: 
+        default:
             if (user) {
                 body = renderLib.generateLogoutPage(user);
             } else {
@@ -275,7 +281,7 @@ exports.get = function (req) {
 
     return {
         contentType: 'text/html',
-        body: body
+        body: body,
     };
 };
 
@@ -301,12 +307,17 @@ exports.post = function (req) {
             break;
         case 'code':
             if (body.user && body.userToken && body.code) {
-                return handleCodeLogin(req, body.user, body.userToken, body.code);
+                return handleCodeLogin(
+                    req,
+                    body.user,
+                    body.userToken,
+                    body.code
+                );
             }
     }
 
     return {
         status: 400,
-        contentType: 'application/json'
+        contentType: 'application/json',
     };
 };

@@ -62,7 +62,9 @@ exports.testPostTwoStep = function () {
 
     authMock.mockIdProviderConfig({
         title: undefined,
-        emailCode: true,
+        twostep: {
+            emailCode: true
+        },
         forgotPassword: {
             site: "test_site",
             email: "no_email@test.com"
@@ -133,7 +135,7 @@ exports.testLogout = function () {
 };
 
 function assertCodePage(body) {
-    assert.assertTrue(body.indexOf("Email code authentication") != -1)
+    assert.assertTrue(body.indexOf("Verification") != -1)
 }
 
 function assertLoginPage(body) {
