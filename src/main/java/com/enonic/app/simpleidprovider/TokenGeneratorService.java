@@ -12,6 +12,8 @@ public class TokenGeneratorService
 
     private static final int NB_CHARACTERS = 32;
 
+    private static final int CODE_CHARACTERS = 6;
+
     private static final int NB_BITS = NB_CHARACTERS * CHAR_BITS;
 
     private static final int RADIX = (int) Math.pow( 2, CHAR_BITS );
@@ -28,5 +30,14 @@ public class TokenGeneratorService
         }
         token.append( bigInteger.toString( RADIX ) );
         return token.toString();
+    }
+
+    public synchronized String generateCode()
+    {
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < CODE_CHARACTERS; i++) {
+            code.append(secureRandom.nextInt(9));
+        }
+        return code.toString();
     }
 }

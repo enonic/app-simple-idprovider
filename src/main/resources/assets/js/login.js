@@ -1,9 +1,11 @@
 function handleAuthenticateResponse(loginResult) {
     if (loginResult.authenticated) {
-        if (CONFIG.redirectUrl) {
-            location.href = CONFIG.redirectUrl;
+        if (loginResult.twoStep) {
+            window.sessionStorage.setItem("simple-id-user", $("#inputUsername").val());
+            window.sessionStorage.setItem("simple-id-token", loginResult.userToken);
+            handleRedirect(CONFIG.codeRedirect);
         } else {
-            location.reload();
+            handleRedirect();
         }
     } else {
         $("#formMessage").removeClass("hidden form-message-info");
@@ -13,20 +15,28 @@ function handleAuthenticateResponse(loginResult) {
     }
 }
 
+function handleRedirect(override) {
+    if (override || CONFIG.redirectUrl) {
+        location.href = override || CONFIG.redirectUrl;
+    } else {
+        location.reload();
+    }
+}
+
 function formSubmitted() {
     enableFormSubmit(false);
     var data = {
-        action: 'login',
+        action: "login",
         user: $("#inputUsername").val(),
-        password: $("#inputPassword").val()
+        password: $("#inputPassword").val(),
     };
     $.ajax({
         url: CONFIG.loginServiceUrl,
-        type: 'post',
-        dataType: 'json',
-        contentType: 'application/json',
+        type: "post",
+        dataType: "json",
+        contentType: "application/json",
         success: handleAuthenticateResponse,
-        data: JSON.stringify(data)
+        data: JSON.stringify(data),
     }).always(function () {
         enableFormSubmit(true);
     });

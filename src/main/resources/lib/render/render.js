@@ -1,76 +1,76 @@
-var portalLib = require('/lib/xp/portal');
-var mustacheLib = require('/lib/mustache');
-var displayLib = require('/lib/display');
-var gravatarLib = require('/lib/gravatar');
-var configLib = require('/lib/config');
+const portalLib = require('/lib/xp/portal');
+const mustacheLib = require('/lib/mustache');
+const displayLib = require('/lib/display');
+const gravatarLib = require('/lib/gravatar');
+const configLib = require('/lib/config');
 
-
-exports.generateLoginPage = function (redirectUrl, info) {
-    var scriptUrl = portalLib.assetUrl({path: "js/login.js"});
-
-    var idProviderKey = portalLib.getIdProviderKey();
-    var loginServiceUrl = portalLib.idProviderUrl();
-    var forgotPasswordUrl = configLib.getForgotPassword() ? portalLib.idProviderUrl({
+exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
+    const scriptUrl = portalLib.assetUrl({path: "js/login.js"});
+    
+    const idProviderKey = portalLib.getIdProviderKey();
+    const loginServiceUrl = portalLib.idProviderUrl();
+    const forgotPasswordUrl = configLib.getForgotPassword() ? portalLib.idProviderUrl({
         params: {
             action: 'forgot'
         }
     }) : undefined;
 
-    var loginConfigView = resolve('login-config.txt');
-    var config = mustacheLib.render(loginConfigView, {
-        redirectUrl: redirectUrl,
-        idProviderKey: idProviderKey,
-        loginServiceUrl: loginServiceUrl
+    const loginConfigView = resolve('login-config.txt');
+    const config = mustacheLib.render(loginConfigView, {
+        codeUrl,
+        redirectUrl,
+        idProviderKey,
+        loginServiceUrl,
     });
 
     return generatePage({
         scriptUrl: scriptUrl,
         config: config,
-        info: info,
+        info,
         body: {
             username: "Username or email",
             password: "Password",
-            forgotPasswordUrl: forgotPasswordUrl
+            forgotPasswordUrl,
         }
     });
 };
 
 exports.generateLogoutPage = function (user) {
-    var scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
+    const scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
 
-    var redirectUrl = portalLib.logoutUrl();
-    var logoutConfigView = resolve('redirect-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
+    const redirectUrl = portalLib.logoutUrl();
+    const logoutConfigView = resolve('redirect-config.txt');
+    const config = mustacheLib.render(logoutConfigView, {
         redirectUrl: redirectUrl
     });
 
-    var profileUrl;
+    let profileUrl;
     if (user.email && configLib.getGravatar()) {
-        var gravatarHash = gravatarLib.hash(user.email);
+        const gravatarHash = gravatarLib.hash(user.email);
         profileUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?d=blank";
     }
 
     return generatePage({
-        scriptUrl: scriptUrl,
-        config: config,
+        scriptUrl,
+        config,
         title: user.displayName,
-        profileUrl: profileUrl,
+        profileUrl,
         submit: "LOG OUT"
     });
 };
 
 exports.generateForgotPasswordPage = function (expired) {
-    var scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
+    const scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
 
-    var redirectUrl = portalLib.idProviderUrl({params: {action: 'sent'}});
-    var sendTokenUrl = portalLib.idProviderUrl();
-    var logoutConfigView = resolve('forgot-pwd-config.txt');
-    var config = mustacheLib.render(logoutConfigView, {
+    const redirectUrl = portalLib.idProviderUrl({params: {action: 'sent'}});
+    const sendTokenUrl = portalLib.idProviderUrl();
+    const logoutConfigView = resolve('forgot-pwd-config.txt');
+    const config = mustacheLib.render(logoutConfigView, {
         redirectUrl: redirectUrl,
         sendTokenUrl: sendTokenUrl
     });
 
-    var siteKey = configLib.getSiteKey();
+    const siteKey = configLib.getSiteKey();
 
     return generatePage({
         scriptUrl: scriptUrl,
@@ -86,12 +86,12 @@ exports.generateForgotPasswordPage = function (expired) {
 };
 
 exports.generateUpdatePasswordPage = function (token) {
-    var scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
+    const scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
 
-    var idProviderUrl = portalLib.idProviderUrl();
+    const idProviderUrl = portalLib.idProviderUrl();
 
-    var configView = resolve('update-pwd-config.txt');
-    var config = mustacheLib.render(configView, {
+    const configView = resolve('update-pwd-config.txt');
+    const config = mustacheLib.render(configView, {
         idProviderUrl: idProviderUrl,
         token: token
     });
@@ -108,19 +108,40 @@ exports.generateUpdatePasswordPage = function (token) {
     });
 };
 
+exports.generateCodePage = function (redirectUrl, placeholder) {
+    const scriptUrl = portalLib.assetUrl({path: "js/send-code.js"});
+
+    const loginServiceUrl = portalLib.idProviderUrl();
+    const loginConfigView = resolve('login-config.txt');
+    const config = mustacheLib.render(loginConfigView, {
+        redirectUrl,
+        loginServiceUrl,
+    });
+
+    return generatePage({
+        title: "Verification",
+        subheader: "Check your e-mail for a verification code",
+        scriptUrl,
+        config,
+        body: {
+            code: placeholder,
+        }
+    });
+}
+
 function generatePage(params) {
-    var idProviderConfig = configLib.getConfig();
+    const idProviderConfig = configLib.getConfig();
     params.title = params.title || idProviderConfig.title || "User Login";
     params.theme = idProviderConfig.theme || "light-blue";
     return displayLib.render(params);
 }
 
 function generateBackgroundStyleUrl(theme) {
-    var stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
+    const stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
     return portalLib.assetUrl({path: stylePath});
 }
 
 function generateColorStyleUrl(theme) {
-    var stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
+    const stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
     return portalLib.assetUrl({path: stylePath});
 }

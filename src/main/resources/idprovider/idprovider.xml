@@ -28,6 +28,20 @@
       <label>Session timeout</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
+    <item-set name="twostep">
+      <label>Two factor authentication</label>
+      <occurrences minimum="0" maximum="1"/>
+      <items>
+        <input name="type" type="RadioButton">
+          <label>Type</label>
+          <occurrences minimum="0" maximum="1"/>
+          <config>
+            <option value="email">email</option>
+          </config>
+          <default>email</default>
+        </input>
+      </items>
+    </item-set>
     <item-set name="forgotPassword">
       <label>Forgot password</label>
       <occurrences minimum="0" maximum="1"/>

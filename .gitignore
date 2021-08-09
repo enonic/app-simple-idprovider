@@ -6,6 +6,8 @@
 # Icon must end with two \r
 Icon
 
+# enonic cli
+.enonic
 
 # Thumbnails
 ._*
@@ -71,6 +73,9 @@ gradle-app.setting
 
 # IntelliJ
 out/
+
+#vscode
+.vscode
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/

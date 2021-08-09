@@ -1,4 +1,4 @@
-var authLib = require('/lib/xp/auth');
+const authLib = require('/lib/xp/auth');
 
 function getConfig() {
     return authLib.getIdProviderConfig()
@@ -26,7 +26,7 @@ function getSessionTimeout() {
 exports.getSessionTimeout = getSessionTimeout;
 
 function getForgotPassword() {
-    var forgotPassword = authLib.getIdProviderConfig().forgotPassword;
+    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
     if (forgotPassword && forgotPassword.site) {
         return forgotPassword;
     }
@@ -35,20 +35,20 @@ function getForgotPassword() {
 exports.getForgotPassword = getForgotPassword;
 
 function getEmail() {
-    var forgotPassword = authLib.getIdProviderConfig().forgotPassword;
+    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
     return forgotPassword && forgotPassword.email;
 };
 exports.getEmail = getEmail;
 
 function getSite() {
-    var forgotPassword = authLib.getIdProviderConfig().forgotPassword;
+    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
     return forgotPassword && forgotPassword.site;
 };
 exports.getSite = getSite;
 
 function getRecaptcha() {
-    var forgotPassword = authLib.getIdProviderConfig().forgotPassword;
-    var reCaptcha = forgotPassword && forgotPassword.reCaptcha
+    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
+    const reCaptcha = forgotPassword && forgotPassword.reCaptcha
     if (reCaptcha && reCaptcha.siteKey && reCaptcha.secretKey) {
         return reCaptcha;
     }
@@ -57,13 +57,13 @@ function getRecaptcha() {
 exports.getRecaptcha = getRecaptcha;
 
 function getSiteKey() {
-    var forgotPassword = authLib.getIdProviderConfig().forgotPassword;
+    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
     return forgotPassword.reCaptcha && forgotPassword.reCaptcha.siteKey;
 };
 exports.getSiteKey = getSiteKey;
 
 function getSecretKey() {
-    var forgotPassword = authLib.getIdProviderConfig().forgotPassword;
+    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
     return forgotPassword.reCaptcha && forgotPassword.reCaptcha.secretKey;
 };
 exports.getSecretKey = getSecretKey;
