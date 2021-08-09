@@ -1,12 +1,18 @@
-// const nodeLib = require('/lib/xp/node');
-const userAuth = require('/lib/auth');
-const contextLib = require('/lib/context');
+const idproviderLib = require('/lib/idprovider');
+const context = require('/lib/context');
 
+/**
+ * Checks all idproviders if they are connected to the simpleidprovider
+ * 
+ * @param {Array} providers 
+ * @returns {Boolean} true if exists, false if not 
+ */
 function exists(providers) {
-    for (let i = 0; i < providers.length; i++) {
+    for (const count in providers) {
         if (
-            providers[i].idProviderConfig &&
-            providers[i].idProviderConfig.applicationKey ===
+            providers[count] &&
+            providers[count].idProviderConfig &&
+            providers[count].idProviderConfig.applicationKey ==
                 'com.enonic.app.simpleidprovider'
         ) {
             return true;
@@ -17,13 +23,38 @@ function exists(providers) {
 
 function initUserStore() {
     let systemidproviders;
-
-    contextLib.runAsAdmin(function () {
-        systemidproviders = userAuth.getIdProviders();
+    context.runAsAdmin(function () {
+        systemidproviders = idproviderLib.getIdProviders();
     });
 
     if (exists(systemidproviders) === false) {
-        log.info('TODO setup new userstore');
+        let result;
+        context.runAsAdmin(function () {
+            result = idproviderLib.createIdProvider({
+                name: 'simpleuserstore',
+                descripton: 'Default simple-idprovider',
+                idProviderConfig: {
+                    applicationKey: 'com.enonic.app.simpleidprovider',
+                    config: [
+                        //TODO set default config
+                    ],
+                },
+                permissions: [
+                    {
+                        principal: 'user:simpleuserstore:admin',
+                        access: 'ADMINISTRATOR',
+                    },
+                    {
+                        principal: 'user:simpleuserstore:user',
+                        access: 'READ',
+                    },
+                ],
+            });
+        });
+
+        if (result) {
+            log.info('Created simple idprovider userstore');
+        }
     }
 }
 
