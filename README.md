@@ -13,20 +13,23 @@ This ID Provider contains a simple login/logout page to authenticate your local 
 1. In the admin tool "Applications" of your Enonic XP installation, click on "Install". 
 2. Select the tab "Enonic Market", find "Simple ID Provider", and click on the link "Install".
 
-### Step 2: Create and configure the user store
-1. In the admin tool "Users", click on "New".
-2. Fill in the fields and, for the field "ID Provider", select the application "Simple ID Provider".
-3. Configure the ID Provider:
-    * Title: Title used by the login/logout page
-    * Theme: Display theme of the login/logout page
-    * Gravatar picture: If enabled, the Gravatar picture of the logged in user will be displayed on the logout page
-    * (Optional) Session timeout: Session timeout (in seconds). By default, the value of session.timeout from com.enonic.xp.web.jetty.cfg
-    * (Optional) Forgot password: If set, the login page will propose a password reset mechanism. 
-You need to have set up the mail configuration 
+### Step 2: Configure the user store
+Configure the ID Provider: 
+* Title: Title used by the login/logout page
+* Theme: Display theme of the login/logout page
+* Gravatar picture: If enabled, the Gravatar picture of the logged in user will be displayed on the logout page
+* (Optional) Session timeout: Session timeout (in seconds). By default, the value of session.timeout from com.enonic.xp.web.jetty.cfg
+* (Optional) Forgot password: If set, the login page will propose a password reset mechanism. 
+* (Optional) Twostep authentication: 
+    * Email: Sends an email with the login code 
+
+You need to have set up the mail configuration for Forgot password and Twostep email authentication. 
 (See [Mail Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) for more information).
-        * Email author: The author of the password reset mail
-        * Site name: Name used in the password reset mail body
-        * (Optional) ReCaptcha: Add a reCaptcha field to the forgot password form.
+
+* Email author: The author of the password reset mail
+* Site name: Name used in the password reset mail body
+* (Optional) ReCaptcha: Add a reCaptcha field to the forgot password form.
+
 You need to have registered your website on reCaptcha (See [reCaptcha](https://www.google.com/recaptcha/admin) for more information).
             * Site key: Your reCaptcha site key.  
             * Secret key: Your reCaptcha secret key.
@@ -46,52 +49,40 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
     mapping.mysite.host = localhost
     mapping.mysite.source = /
     mapping.mysite.target = /portal/master/mysite
-    mapping.mysite.idProvider.myidprovider = default
+    mapping.mysite.idProvider.simpleuserstore = default
     ```
 
 
 ## Releases and Compatibility
 
-| App version | Required XP version | Download |
-| ----------- | ------------------- | -------- |
-| 2.0.0 | 7.0.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/2.0.0/simpleidprovider-2.0.0.jar) |
-| 1.2.2 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.2/simpleidprovider-1.2.2.jar) |
-| 1.2.1 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.1/simpleidprovider-1.2.1.jar) |
-| 1.2.0 | 6.13.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.2.0/simpleidprovider-1.2.0.jar) |
-| 1.1.3 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.3/simpleidprovider-1.1.3.jar) |
-| 1.1.2 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.2/simpleidprovider-1.1.2.jar) |
-| 1.1.1 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.1/simpleidprovider-1.1.1.jar) |
-| 1.1.0 | 6.7.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.1.0/simpleidprovider-1.1.0.jar) |
-| 1.0.0 | 6.6.0 | [Download](http://repo.enonic.com/public/com/enonic/app/simpleidprovider/1.0.0/simpleidprovider-1.0.0.jar) |
+| App version | Required XP version |
+| ----------- | ------------------- |
+| 2.1.0 | 7.3.0 | 
+| 2.0.0 | 7.0.0 | 
+| 1.2.2 | 6.13.0 |  
+| 1.2.1 | 6.13.0 | 
+| 1.2.0 | 6.13.0 | 
+| 1.1.3 | 6.7.0 | 
+| 1.1.2 | 6.7.0 | 
+| 1.1.1 | 6.7.0 | 
+| 1.1.0 | 6.7.0 | 
+| 1.0.0 | 6.6.0 | 
 
 
 ## Building and deploying
 
-Build this application from the command line. Go to the root of the project and enter:
+Build this application from the command line. Go to the root of the project with the enonic cli:
 
-    ./gradlew clean build
+    enonic project build
 
-To deploy the app, set `$XP_HOME` environment variable and enter:
+To deploy the app with the enonic cli:
 
-    ./gradlew deploy
+    enonic project deploy
 
 
 ## Releasing new version
 
-To release a new version of this app, please follow the steps below:
+To release a new version of this app:
 
-1. Update `version` (and possibly `xpVersion`) in  `gradle.properties`.
-
-2. Compile and deploy to our Maven repository:
-
-    ./gradlew clean build uploadArchives
-
-3. Update `README.md` file with new version information and compatibility.
-
-4. Tag the source code using `git tag` command (where `X.Y.Z` is the released version):
-
-    git tag vX.Y.Z
-
-5. Push the updated code to GitHub.
-
-    git push origin vX.Y.Z
+Update the `version` in gradle.properties on the master branch. 
+This should trigger a githubaction that publishes the app.
