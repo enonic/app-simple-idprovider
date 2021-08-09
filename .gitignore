@@ -74,6 +74,9 @@ gradle-app.setting
 # IntelliJ
 out/
 
+#vscode
+.vscode
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
