@@ -19,8 +19,9 @@ dependencies {
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
     include "com.enonic.xp:lib-portal:${xpVersion}"
+    include "com.enonic.xp:lib-node:${xpVersion}"
     include "com.enonic.lib:lib-idproviderdisplay:2.1.1"
-    include "com.enonic.lib:lib-http-client:2.0.0"
+    include "com.enonic.lib:lib-http-client:2.3.0"
     include "com.enonic.lib:lib-mustache:2.0.0"
     include "com.enonic.lib:lib-text-encoding:2.0.0"
 
