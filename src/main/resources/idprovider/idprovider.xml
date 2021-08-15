@@ -28,18 +28,14 @@
       <label>Session timeout</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
-    <item-set name="twostep">
-      <label>Two factor authentication</label>
+    <item-set name="twoFactorEmail">
+      <label>Email two factor authentication</label>
+      <help-text>When enabled users get a verification code send to their email when logging in.</help-text>
       <occurrences minimum="0" maximum="1"/>
       <items>
-        <input name="type" type="RadioButton">
-          <label>Type</label>
-          <occurrences minimum="0" maximum="1"/>
-          <config>
-            <option value="email">email</option>
-          </config>
-          <default>email</default>
-        </input>
+        <field-set>
+          <label>Enabled</label>
+        </field-set>
       </items>
     </item-set>
     <item-set name="forgotPassword">
