@@ -42,12 +42,11 @@ function generateCodeRedirectpage() {
 function isEmailCodeRequired() {
     const idProviderConfig = configLib.getConfig();
 
-    if (idProviderConfig.twostep === undefined) {
+    if (idProviderConfig.twoFactorEmail === undefined) {
         return false;
-    } else if (idProviderConfig.twostep.type == 'email') {
+    } else {
         return true;
     }
-    return false;
 }
 
 function handleLogin(req, user, password) {
