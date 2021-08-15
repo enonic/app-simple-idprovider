@@ -31,7 +31,7 @@ function initUserStore() {
         let result;
         context.runAsAdmin(function () {
             result = idproviderLib.createIdProvider({
-                name: 'simpleuserstore',
+                name: 'simpleid',
                 descripton: 'Default simple-idprovider',
                 idProviderConfig: {
                     applicationKey: 'com.enonic.app.simpleidprovider',
@@ -40,14 +40,6 @@ function initUserStore() {
                     ],
                 },
                 permissions: [
-                    {
-                        principal: 'user:simpleuserstore:admin',
-                        access: 'ADMINISTRATOR',
-                    },
-                    {
-                        principal: 'user:simpleuserstore:user',
-                        access: 'READ',
-                    },
                 ],
             });
         });

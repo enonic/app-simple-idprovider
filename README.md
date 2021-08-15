@@ -21,7 +21,7 @@ Configure the ID Provider:
 * (Optional) Session timeout: Session timeout (in seconds). By default, the value of session.timeout from com.enonic.xp.web.jetty.cfg
 * (Optional) Forgot password: If set, the login page will propose a password reset mechanism. 
 * (Optional) Twostep authentication: 
-    * Email: Sends an email with the login code 
+    * Email: Sends an email with a login code 
 
 You need to have set up the mail configuration for Forgot password and Twostep email authentication. 
 (See [Mail Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) for more information).
