@@ -13,17 +13,17 @@ This ID Provider contains a simple login/logout page to authenticate your local 
 1. In the admin tool "Applications" of your Enonic XP installation, click on "Install". 
 2. Select the tab "Enonic Market", find "Simple ID Provider", and click on the link "Install".
 
-### Step 2: Configure the user store
+### Step 2: Configure the ID provider and email authentication
 Configure the ID Provider: 
 * Title: Title used by the login/logout page
 * Theme: Display theme of the login/logout page
 * Gravatar picture: If enabled, the Gravatar picture of the logged in user will be displayed on the logout page
 * (Optional) Session timeout: Session timeout (in seconds). By default, the value of session.timeout from com.enonic.xp.web.jetty.cfg
 * (Optional) Forgot password: If set, the login page will propose a password reset mechanism. 
-* (Optional) Twostep authentication: 
+* (Optional) Two-step authentication: 
     * Email: Sends an email with a login code 
 
-You need to have set up the mail configuration for Forgot password and Twostep email authentication. 
+You need to have set up the mail configuration for "Forgot password" and Two-step email authentication. 
 (See [Mail Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) for more information).
 
 * Email author: The author of the password reset mail
@@ -71,11 +71,11 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 
 ## Building and deploying
 
-Build this application from the command line. Go to the root of the project with the enonic cli:
+Build this application from the command line. Go to the root of the project with the Enonic CLI:
 
     enonic project build
 
-To deploy the app with the enonic cli:
+To deploy the app with the Enonic CLI:
 
     enonic project deploy
 
@@ -85,4 +85,4 @@ To deploy the app with the enonic cli:
 To release a new version of this app:
 
 Update the `version` in gradle.properties on the master branch. 
-This should trigger a githubaction that publishes the app.
+This should trigger a Github action that publishes the app.

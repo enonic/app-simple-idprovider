@@ -42,11 +42,7 @@ function generateCodeRedirectpage() {
 function isEmailCodeRequired() {
     const idProviderConfig = configLib.getConfig();
 
-    if (idProviderConfig.twoFactorEmail === undefined) {
-        return false;
-    } else {
-        return true;
-    }
+    return (idProviderConfig.twoFactorEmail !== undefined);
 }
 
 function handleLogin(req, user, password) {

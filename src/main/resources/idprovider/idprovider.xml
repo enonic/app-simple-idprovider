@@ -29,8 +29,8 @@
       <occurrences minimum="0" maximum="1"/>
     </input>
     <item-set name="twoFactorEmail">
-      <label>Email two factor authentication</label>
-      <help-text>When enabled users get a verification code send to their email when logging in.</help-text>
+      <label>Two-factor email authentication</label>
+      <help-text>When enabled, users get a verification code sent to their email address when logging in.</help-text>
       <occurrences minimum="0" maximum="1"/>
       <items>
         <field-set>
