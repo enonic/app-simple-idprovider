@@ -57,7 +57,7 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 
 | App version | Required XP version |
 | ----------- | ------------------- |
-| 2.1.0 | 7.3.0 | 
+| 2.1.0 | 7.7.0 | 
 | 2.0.0 | 7.0.0 | 
 | 1.2.2 | 6.13.0 |  
 | 1.2.1 | 6.13.0 | 
