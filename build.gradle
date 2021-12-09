@@ -8,13 +8,13 @@ app {
     name = project.appName
     displayName = 'Simple ID Provider'
     vendorName = 'Enonic AS'
-    vendorUrl = 'http://enonic.com'
+    vendorUrl = 'https://enonic.com'
     systemVersion = "${xpVersion}"
 }
 
 dependencies {
-    compile "com.enonic.xp:core-api:${xpVersion}"
-    compile "com.enonic.xp:portal-api:${xpVersion}"
+    implementation "com.enonic.xp:core-api:${xpVersion}"
+    implementation "com.enonic.xp:portal-api:${xpVersion}"
     include "com.enonic.xp:lib-auth:${xpVersion}"
     include "com.enonic.xp:lib-context:${xpVersion}"
     include "com.enonic.xp:lib-mail:${xpVersion}"
@@ -26,13 +26,12 @@ dependencies {
     include "com.enonic.lib:lib-mustache:2.0.0"
     include "com.enonic.lib:lib-text-encoding:2.0.0"
 
-    testCompile 'junit:junit:4.13.2'
-    testCompile "com.enonic.xp:testing:${xpVersion}"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "com.enonic.xp:testing:${xpVersion}"
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
     xp.enonicRepo()
 }
