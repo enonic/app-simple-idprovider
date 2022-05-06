@@ -20,6 +20,11 @@ function getLoginPage(redirectUrl, info) {
 }
 
 function generateRedirectUrl() {
+    const siteConfig = configLib.getConfig();
+    if (siteConfig && siteConfig.overwriteLoginRedirect){
+        return siteConfig.overwriteLoginRedirect;
+    }
+    
     const site = contextLib.runAsAdmin(function () {
         return portalLib.getSite();
     });

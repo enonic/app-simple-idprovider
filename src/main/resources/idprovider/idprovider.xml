@@ -28,6 +28,11 @@
       <label>Session timeout</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
+    <input name="overwriteLoginRedirect" type="Text">
+      <label>Overwrite login redirect</label>
+      <help-text>When filled in, replaces the link of the page the user will be redirected to after login.</help-text>
+      <occurrences minimum="0" maximum="1"/>
+    </input>
     <item-set name="twoFactorEmail">
       <label>Two-factor email authentication</label>
       <help-text>When enabled, users get a verification code sent to their email address when logging in.</help-text>
