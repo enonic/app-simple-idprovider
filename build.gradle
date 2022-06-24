@@ -23,7 +23,7 @@ dependencies {
     include "com.enonic.xp:lib-cluster:${xpVersion}"
     include "com.enonic.lib:lib-idproviderdisplay:2.1.1"
     include "com.enonic.lib:lib-http-client:3.0.0"
-    include "com.enonic.lib:lib-mustache:2.0.0"
+    include "com.enonic.lib:lib-mustache:2.1.0"
     include "com.enonic.lib:lib-text-encoding:2.0.0"
 
     testImplementation "junit:junit:4.13.2"
