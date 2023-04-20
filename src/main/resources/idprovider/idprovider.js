@@ -21,8 +21,8 @@ function getLoginPage(redirectUrl, info) {
 
 function generateRedirectUrl() {
     const siteConfig = configLib.getConfig();
-    if (siteConfig && siteConfig.overwriteLoginRedirect){
-        return siteConfig.overwriteLoginRedirect;
+    if (siteConfig && siteConfig.loginRedirectUrl){
+        return siteConfig.loginRedirectUrl;
     }
 
     const site = contextLib.runAsAdmin(function () {

@@ -28,7 +28,7 @@
       <label>Session timeout</label>
       <occurrences minimum="0" maximum="1"/>
     </input>
-    <input name="overwriteLoginRedirect" type="Text">
+    <input name="loginRedirectUrl" type="Text">
       <label>URL to be redirected to after successful login</label>
       <help-text>If filled in, will be used as redirect page after login instead of site URL (default behaviour).</help-text>
       <occurrences minimum="0" maximum="1"/>
