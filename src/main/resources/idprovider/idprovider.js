@@ -20,6 +20,11 @@ function getLoginPage(redirectUrl, info) {
 }
 
 function generateRedirectUrl() {
+    const siteConfig = configLib.getConfig();
+    if (siteConfig && siteConfig.loginRedirectUrl){
+        return siteConfig.loginRedirectUrl;
+    }
+
     const site = contextLib.runAsAdmin(function () {
         return portalLib.getSite();
     });
@@ -200,7 +205,10 @@ function handleUpdatePwd(req, token, password) {
 }
 
 exports.handle401 = function (req) {
-    const body = getLoginPage();
+    const redirectUrl = req.validTicket
+        ? req.params.redirect
+        : generateRedirectUrl();
+    const body = getLoginPage(redirectUrl);
 
     return {
         status: 401,
