@@ -26,7 +26,7 @@ Configure the ID Provider:
 
 
 You need to have set up the mail configuration for "Forgot password" and Two-step email authentication.
-(See [Mail Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#mail-configuration) for more information).
+(See [Mail Configuration](https://developer.enonic.com/docs/xp/stable/deployment/config#mail) for more information).
 
 * Email author: The author of the password reset mail
 * Site name: Name used in the password reset mail body
@@ -38,7 +38,7 @@ You need to have registered your website on reCaptcha (See [reCaptcha](https://w
 
 ### Step 3: Create and configure the user store
 1. Edit the configuration file "com.enonic.xp.web.vhost.cfg", and set the new user store to your virtual host.
-(See [Virtual Host Configuration](http://xp.readthedocs.io/en/stable/operations/configuration.html#configuration-vhost) for more information).
+(See [Virtual Host Configuration](https://developer.enonic.com/docs/xp/stable/deployment/config#vhost) for more information).
 
     ```ini
     enabled=true
