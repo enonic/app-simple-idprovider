@@ -1,32 +1,26 @@
 plugins {
     id 'maven-publish'
     id 'com.enonic.defaults' version '2.1.6'
-    id 'com.enonic.xp.app' version '3.6.2'
-}
-
-app {
-    name = project.appName
-    displayName = 'Simple ID Provider'
-    vendorName = 'Enonic AS'
-    vendorUrl = 'https://enonic.com'
-    systemVersion = "${xpVersion}"
+    id 'com.enonic.xp.app'
 }
 
 dependencies {
-    implementation "com.enonic.xp:core-api:${xpVersion}"
-    implementation "com.enonic.xp:portal-api:${xpVersion}"
-    include "com.enonic.xp:lib-auth:${xpVersion}"
-    include "com.enonic.xp:lib-context:${xpVersion}"
-    include "com.enonic.xp:lib-mail:${xpVersion}"
-    include "com.enonic.xp:lib-portal:${xpVersion}"
-    include "com.enonic.xp:lib-task:${xpVersion}"
-    include "com.enonic.xp:lib-cluster:${xpVersion}"
-    include "com.enonic.lib:lib-idproviderdisplay:2.1.1"
-    include "com.enonic.lib:lib-http-client:3.2.2"
-    include "com.enonic.lib:lib-mustache:2.1.1"
-    include "com.enonic.lib:lib-text-encoding:2.1.1"
+    implementation xplibs.api.core
+    implementation xplibs.api.portal
+    include xplibs.auth
+    include xplibs.context
+    include xplibs.mail
+    include xplibs.portal
+    include xplibs.task
+    include xplibs.cluster
+    include( libs.lib.idproviderdisplay ) {
+        exclude group: 'com.enonic.xp'
+    }
+    include libs.lib.http.client
+    include libs.lib.mustache
+    include libs.lib.text.encoding
 
-    testImplementation "junit:junit:4.13.2"
+    testImplementation 'junit:junit:4.13.2'
     testImplementation "com.enonic.xp:testing:${xpVersion}"
 }
 

@@ -1,0 +1,5 @@
+kind: "Application"
+title: "Simple ID Provider"
+description: "Add authentication to your Enonic XP installation"
+vendorName: "Enonic AS"
+vendorUrl: "https://enonic.com"
