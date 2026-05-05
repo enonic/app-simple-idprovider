@@ -1,0 +1,101 @@
+kind: "IdProvider"
+mode: "LOCAL"
+form:
+  - type: "TextLine"
+    name: "title"
+    label: "Title"
+    occurrences:
+      min: 0
+      max: 1
+    default: "User Login"
+  - type: "ComboBox"
+    name: "theme"
+    label: "Theme"
+    occurrences:
+      min: 0
+      max: 1
+    options:
+      - value: "light-blue"
+        label: "Light Blue"
+      - value: "light-green"
+        label: "Light Green"
+      - value: "light-red"
+        label: "Light Red"
+      - value: "dark-blue"
+        label: "Dark Blue"
+      - value: "dark-green"
+        label: "Dark Green"
+      - value: "dark-red"
+        label: "Dark Red"
+    default: "light-blue"
+  - type: "CheckBox"
+    name: "gravatar"
+    label: "Gravatar picture"
+    occurrences:
+      min: 0
+      max: 0
+  - type: "Long"
+    name: "sessionTimeout"
+    label: "Session timeout"
+    occurrences:
+      min: 0
+      max: 1
+  - type: "TextArea"
+    name: "loginRedirectUrl"
+    label: "URL to be redirected to after successful login"
+    helpText: "If filled in, will be used as redirect page after login instead of\
+      \ site URL (default behaviour)."
+    occurrences:
+      min: 0
+      max: 1
+  - type: "ItemSet"
+    name: "twoFactorEmail"
+    label: "Two-factor email authentication"
+    helpText: "When enabled, users get a verification code sent to their email address\
+      \ when logging in."
+    occurrences:
+      min: 0
+      max: 1
+    items:
+      - type: "FieldSet"
+        label: "Enabled"
+  - type: "ItemSet"
+    name: "forgotPassword"
+    label: "Forgot password"
+    occurrences:
+      min: 0
+      max: 1
+    items:
+      - type: "TextLine"
+        name: "email"
+        label: "Email author"
+        occurrences:
+          min: 0
+          max: 1
+        default: "noreply@example.com"
+      - type: "TextLine"
+        name: "site"
+        label: "Site name"
+        occurrences:
+          min: 1
+          max: 1
+        default: "MyWebsite"
+      - type: "ItemSet"
+        name: "reCaptcha"
+        label: "ReCaptcha"
+        occurrences:
+          min: 0
+          max: 1
+        items:
+          - type: "TextLine"
+            name: "siteKey"
+            label: "Site Key"
+            occurrences:
+              min: 1
+              max: 1
+          - type: "TextLine"
+            name: "secretKey"
+            label: "Secret Key"
+            occurrences:
+              min: 1
+              max: 1
