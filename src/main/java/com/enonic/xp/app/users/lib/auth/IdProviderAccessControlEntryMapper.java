@@ -1,9 +1,9 @@
 package com.enonic.xp.app.users.lib.auth;
 
-import com.enonic.xp.lib.common.PrincipalMapper;
 import com.enonic.xp.script.serializer.MapGenerator;
 import com.enonic.xp.script.serializer.MapSerializable;
 import com.enonic.xp.security.Principal;
+import com.enonic.xp.security.User;
 import com.enonic.xp.security.acl.IdProviderAccess;
 
 public class IdProviderAccessControlEntryMapper
@@ -29,7 +29,23 @@ public class IdProviderAccessControlEntryMapper
     private void serializePrincipal( final MapGenerator gen, final Principal principal )
     {
         gen.map( "principal" );
-        new PrincipalMapper( principal ).serialize( gen );
+        gen.value( "type", principal.getClass().getSimpleName().toLowerCase() );
+        gen.value( "key", principal.getKey() );
+        gen.value( "displayName", principal.getDisplayName() );
+        gen.value( "modifiedTime", principal.getModifiedTime() );
+        if ( principal instanceof User )
+        {
+            final User user = (User) principal;
+            gen.value( "disabled", user.isDisabled() );
+            gen.value( "email", user.getEmail() );
+            gen.value( "login", user.getLogin() );
+            gen.value( "idProvider", user.getKey() != null ? user.getKey().getIdProviderKey() : null );
+            gen.value( "hasPassword", user.getAuthenticationHash() != null );
+        }
+        else
+        {
+            gen.value( "description", principal.getDescription() );
+        }
         gen.end();
     }
 
