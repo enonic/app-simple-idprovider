@@ -17,8 +17,14 @@ dependencies {
     include libs.lib.mustache
     include libs.lib.text.encoding
 
-    testImplementation 'junit:junit:4.13.2'
     testImplementation "com.enonic.xp:testing:${xpVersion}"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:6.0.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:6.0.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:6.0.3'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 repositories {
