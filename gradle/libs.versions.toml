@@ -1,11 +1,9 @@
 [versions]
-idproviderdisplay = "2.1.1"
 http-client = "3.2.2"
 mustache = "2.1.1"
 text-encoding = "2.1.1"
 
 [libraries]
-lib-idproviderdisplay = { module = "com.enonic.lib:lib-idproviderdisplay", version.ref = "idproviderdisplay" }
 lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "http-client" }
 lib-mustache = { module = "com.enonic.lib:lib-mustache", version.ref = "mustache" }
 lib-text-encoding = { module = "com.enonic.lib:lib-text-encoding", version.ref = "text-encoding" }
