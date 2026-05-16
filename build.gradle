@@ -15,6 +15,7 @@ dependencies {
     include xplibs.cluster
     include libs.lib.http.client
     include libs.lib.mustache
+    include libs.lib.static
     include libs.lib.text.encoding
 
     testImplementation "com.enonic.xp:testing:${xpVersion}"
