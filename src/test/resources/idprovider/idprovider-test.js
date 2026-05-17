@@ -7,7 +7,9 @@ const textEncoding = require("/lib/text-encoding");
 // Need to mock email so it does not break everything?
 
 exports.testHandle401 = function () {
-    const result = idProvider.handle401({});
+    const result = idProvider.handle401({
+        contextPath: '/_/idprovider/system',
+    });
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(401 == result.status);
@@ -16,6 +18,9 @@ exports.testHandle401 = function () {
 
 exports.testGet = function () {
     let result = idProvider.get({
+        method: 'GET',
+        rawPath: '/_/idprovider/system',
+        contextPath: '/_/idprovider/system',
         params: {}
     });
     assert.assertEquals('text/html', result.contentType);
@@ -35,6 +40,9 @@ exports.testGet = function () {
     });
 
     result = idProvider.get({
+        method: 'GET',
+        rawPath: '/_/idprovider/system',
+        contextPath: '/_/idprovider/system',
         params: {}
     });
     assert.assertEquals('text/html', result.contentType);
@@ -86,6 +94,9 @@ exports.testPostTwoStep = function () {
 
 exports.testTwoStepLogin = function() {
     const result = idProvider.get({
+        method: 'GET',
+        rawPath: '/_/idprovider/system',
+        contextPath: '/_/idprovider/system',
         params: {
             action: "code",
         },
@@ -98,6 +109,9 @@ exports.testTwoStepLogin = function() {
 
 exports.testForgot = function() {
     const result = idProvider.get({
+        method: 'GET',
+        rawPath: '/_/idprovider/system',
+        contextPath: '/_/idprovider/system',
         params: {
             action: "forgot"
         }
@@ -118,6 +132,7 @@ exports.testLogin = function () {
     });
 
     const result = idProvider.login({
+        contextPath: '/_/idprovider/system',
         validTicket: false,
     });
 
@@ -127,7 +142,9 @@ exports.testLogin = function () {
 };
 
 exports.testLogout = function () {
-    const result = idProvider.logout({});
+    const result = idProvider.logout({
+        contextPath: '/_/idprovider/system',
+    });
 
     assert.assertEquals('text/html', result.contentType);
     assert.assertTrue(!result.status || 200 == result.status);

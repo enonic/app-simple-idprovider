@@ -8,15 +8,19 @@ const contextLib = require('/lib/context');
 const mailLib = require('/lib/mail');
 const userLib = require('/lib/user');
 const configLib = require('/lib/config');
+const Router = require('/lib/router');
+const staticLib = require('/lib/enonic/static');
 
-function getLoginPage(redirectUrl, info) {
+const STATIC_BASE = '/_static';
+
+function getLoginPage(req, redirectUrl, info) {
     let codeRedirect;
     if (isEmailCodeRequired()) {
         codeRedirect = generateCodeRedirectpage();
     } else {
         codeRedirect = generateRedirectUrl();
     }
-    return renderLib.generateLoginPage(redirectUrl, info, codeRedirect);
+    return renderLib.generateLoginPage(req, redirectUrl, info, codeRedirect);
 }
 
 function generateRedirectUrl() {
@@ -208,7 +212,7 @@ exports.handle401 = function (req) {
     const redirectUrl = req.validTicket
         ? req.params.redirect
         : generateRedirectUrl();
-    const body = getLoginPage(redirectUrl);
+    const body = getLoginPage(req, redirectUrl);
 
     return {
         status: 401,
@@ -221,7 +225,7 @@ exports.login = function (req) {
     const redirectUrl = req.validTicket
         ? req.params.redirect
         : generateRedirectUrl();
-    const body = getLoginPage(redirectUrl);
+    const body = getLoginPage(req, redirectUrl);
     return {
         contentType: 'text/html',
         body: body,
@@ -237,14 +241,14 @@ exports.logout = function (req) {
         };
     }
 
-    const body = getLoginPage(generateRedirectUrl(), 'Successfully logged out');
+    const body = getLoginPage(req, generateRedirectUrl(), 'Successfully logged out');
     return {
         contentType: 'text/html',
         body: body,
     };
 };
 
-exports.get = function (req) {
+function renderIdProviderPage(req) {
     let body;
 
     const action = req.params.action;
@@ -252,32 +256,34 @@ exports.get = function (req) {
     const user = authLib.getUser();
     switch (action) {
         case 'forgot':
-            body = renderLib.generateForgotPasswordPage();
+            body = renderLib.generateForgotPasswordPage(req);
             break;
         case 'sent':
             body = renderLib.generateLoginPage(
+                req,
                 generateRedirectUrl(),
                 'We have sent an email with instructions on how to reset your password'
             );
             break;
         case 'reset':
             if (tokenLib.isTokenValid(token)) {
-                body = renderLib.generateUpdatePasswordPage(token);
+                body = renderLib.generateUpdatePasswordPage(req, token);
             } else {
-                body = renderLib.generateForgotPasswordPage(true);
+                body = renderLib.generateForgotPasswordPage(req, true);
             }
             break;
         case 'code':
             body = renderLib.generateCodePage(
+                req,
                 generateRedirectUrl(),
                 'Email code'
             );
             break;
         default:
             if (user) {
-                body = renderLib.generateLogoutPage(user);
+                body = renderLib.generateLogoutPage(req, user);
             } else {
-                body = getLoginPage(generateRedirectUrl());
+                body = getLoginPage(req, generateRedirectUrl());
             }
             break;
     }
@@ -286,7 +292,19 @@ exports.get = function (req) {
         contentType: 'text/html',
         body: body,
     };
-};
+}
+
+const router = Router();
+
+router.get(STATIC_BASE + '/{path:.*}', (req) => staticLib.requestHandler(req, {
+    index: false,
+    root: '/assets',
+    relativePath: (r) => r.pathParams.path,
+}));
+
+router.get('{path:.*}', renderIdProviderPage);
+
+exports.get = (req) => router.dispatch(req);
 
 exports.post = function (req) {
     const body = JSON.parse(req.body);
