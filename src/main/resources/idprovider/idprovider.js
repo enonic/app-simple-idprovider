@@ -13,14 +13,14 @@ const staticLib = require('/lib/enonic/static');
 
 const STATIC_BASE = '/_static';
 
-function getLoginPage(req, redirectUrl, info) {
+function getLoginPage(redirectUrl, info) {
     let codeRedirect;
     if (isEmailCodeRequired()) {
         codeRedirect = generateCodeRedirectpage();
     } else {
         codeRedirect = generateRedirectUrl();
     }
-    return renderLib.generateLoginPage(req, redirectUrl, info, codeRedirect);
+    return renderLib.generateLoginPage(redirectUrl, info, codeRedirect);
 }
 
 function generateRedirectUrl() {
@@ -212,7 +212,7 @@ exports.handle401 = function (req) {
     const redirectUrl = req.validTicket
         ? req.params.redirect
         : generateRedirectUrl();
-    const body = getLoginPage(req, redirectUrl);
+    const body = getLoginPage(redirectUrl);
 
     return {
         status: 401,
@@ -225,7 +225,7 @@ exports.login = function (req) {
     const redirectUrl = req.validTicket
         ? req.params.redirect
         : generateRedirectUrl();
-    const body = getLoginPage(req, redirectUrl);
+    const body = getLoginPage(redirectUrl);
     return {
         contentType: 'text/html',
         body: body,
@@ -241,7 +241,7 @@ exports.logout = function (req) {
         };
     }
 
-    const body = getLoginPage(req, generateRedirectUrl(), 'Successfully logged out');
+    const body = getLoginPage(generateRedirectUrl(), 'Successfully logged out');
     return {
         contentType: 'text/html',
         body: body,
@@ -256,34 +256,32 @@ function renderIdProviderPage(req) {
     const user = authLib.getUser();
     switch (action) {
         case 'forgot':
-            body = renderLib.generateForgotPasswordPage(req);
+            body = renderLib.generateForgotPasswordPage();
             break;
         case 'sent':
             body = renderLib.generateLoginPage(
-                req,
                 generateRedirectUrl(),
                 'We have sent an email with instructions on how to reset your password'
             );
             break;
         case 'reset':
             if (tokenLib.isTokenValid(token)) {
-                body = renderLib.generateUpdatePasswordPage(req, token);
+                body = renderLib.generateUpdatePasswordPage(token);
             } else {
-                body = renderLib.generateForgotPasswordPage(req, true);
+                body = renderLib.generateForgotPasswordPage(true);
             }
             break;
         case 'code':
             body = renderLib.generateCodePage(
-                req,
                 generateRedirectUrl(),
                 'Email code'
             );
             break;
         default:
             if (user) {
-                body = renderLib.generateLogoutPage(req, user);
+                body = renderLib.generateLogoutPage(user);
             } else {
-                body = getLoginPage(req, generateRedirectUrl());
+                body = getLoginPage(generateRedirectUrl());
             }
             break;
     }

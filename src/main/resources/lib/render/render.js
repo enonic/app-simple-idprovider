@@ -4,8 +4,8 @@ const displayLib = require('/lib/display');
 const gravatarLib = require('/lib/gravatar');
 const configLib = require('/lib/config');
 
-exports.generateLoginPage = function (req, redirectUrl, info, codeUrl) {
-    const scriptUrl = req.contextPath + '/_static/js/login.js';
+exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/login.js';
 
     const idProviderKey = portalLib.getIdProviderKey();
     const loginServiceUrl = portalLib.idProviderUrl();
@@ -23,7 +23,7 @@ exports.generateLoginPage = function (req, redirectUrl, info, codeUrl) {
         loginServiceUrl,
     });
 
-    return generatePage(req, {
+    return generatePage({
         scriptUrl: scriptUrl,
         config: config,
         info,
@@ -35,8 +35,8 @@ exports.generateLoginPage = function (req, redirectUrl, info, codeUrl) {
     });
 };
 
-exports.generateLogoutPage = function (req, user) {
-    const scriptUrl = req.contextPath + '/_static/js/redirect.js';
+exports.generateLogoutPage = function (user) {
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/redirect.js';
 
     const redirectUrl = portalLib.logoutUrl();
     const logoutConfigView = resolve('redirect-config.txt');
@@ -50,7 +50,7 @@ exports.generateLogoutPage = function (req, user) {
         profileUrl = "https://www.gravatar.com/avatar/" + gravatarHash + "?d=blank";
     }
 
-    return generatePage(req, {
+    return generatePage({
         scriptUrl,
         config,
         title: user.displayName,
@@ -59,8 +59,8 @@ exports.generateLogoutPage = function (req, user) {
     });
 };
 
-exports.generateForgotPasswordPage = function (req, expired) {
-    const scriptUrl = req.contextPath + '/_static/js/forgot-pwd.js';
+exports.generateForgotPasswordPage = function (expired) {
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/forgot-pwd.js';
 
     const redirectUrl = portalLib.idProviderUrl({params: {action: 'sent'}});
     const sendTokenUrl = portalLib.idProviderUrl();
@@ -72,7 +72,7 @@ exports.generateForgotPasswordPage = function (req, expired) {
 
     const siteKey = configLib.getSiteKey();
 
-    return generatePage(req, {
+    return generatePage({
         scriptUrl: scriptUrl,
         config: config,
         title: "Password reset",
@@ -85,8 +85,8 @@ exports.generateForgotPasswordPage = function (req, expired) {
     });
 };
 
-exports.generateUpdatePasswordPage = function (req, token) {
-    const scriptUrl = req.contextPath + '/_static/js/update-pwd.js';
+exports.generateUpdatePasswordPage = function (token) {
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/update-pwd.js';
 
     const idProviderUrl = portalLib.idProviderUrl();
 
@@ -96,7 +96,7 @@ exports.generateUpdatePasswordPage = function (req, token) {
         token: token
     });
 
-    return generatePage(req, {
+    return generatePage({
         scriptUrl: scriptUrl,
         config: config,
         title: "Update password",
@@ -108,8 +108,8 @@ exports.generateUpdatePasswordPage = function (req, token) {
     });
 };
 
-exports.generateCodePage = function (req, redirectUrl, placeholder) {
-    const scriptUrl = req.contextPath + '/_static/js/send-code.js';
+exports.generateCodePage = function (redirectUrl, placeholder) {
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/send-code.js';
 
     const loginServiceUrl = portalLib.idProviderUrl();
     const loginConfigView = resolve('login-config.txt');
@@ -118,7 +118,7 @@ exports.generateCodePage = function (req, redirectUrl, placeholder) {
         loginServiceUrl,
     });
 
-    return generatePage(req, {
+    return generatePage({
         title: "Verification",
         subheader: "Check your e-mail for a verification code",
         scriptUrl,
@@ -129,19 +129,19 @@ exports.generateCodePage = function (req, redirectUrl, placeholder) {
     });
 }
 
-function generatePage(req, params) {
+function generatePage(params) {
     const idProviderConfig = configLib.getConfig();
     params.title = params.title || idProviderConfig.title || "User Login";
     params.theme = idProviderConfig.theme || "light-blue";
-    return displayLib.render(req, params);
+    return displayLib.render(params);
 }
 
-function generateBackgroundStyleUrl(req, theme) {
+function generateBackgroundStyleUrl(theme) {
     const stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
-    return req.contextPath + '/_static/' + stylePath;
+    return portalLib.idProviderUrl() + '/_static/' + stylePath;
 }
 
-function generateColorStyleUrl(req, theme) {
+function generateColorStyleUrl(theme) {
     const stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
-    return req.contextPath + '/_static/' + stylePath;
+    return portalLib.idProviderUrl() + '/_static/' + stylePath;
 }
