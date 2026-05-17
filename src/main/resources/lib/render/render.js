@@ -5,8 +5,8 @@ const gravatarLib = require('/lib/gravatar');
 const configLib = require('/lib/config');
 
 exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
-    const scriptUrl = portalLib.assetUrl({path: "js/login.js"});
-    
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/login.js';
+
     const idProviderKey = portalLib.getIdProviderKey();
     const loginServiceUrl = portalLib.idProviderUrl();
     const forgotPasswordUrl = configLib.getForgotPassword() ? portalLib.idProviderUrl({
@@ -36,7 +36,7 @@ exports.generateLoginPage = function (redirectUrl, info, codeUrl) {
 };
 
 exports.generateLogoutPage = function (user) {
-    const scriptUrl = portalLib.assetUrl({path: "js/redirect.js"});
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/redirect.js';
 
     const redirectUrl = portalLib.logoutUrl();
     const logoutConfigView = resolve('redirect-config.txt');
@@ -60,7 +60,7 @@ exports.generateLogoutPage = function (user) {
 };
 
 exports.generateForgotPasswordPage = function (expired) {
-    const scriptUrl = portalLib.assetUrl({path: "js/forgot-pwd.js"});
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/forgot-pwd.js';
 
     const redirectUrl = portalLib.idProviderUrl({params: {action: 'sent'}});
     const sendTokenUrl = portalLib.idProviderUrl();
@@ -86,7 +86,7 @@ exports.generateForgotPasswordPage = function (expired) {
 };
 
 exports.generateUpdatePasswordPage = function (token) {
-    const scriptUrl = portalLib.assetUrl({path: "js/update-pwd.js"});
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/update-pwd.js';
 
     const idProviderUrl = portalLib.idProviderUrl();
 
@@ -109,7 +109,7 @@ exports.generateUpdatePasswordPage = function (token) {
 };
 
 exports.generateCodePage = function (redirectUrl, placeholder) {
-    const scriptUrl = portalLib.assetUrl({path: "js/send-code.js"});
+    const scriptUrl = portalLib.idProviderUrl() + '/_static/js/send-code.js';
 
     const loginServiceUrl = portalLib.idProviderUrl();
     const loginConfigView = resolve('login-config.txt');
@@ -138,10 +138,10 @@ function generatePage(params) {
 
 function generateBackgroundStyleUrl(theme) {
     const stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
+    return portalLib.idProviderUrl() + '/_static/' + stylePath;
 }
 
 function generateColorStyleUrl(theme) {
     const stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
+    return portalLib.idProviderUrl() + '/_static/' + stylePath;
 }

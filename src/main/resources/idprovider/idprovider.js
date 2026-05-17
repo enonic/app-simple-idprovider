@@ -8,6 +8,10 @@ const contextLib = require('/lib/context');
 const mailLib = require('/lib/mail');
 const userLib = require('/lib/user');
 const configLib = require('/lib/config');
+const Router = require('/lib/router');
+const staticLib = require('/lib/enonic/static');
+
+const STATIC_BASE = '/_static';
 
 function getLoginPage(redirectUrl, info) {
     let codeRedirect;
@@ -244,7 +248,7 @@ exports.logout = function (req) {
     };
 };
 
-exports.get = function (req) {
+function renderIdProviderPage(req) {
     let body;
 
     const action = req.params.action;
@@ -286,7 +290,19 @@ exports.get = function (req) {
         contentType: 'text/html',
         body: body,
     };
-};
+}
+
+const router = Router();
+
+router.get(STATIC_BASE + '/{path:.*}', (req) => staticLib.requestHandler(req, {
+    index: false,
+    root: '/assets',
+    relativePath: (r) => r.pathParams.path,
+}));
+
+router.get('{path:.*}', renderIdProviderPage);
+
+exports.get = (req) => router.dispatch(req);
 
 exports.post = function (req) {
     const body = JSON.parse(req.body);

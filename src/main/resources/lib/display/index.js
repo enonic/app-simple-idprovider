@@ -1,5 +1,5 @@
-var portalLib = require('/lib/xp/portal');
 var mustacheLib = require('/lib/mustache');
+var portalLib = require('/lib/xp/portal');
 
 exports.render = function (params) {
     params.submit = params.submit || "LOG IN";
@@ -15,7 +15,7 @@ exports.render = function (params) {
         params.message = "";
     }
 
-    params.assetUrl = portalLib.assetUrl({path: "/"});
+    params.assetUrl = portalLib.idProviderUrl() + '/_static';
     params.backgroundStyleUrl = generateBackgroundStyleUrl(params.theme);
     params.colorStyleUrl = generateColorStyleUrl(params.theme);
 
@@ -25,10 +25,10 @@ exports.render = function (params) {
 
 function generateBackgroundStyleUrl(theme) {
     var stylePath = "themes/" + theme.split('-', 1)[0] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
+    return portalLib.idProviderUrl() + '/_static/' + stylePath;
 }
 
 function generateColorStyleUrl(theme) {
     var stylePath = "themes/" + theme.split('-', 2)[1] + "-theme.css";
-    return portalLib.assetUrl({path: stylePath});
+    return portalLib.idProviderUrl() + '/_static/' + stylePath;
 }
