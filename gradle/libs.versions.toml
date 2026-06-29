@@ -1,7 +1,7 @@
 [versions]
 http-client = "3.2.2"
 mustache = "2.1.1"
-router = "4.0.0-SNAPSHOT"
+router = "4.0.0"
 static = "3.0.0"
 text-encoding = "2.1.1"
 
