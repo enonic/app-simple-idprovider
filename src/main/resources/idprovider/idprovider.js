@@ -59,12 +59,14 @@ function handleLogin(req, user, password) {
     let loginResult = {};
 
     if (isEmailCodeRequired()) {
-        const validUser = twoStepLib.checkLogin({
-            user,
-            password,
+        const authResult = authLib.login({
+            user: user,
+            password: password,
+            idProvider: portalLib.getIdProviderKey(),
+            scope: 'NONE',
         });
 
-        if (validUser) {
+        if (authResult.authenticated) {
             const userNode = twoStepLib.getUser(user);
             const tokens = twoStepLib.generateTokens(user);
             loginResult.twoStep = true;
