@@ -27,7 +27,7 @@ exports.getSessionTimeout = getSessionTimeout;
 
 function getForgotPassword() {
     const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
-    if (forgotPassword && forgotPassword.site) {
+    if (forgotPassword) {
         return forgotPassword;
     }
     return null;
