@@ -46,3 +46,26 @@ exports.testGetSiteReturnsDefinedValueWhenOnlyTitleIsSet = function () {
     assert.assertTrue(site !== undefined);
     assert.assertTrue(site.indexOf("undefined") === -1);
 };
+
+exports.testGetForgotPasswordEnabledWhenItemSetPresentWithoutSite = function () {
+    // Regression guard: the feature must be enabled by the forgotPassword ItemSet
+    // being present, not by the removed `site` field.
+    authMock.mockIdProviderConfig({
+        title: "User Login",
+        forgotPassword: {
+            email: "noreply@example.com"
+        }
+    });
+
+    const forgotPassword = configLib.getForgotPassword();
+    assert.assertNotNull(forgotPassword);
+    assert.assertEquals("noreply@example.com", forgotPassword.email);
+};
+
+exports.testGetForgotPasswordNullWhenItemSetAbsent = function () {
+    authMock.mockIdProviderConfig({
+        title: "User Login"
+    });
+
+    assert.assertTrue(configLib.getForgotPassword() === null);
+};
