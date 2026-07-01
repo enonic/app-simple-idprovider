@@ -41,8 +41,14 @@ function getEmail() {
 exports.getEmail = getEmail;
 
 function getSite() {
-    const forgotPassword = authLib.getIdProviderConfig().forgotPassword;
-    return forgotPassword && forgotPassword.site;
+    const config = authLib.getIdProviderConfig();
+    if (config.siteName) {
+        return config.siteName;
+    }
+    if (config.forgotPassword && config.forgotPassword.site) {
+        return config.forgotPassword.site;
+    }
+    return config.title;
 };
 exports.getSite = getSite;
 

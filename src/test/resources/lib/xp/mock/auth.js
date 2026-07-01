@@ -31,6 +31,7 @@ const mock = {
 exports.mockIdProviderConfig = function(data) {
     idProviderConfigJson = {
         title: data.title,
+        siteName: data.siteName,
         emailCode: data.emailCode,
         forgotPassword: data.forgotPassword,
     }
