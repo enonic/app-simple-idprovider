@@ -100,20 +100,3 @@ function doGenerateEmailCode() {
     );
     return bean.generateCode();
 }
-
-// validated username and password. Does not do an login eg. session etc.
-exports.checkLogin = function(param) {
-    const bean = __.newBean("com.enonic.app.simpleidprovider.AuthenticateHandler");
-    const idproviderkey = contextLib.runAsAdmin(function () {
-        return portalLib.getIdProviderKey();
-    });
-    const user = getUser(param.user);
-    if (!user) { //no user stop
-        return false;
-    }
-    bean.setUser(user.email);
-    bean.setPassword(param.password);
-    bean.setIdProvider([].concat(idproviderkey));
-
-    return bean.attemptLogin();
-}
