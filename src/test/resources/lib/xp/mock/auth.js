@@ -35,6 +35,7 @@ exports.mockIdProviderConfig = function(data) {
     idProviderConfigJson = {
         title: data.title,
         siteName: data.siteName,
+        twoFactorEmail: data.twoFactorEmail,
         emailCode: data.emailCode,
         forgotPassword: data.forgotPassword,
     }
