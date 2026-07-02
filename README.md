@@ -16,6 +16,7 @@ This ID Provider contains a simple login/logout page to authenticate your local 
 ### Step 2: Configure the ID provider and email authentication
 Configure the ID Provider:
 * Title: Title used by the login/logout page
+* Site name: Name of the site used in the subject and body of emails sent to users (password reset, two-factor authentication code)
 * Theme: Display theme of the login/logout page
 * Gravatar picture: If enabled, the Gravatar picture of the logged in user will be displayed on the logout page
 * (Optional) Session timeout: Session timeout (in seconds). By default, the value of session.timeout from com.enonic.xp.web.jetty.cfg
@@ -29,7 +30,6 @@ You need to have set up the mail configuration for "Forgot password" and Two-ste
 (See [Mail Configuration](https://developer.enonic.com/docs/xp/stable/deployment/config#mail) for more information).
 
 * Email author: The author of the password reset mail
-* Site name: Name used in the password reset mail body
 * (Optional) ReCaptcha: Add a reCaptcha field to the forgot password form.
 
 You need to have registered your website on reCaptcha (See [reCaptcha](https://www.google.com/recaptcha/admin) for more information).
