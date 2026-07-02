@@ -8,6 +8,15 @@ form:
       min: 0
       max: 1
     default: "User Login"
+  - type: "TextLine"
+    name: "siteName"
+    label: "Site name"
+    helpText: "Name of the site, used in the subject and body of emails sent to users\
+      \ (e.g. two-factor authentication codes, password reset)."
+    occurrences:
+      min: 0
+      max: 1
+    default: "MyWebsite"
   - type: "ComboBox"
     name: "theme"
     label: "Theme"
@@ -73,13 +82,6 @@ form:
           min: 0
           max: 1
         default: "noreply@example.com"
-      - type: "TextLine"
-        name: "site"
-        label: "Site name"
-        occurrences:
-          min: 1
-          max: 1
-        default: "MyWebsite"
       - type: "ItemSet"
         name: "reCaptcha"
         label: "ReCaptcha"
