@@ -3,7 +3,7 @@ http-client = "3.2.2"
 mustache = "2.1.1"
 router = "4.0.0"
 static = "3.0.0"
-text-encoding = "2.1.1"
+text-encoding = "3.0.0"
 
 [libraries]
 lib-http-client = { module = "com.enonic.lib:lib-http-client", version.ref = "http-client" }
